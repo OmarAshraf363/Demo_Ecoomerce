@@ -1,0 +1,114 @@
+﻿@model Demo.ViewModels.ProductsViewModels
+
+<nav style="border-radius:2mm; background-color:#eee;" class="container navbar d-flex justify-content-center align-items-center navbar-expand-sm navbar-toggleable-sm navbar-light ">
+    <div class=" d-flex justify-content-center">
+        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-center">
+            <ul class="navbar-nav flex-grow-1">
+               
+                    <li class="nav-item">
+                      @*   <a class="ms-2 me-2 btn btn-outline-secondary " asp-area="" asp-controller="Product" asp-action="MobCat" asp-route-id="@items.CategoryId">@items.CategoryName</a> *@
+                        <button data-bs-toggle="modal" data-bs-target="#AddProduct" style="border:none;" class="btn btn-outline-secondary  ps-4 pe-4"> Add New Product </button>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container d-flex align-items-lg-start flex-wrap ">
+
+    
+        @foreach (var product in Model.Products)
+        {
+
+            <div class="card m-3 " style="width: 17.8rem;">
+                <a href=""> <img class="card-img-top" src="~/Images/@product.Image" style="height:15rem;" /></a>
+                <div class="card-body">
+                <h5 class="card-title">(@product.Category.CategoryName)</h5>
+                    <h5 class="card-title">@product.ProductName</h5>
+                    <h6 style="font-size:small;" class="card-text">@product.ProductDescription</h6>
+                    <p class="card-text">
+                       
+                        <span class="ms-3">@product.ListPrice $</span>
+
+                    </p>
+                    
+                    <a href="/Product/Edit/@product.ProductId" class="btn btn-primary">Edit</a>
+                <a onclick="showAlert(@product.ProductId,'Product')" class="btn btn-danger">Delete </a>
+                </div>
+            </div>
+           
+        }
+    
+</div>
+<!-- Modal To Add Anew Caategory -->
+<div class="modal fade" id="AddProduct" tabindex="-1" aria-labelledby="AddProductLabel" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <form id="formProduct" method="post" action="/Product/Create">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="AddProductLabel">Create New Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label class="form-label" asp-for="ProductName">ProductName Name</label>
+                        <input class="form-control" asp-for="ProductName" />
+
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label" asp-for="CategoryId">Category Name</label>
+                        <select asp-for="CategoryId" class="form-select">
+                            @foreach (var category in Model.Categories)
+                            {
+                                <option value="@category.CategoryId">@category.CategoryName</option>
+                            }
+                        </select>
+
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label" asp-for="BrandId">Brand Name</label>
+                        <select asp-for="BrandId" class="form-select">
+                            @foreach (var brand in Model.Brands)
+                            {
+                                <option value="@brand.BrandId">@brand.BrandName</option>
+                            }
+                        </select>
+
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label" asp-for="ProductDescription">ProductDescription</label>
+                        <input class="form-control" asp-for="ProductDescription" />
+
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label" asp-for="Image">Image </label>
+                        <input class="form-control" asp-for="Image" />
+
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label" asp-for="ListPrice">Price </label>
+                        <input class="form-control" asp-for="ListPrice" />
+
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label" asp-for="ModelYear">Year </label>
+                        <input class="form-control" asp-for="ModelYear" />
+
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label" asp-for="Rate">Rate </label>
+                        <input class="form-control" asp-for="Rate" />
+
+                    </div>
+                    <span class="spn text-danger"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" onclick="allConfirm('formProduct')" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- End Modal To Add Anew Caategory -->

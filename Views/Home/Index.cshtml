@@ -1,0 +1,79 @@
+﻿@model Demo.ViewModels.HomeViewModels
+<div style="border-radius:2mm; background-color:#303030;;" class="container-fluid  d-flex justify-content-center align-items-center mt-3 ">
+    <p style="color:#eee" class=" m-2">TakeCare About Color And Availabilty !! </p>
+</div>
+<nav style="border-radius:2mm; background-color:#eee;" class="container navbar d-flex justify-content-center align-items-center navbar-expand-sm navbar-toggleable-sm navbar-light ">
+    <div class=" d-flex justify-content-center">
+        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-center">
+            <ul class="navbar-nav flex-grow-1">
+                @foreach (var items in Model.Categories)
+                {
+                    <li class="nav-item">
+                        <a class="ms-2 me-2 btn btn-outline-secondary " asp-area="" asp-controller="Product" asp-action="productscategory" asp-route-id="@items.CategoryId">@items.CategoryName</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container d-flex align-items-lg-start flex-wrap ">
+    @foreach (var items in Model.Categories)
+    {
+        @foreach (var product in items.Products)
+        {
+            <div class="card m-3 " style="width: 17.8rem;">
+                <a href=""> <img class="card-img-top" src="~/Images/@product.Image" style="height:15rem;" /></a>
+                <div class="card-body">
+                    <h5 class="card-title">@product.ProductName</h5>
+                    <h6 style="font-size:small;" class="card-text">@product.ProductDescription</h6>
+                    <p class="card-text">
+                        @for (int i = 0; i < product.Rate; i++)
+                        {
+
+                            <a href="#">  <i class="fa-regular fa-star "></i> </a>
+
+                        }
+                        <span class="ms-3">@product.ListPrice $</span>
+
+                    </p>
+                    <a href="/Product/Details/@product.ProductId" class="btn btn-primary">Details</a>
+                    <a href="/Order/AddToCart/@product.ProductId" class="btn btn-primary">Cart <i class="fa-solid fa-plus"></i></a>
+                </div>
+            </div>
+        }
+    }
+</div>
+<div class="modal fade  " id="Login" tabindex="-1" aria-labelledby="LoginLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="formlogin" method="post" action="/Home/Login">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="LoginLabel">Sign In</h5>
+                    <button type="button" onclick="test('Login')" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group mb-2">
+                        <label class="form-label" asp-for="Email"> Email</label>
+                        <input class="form-control" asp-for="Email" />
+
+                    </div>
+                    <div class="form-group mb-1">
+                        <label class="form-label" asp-for="Phone"> Phone</label>
+                        <input class="form-control" asp-for="Phone" />
+
+                    </div>
+                    <span class="spn text-danger"></span>
+                </div>
+             
+               
+                <div class="modal-footer">
+                    <button type="button" onclick="test('Login')" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" onclick="allConfirm('formlogin')" class="btn btn-primary">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+
+</script>

@@ -1,0 +1,71 @@
+﻿@model Demo.ViewModels.ProductsViewModels
+<form id="formProduct" method="post" action="/Product/Edit">
+    <div class="modal-header">
+        <h5 class="modal-title" id="AddProductLabel">Create New Category</h5>
+        <a type="button" class="btn-close" href="/product" aria-label="Close"></a>
+    </div>
+    <div class="modal-body">
+        <input type="hidden" asp-for="ProductId" value="@Model.ProductId" />
+        <div class="form-group mb-3">
+            <label class="form-label" asp-for="ProductName">ProductName Name</label>
+            <input class="form-control" asp-for="ProductName" />
+            <span class="text-danger" asp-validation-for="ProductName"></span>
+
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label" asp-for="CategoryId">Category Name</label>
+            <select asp-for="CategoryId" class="form-select">
+                @foreach (var category in Model.Categories)
+                {
+                    <option value="@category.CategoryId">@category.CategoryName</option>
+                }
+            </select>
+            <span class="text-danger" asp-validation-for="CategoryId"></span>
+
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label" asp-for="BrandId">Brand Name</label>
+            <select asp-for="BrandId" class="form-select">
+                @foreach (var brand in Model.Brands)
+                {
+                    <option value="@brand.BrandId">@brand.BrandName</option>
+                }
+            </select>
+            <span class="text-danger" asp-validation-for="BrandId"></span>
+
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label" asp-for="ProductDescription">ProductDescription</label>
+            <input class="form-control" asp-for="ProductDescription" />
+            <span class="text-danger" asp-validation-for="ProductDescription"></span>
+
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label" asp-for="Image">Image </label>
+            <input class="form-control" asp-for="Image" />
+            <span class="text-danger" asp-validation-for="Image"></span>
+
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label" asp-for="ListPrice">Price </label>
+            <input class="form-control" asp-for="ListPrice" />
+            <span class="text-danger" asp-validation-for="ListPrice"></span>
+
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label" asp-for="ModelYear">Year </label>
+            <input class="form-control" asp-for="ModelYear" />
+
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label" asp-for="Rate">Rate </label>
+            <input class="form-control" asp-for="Rate" />
+
+        </div>
+        <span class="spn text-danger"></span>
+    </div>
+    <div class="modal-footer">
+        <a type="button" href="/product">Close</a>
+        <button type="submit"  class="btn btn-primary">Save Changes</button>
+    </div>
+</form>
