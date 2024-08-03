@@ -73,5 +73,21 @@ namespace Demo.Controllers
 
             return RedirectToAction("Index","Home");
         }
+        public IActionResult Delete(int id)
+        {
+            var orderitem = context.OrderItems.FirstOrDefault(e=>e.ProductId==id);
+
+            if (orderitem == null)
+            {
+                return View("Error");
+            }
+            else
+            {
+                context.OrderItems.Remove(orderitem);
+                context.SaveChanges();
+                TempData["success"] = "Product is Deleted Successfully";
+                return RedirectToAction("Index");
+            }
+        }
     }
 }
