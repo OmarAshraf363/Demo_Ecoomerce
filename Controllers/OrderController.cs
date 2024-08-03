@@ -25,7 +25,8 @@ namespace Demo.Controllers
         .ToList();
             return View(orderItems);
         }
-        public IActionResult AddToCart(int id)
+        [HttpPost]
+        public IActionResult AddToCart(int id,int q)
         {
             //var product=context.Products.Find(productId);
             int? userId = HttpContext.Session.GetInt32("UserID");
@@ -44,14 +45,19 @@ namespace Demo.Controllers
             var orderitems = context.OrderItems.
                 Where(e => e.ProductId == id && e.OrderId == order.OrderId)
                 .SingleOrDefault();
-            if(orderitems == null)
+            if (q == 0)
+            {
+                q = 1;
+            }
+
+            if (orderitems == null)
             {
                 orderitems = new OrderItem()
                 {
                     ItemId = id,
                     OrderId = order.OrderId,
                     ProductId = id,
-                    Quantity = 1,
+                    Quantity = q,
                     ListPrice = context.Products.First(p => p.ProductId == id).ListPrice,
                     Discount = 0
                 };
@@ -60,11 +66,12 @@ namespace Demo.Controllers
             }
             else
             {
-                orderitems.Quantity += 1;
+                orderitems.Quantity += q;
             }
             context.SaveChanges();
+            TempData["success"] = "Successfully Added To Cart";
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index","Home");
         }
     }
 }

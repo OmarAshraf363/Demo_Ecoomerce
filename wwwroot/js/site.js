@@ -2,8 +2,7 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
-function allConfirm(id)
-{
+function allConfirm(id) {
     let form = document.getElementById(id);
 
     fetch(form.action, {
@@ -38,7 +37,7 @@ function allConfirm(id)
 
 
 
-  
+
 function addToCart(productId) {
     fetch(`/Order/AddToCart/${productId}`, {
         method: 'GET'
@@ -59,7 +58,7 @@ function addToCart(productId) {
 
 
 //Start Section Of Delet Item And Shoe Alert
-function showAlert(categoryId,controler) {
+function showAlert(categoryId, controler) {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -79,7 +78,7 @@ function showAlert(categoryId,controler) {
             }).then(() => {
 
                 window.location.href = `/${controler}/Delete/${categoryId}`;
-                
+
             });
         }
     });
@@ -101,3 +100,18 @@ function EditBrand(brand) {
     var editModal = new bootstrap.Modal(document.getElementById("editModal"));
     editModal.show();
 }
+
+
+
+function AddToCart(productId) {
+    var modal = new bootstrap.Modal(document.getElementById("addtocart"));
+    modal.show();
+    document.getElementById("pId").value = productId;
+}
+
+$(document).ready(function () {
+
+    setTimeout(function () {
+        $("#successmsg").fadeOut("slow");
+    }, 4000);
+});

@@ -1,4 +1,9 @@
 ﻿@model Demo.ViewModels.HomeViewModels
+@if(TempData["success"]!=null){
+    <div  id="successmsg" >
+        @TempData["success"]
+    </div>
+}
 <div style="border-radius:2mm; background-color:#303030;;" class="container-fluid  d-flex justify-content-center align-items-center mt-3 ">
     <p style="color:#eee" class=" m-2">TakeCare About Color And Availabilty !! </p>
 </div>
@@ -37,7 +42,7 @@
 
                     </p>
                     <a href="/Product/Details/@product.ProductId" class="btn btn-primary">Details</a>
-                    <a href="/Order/AddToCart/@product.ProductId" class="btn btn-primary">Cart <i class="fa-solid fa-plus"></i></a>
+                    <a @* href="/Order/AddToCart/@product.ProductId" *@ onclick="AddToCart(@product.ProductId)" class="btn btn-primary">Cart <i class="fa-solid fa-plus"></i></a>
                 </div>
             </div>
         }
@@ -74,6 +79,33 @@
         </div>
     </div>
 </div>
-<script>
 
-</script>
+
+<!-- Modal To Add to cart -->
+<div class="modal fade" id="addtocart" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="catform" method="post" action="/Order/AddToCart">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Quantity</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <input type="hidden" id="pId" name="id"  />
+                        <label class="form-label" >Quantity of Product</label>
+                        <input type="number" class="form-control" name="q" />
+
+                    </div>
+                    <span class="spn text-danger"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit"  class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- End Modal To Add to cart -->
