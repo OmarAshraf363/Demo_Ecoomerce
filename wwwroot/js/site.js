@@ -39,6 +39,7 @@ function allConfirm(id) {
 
 
 function addToCart(productId) {
+   
     fetch(`/Order/AddToCart/${productId}`, {
         method: 'GET'
     })
@@ -103,10 +104,22 @@ function EditBrand(brand) {
 
 
 
-function AddToCart(productId) {
+function AddToCart(productId, check) {
+ 
+
+    if (check == null) {
+        var modalLogin = new bootstrap.Modal(document.getElementById("Login"));
+        modalLogin.show();
+    } else {
+
     var modal = new bootstrap.Modal(document.getElementById("addtocart"));
     modal.show();
     document.getElementById("pId").value = productId;
+    }
+    
+
+
+    
 }
 
 $(document).ready(function () {

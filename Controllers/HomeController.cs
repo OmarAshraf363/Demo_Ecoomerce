@@ -27,7 +27,7 @@ namespace Demo.Controllers
             return View(model);
         }
         [HttpPost]
-        public IActionResult Login(HomeViewModels model)
+        public IActionResult Login(LoginViewModel  model)
         {
             if (ModelState.IsValid)
             {
@@ -42,7 +42,7 @@ namespace Demo.Controllers
                         return Json(new {isvalid=false , errors = "Wrong Email or Phone", type = "all" });
                     }
                   
-                    return View("Index", model); // إعادة نفس الصفحة لعرض الأخطاء
+                    return View("Index", model); 
                 }
                 else
                 {
@@ -54,7 +54,7 @@ namespace Demo.Controllers
                         return Json(new { isvalid = true });
                     }
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index");
                 }
             }
             else
@@ -64,14 +64,58 @@ namespace Demo.Controllers
                     
                     return Json(new { isvalid = false, errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage),type="one" });
                 }
-                return View("Index", model); // إعادة نفس الصفحة لعرض الأخطاء
+                return View("Index", model); 
             }
         }
 
-
-        public IActionResult Privacy()
+        [HttpPost]
+        public IActionResult Register(HomeViewModels model)
         {
-            return View();
+            if (!ModelState.IsValid)
+            {
+                if (Request.Headers["X-Requested-With"]=="XMLHttpRequest")
+                {
+                    return Json(new { isvalid = false, errors = ModelState.Values
+                        .SelectMany(v => v.Errors).Select(e => e.ErrorMessage), type = "one" });
+                }
+                return View("Index",model);
+            }
+            else
+            {
+                var checkUser = context.Customers
+                    .Where(e => e.Email == model.Customar.Email || e.Phone == model.Customar.Phone).FirstOrDefault();
+                if (checkUser == null)
+                {
+                    Customer newCustomar= new Customer()
+                    {
+                        FirstName=model.Customar.FirstName,
+                        LastName=model.Customar.LastName,
+                        Email=model.Customar.Email,
+                        Phone=model.Customar.Phone,
+                        City=model.Customar.City,
+                        State=model.Customar.State,
+                        Street=model.Customar.Street,
+                        ZipCode=model.Customar.ZipCode,
+                        
+                    };
+                    context.Customers.Add(newCustomar);
+                    context.SaveChanges();
+                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    {
+                        return Json(new { isvalid = true });
+                    }
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    {
+                        return Json(new { isvalid = false, errors = "Wrong Email or Phone", type = "all" });
+                    }
+                    return View("Index",model);
+                }
+            }
+          
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

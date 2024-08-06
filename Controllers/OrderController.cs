@@ -28,6 +28,7 @@ namespace Demo.Controllers
         [HttpPost]
         public IActionResult AddToCart(int id,int q)
         {
+            
             //var product=context.Products.Find(productId);
             int? userId = HttpContext.Session.GetInt32("UserID");
             var order = context.Orders.Where(e => e.CustomerId == userId && e.OrderStatus == 0).SingleOrDefault();

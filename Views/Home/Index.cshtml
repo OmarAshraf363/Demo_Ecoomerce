@@ -1,4 +1,9 @@
 ﻿@model Demo.ViewModels.HomeViewModels
+@{
+   
+    int? id = Context.Session.GetInt32("UserID");
+   
+}
 @if(TempData["success"]!=null){
     <div  id="successmsg" >
         @TempData["success"]
@@ -42,7 +47,7 @@
 
                     </p>
                     <a href="/Product/Details/@product.ProductId" class="btn btn-primary">Details</a>
-                    <a @* href="/Order/AddToCart/@product.ProductId" *@ onclick="AddToCart(@product.ProductId)" class="btn btn-primary">Cart <i class="fa-solid fa-plus"></i></a>
+                    <a @* href="/Order/AddToCart/@product.ProductId" *@ onclick="AddToCart(@product.ProductId,@id)" class="btn btn-primary">Cart <i class="fa-solid fa-plus"></i></a>
                 </div>
             </div>
         }
@@ -58,13 +63,13 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group mb-2">
-                        <label class="form-label" asp-for="Email"> Email</label>
-                        <input class="form-control" asp-for="Email" />
+                        <label class="form-label" name="Phone"> Email</label>
+                        <input class="form-control" name="Email"   />
 
                     </div>
                     <div class="form-group mb-1">
-                        <label class="form-label" asp-for="Phone"> Phone</label>
-                        <input class="form-control" asp-for="Phone" />
+                        <label class="form-label" > Phone</label>
+                        <input class="form-control" name="Phone" />
 
                     </div>
                     <span class="spn text-danger"></span>
@@ -72,13 +77,80 @@
              
                
                 <div class="modal-footer">
-                    <button type="button" onclick="test('Login')" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a class=" btn btn-outline-dark me-3 ms-3 pe-3 ps-3" data-bs-toggle="modal" data-bs-target="#Register">Register  </a>
                     <button type="button" onclick="allConfirm('formlogin')" class="btn btn-primary">Login</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+
+<div class="modal fade  " id="Register" tabindex="-1" aria-labelledby="LoginLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="formRegister" method="post" action="/Home/Register">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="LoginLabel">Sign In</h5>
+                    <button type="button" onclick="test('Login')" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group mb-2">
+                        <label class="form-label" asp-for="Customar.FirstName"> FirstName</label>
+                        <input class="form-control" asp-for="Customar.FirstName" />
+                       
+
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="form-label" asp-for="Customar.LastName"> LastName</label>
+                        <input class="form-control" asp-for="Customar.LastName" />
+                       
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="form-label" asp-for="Customar.Email"> Email</label>
+                        <input class="form-control" asp-for="Customar.Email" />
+
+                    </div>
+                    <div class="form-group mb-1">
+                        <label class="form-label" asp-for="Customar.Phone"> Phone</label>
+                        <input class="form-control" asp-for="Customar.Phone" />
+
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="form-label" asp-for="Customar.City"> City</label>
+                        <input class="form-control" asp-for="Customar.City" />
+
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="form-label" asp-for="Customar.Street"> Street</label>
+                        <input class="form-control" asp-for="Customar.Street" />
+
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="form-label" asp-for="Customar.State"> State</label>
+                        <input class="form-control" asp-for="Customar.State" />
+
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="form-label" asp-for="Customar.ZipCode"> ZipCode</label>
+                        <input class="form-control" asp-for="Customar.ZipCode" />
+
+                    </div>
+                    <span class="spn text-danger"></span>
+                </div>
+
+
+                <div class="modal-footer">
+                    <button type="button" onclick="test('Register')" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" onclick="allConfirm('formRegister')" class="btn btn-primary">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
 
 
 <!-- Modal To Add to cart -->
@@ -109,3 +181,8 @@
 </div>
 
 <!-- End Modal To Add to cart -->
+@section Scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+}
