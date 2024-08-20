@@ -1,5 +1,7 @@
 ﻿using Demo.Data;
 using Demo.Models;
+using Demo.Repository.ModelsRepository.CategoryModel;
+using Demo.Repository.ModelsRepository.CustomarModel;
 using Demo.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,18 +13,20 @@ namespace Demo.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        AppDbContext context=new AppDbContext();
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly ICustomarRepository _customarRepository;
+        public HomeController(ILogger<HomeController> logger, ICategoryRepository categoryRepository, ICustomarRepository customarRepository)
         {
             _logger = logger;
-            
+
+            _categoryRepository = categoryRepository;
+            _customarRepository = customarRepository;
         }
 
         public IActionResult Index(HomeViewModels model)
         {
 
-            var categories = context.Categories.Include(e=>e.Products).ToList();
+            var categories =_categoryRepository.GetAll().AsQueryable().Include(e=>e.Products).ToList();
             model.Categories = categories;  
             return View(model);
         }
@@ -31,7 +35,7 @@ namespace Demo.Controllers
         {
             if (ModelState.IsValid)
             {
-                var customer = context.Customers
+                var customer = _customarRepository.GetAll()
                     .FirstOrDefault(e => e.Phone == model.Phone && e.Email == model.Email);
 
                 if (customer == null)
@@ -53,7 +57,6 @@ namespace Demo.Controllers
                     {
                         return Json(new { isvalid = true });
                     }
-
                     return RedirectToAction("Index");
                 }
             }
@@ -67,7 +70,6 @@ namespace Demo.Controllers
                 return View("Index", model); 
             }
         }
-
         [HttpPost]
         public IActionResult Register(HomeViewModels model)
         {
@@ -82,24 +84,11 @@ namespace Demo.Controllers
             }
             else
             {
-                var checkUser = context.Customers
+                var checkUser = _customarRepository.GetAll()
                     .Where(e => e.Email == model.Customar.Email || e.Phone == model.Customar.Phone).FirstOrDefault();
                 if (checkUser == null)
                 {
-                    Customer newCustomar= new Customer()
-                    {
-                        FirstName=model.Customar.FirstName,
-                        LastName=model.Customar.LastName,
-                        Email=model.Customar.Email,
-                        Phone=model.Customar.Phone,
-                        City=model.Customar.City,
-                        State=model.Customar.State,
-                        Street=model.Customar.Street,
-                        ZipCode=model.Customar.ZipCode,
-                        
-                    };
-                    context.Customers.Add(newCustomar);
-                    context.SaveChanges();
+                   _customarRepository.AddFromViewModel(model);
                     if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                     {
                         return Json(new { isvalid = true });

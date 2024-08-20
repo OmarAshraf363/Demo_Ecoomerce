@@ -5,6 +5,10 @@ namespace Demo.Data
 {
     public class AppDbContext : DbContext
     {
+        public AppDbContext(DbContextOptions options) : base(options)
+        {
+        }
+
         public virtual DbSet<Brand> Brands { get; set; }
 
         public virtual DbSet<Category> Categories { get; set; }
@@ -23,15 +27,15 @@ namespace Demo.Data
 
         public virtual DbSet<Store> Stores { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    base.OnConfiguring(optionsBuilder);
 
-            var builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", true, true).Build();
-            var connection = builder.GetConnectionString("DefaultConnection");
+        //    var builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", true, true).Build();
+        //    var connection = builder.GetConnectionString("DefaultConnection");
 
-            optionsBuilder.UseSqlServer(connection);
-        }
+        //    optionsBuilder.UseSqlServer(connection);
+        //}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

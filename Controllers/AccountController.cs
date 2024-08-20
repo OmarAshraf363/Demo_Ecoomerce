@@ -6,7 +6,13 @@ namespace Demo.Controllers
 {
     public class AccountController : Controller
     {
-        AppDbContext context=new AppDbContext();
+        AppDbContext context;
+
+        public AccountController(AppDbContext context)
+        {
+            this.context = context;
+        }
+
         //public IActionResult Login(HomeViewModels model)
         //{
         //    if (ModelState.IsValid)
@@ -32,7 +38,7 @@ namespace Demo.Controllers
         //        return RedirectToAction("Index", "Home", model);
         //    }
         //}
-       
+
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();

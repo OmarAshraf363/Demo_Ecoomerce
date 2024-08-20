@@ -1,5 +1,6 @@
 ﻿using Demo.Data;
 using Demo.Models;
+using Demo.Repository.ModelsRepository.BrandModel;
 using Demo.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,11 +9,17 @@ namespace Demo.Controllers
 {
     public class BrandController : Controller
     {
-        AppDbContext context=new AppDbContext();
+        private readonly IBrandRepository brandRepository;
+
+        public BrandController(IBrandRepository brandRepository)
+        {
+            this.brandRepository = brandRepository;
+        }
+
         public IActionResult Index()
         {
-            var brands = context.Brands.Include(e=>e.Products).ToList();
-            BrandViewModels model=new BrandViewModels()
+            var brands = brandRepository.GetAll().AsQueryable().Include(e => e.Products).ToList();
+            BrandViewModels model = new BrandViewModels()
             {
                 Brands = brands
             };
@@ -23,22 +30,25 @@ namespace Demo.Controllers
         {
             if (ModelState.IsValid)
             {
-                Brand brand = new Brand()
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
-                    BrandName = model.BrandName,
-                };
-                if (Request.Headers["X-Requested-With"]== "XMLHttpRequest")
-                {
-                    return Json(new { isvalid = true });
-
+                    var brands = brandRepository.GetAll().Where(e => e.BrandName == model.BrandName).SingleOrDefault();
+                    if (brands != null)
+                    {
+                        ModelState.AddModelError("", "Existed");
+                        return Json(new { isvalid = false, errors = "Existed", type = "one" });
+                    }
+                    else
+                    {
+                        brandRepository.AddFromViewModel(model);
+                        return Json(new { isvalid = true });
+                    }
                 }
-                context.Brands.Add(brand);
-                context.SaveChanges();
                 return RedirectToAction("Index");
             }
             else
             {
-                if (Request.Headers["X-Requested-With"]== "XMLHttpRequest")
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
                     var errors = ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage);
                     return Json(new { isvalid = false, errors = errors, type = "one" });
@@ -48,33 +58,33 @@ namespace Demo.Controllers
         }
         public IActionResult Delete(int id)
         {
-            var brand = context.Brands.Find(id);
-            if (brand != null)
-            {
-                context.Brands.Remove(brand);
-                context.SaveChanges();
+            brandRepository.Delete(id);
             return RedirectToAction("Index");
-            }
-            else
-            {
-                return BadRequest();
-            }
         }
         [HttpPost]
         public IActionResult Edit(BrandViewModels model)
         {
             if (ModelState.IsValid)
             {
-                var brand=context.Brands.Find(model.BrandId);
+                var brand = brandRepository.GetById(model.BrandId);
                 if (brand != null)
                 {
                     if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                     {
-                        return Json(new { isvalid = true });
+                        var brands = brandRepository.GetAll().Where(e => e.BrandName == model.BrandName).SingleOrDefault();
+                        if (brands == null)
+                        {
+                            brand.BrandName = model.BrandName;
+                            brandRepository.Edit(brand);
+                            return Json(new { isvalid = true });
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("", "Existed");
+                            return Json(new { isvalid = false, errors = "Existed", type = "one" });
+                        }
 
                     }
-                    brand.BrandName=model.BrandName;
-                    context.SaveChanges();
                     return RedirectToAction("Index");
                 }
                 else
@@ -86,11 +96,11 @@ namespace Demo.Controllers
             {
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
-                    var errors=ModelState.Values.SelectMany(x => x.Errors).Select(e=>e.ErrorMessage);
-                    return Json(new { isvalid = false, errors= errors,typr="one" });
+                    var errors = ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage);
+                    return Json(new { isvalid = false, errors = errors, typr = "one" });
 
                 }
-                return View("Index",model);
+                return View("Index", model);
             }
 
         }

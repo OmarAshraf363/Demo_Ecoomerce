@@ -1,5 +1,7 @@
 ﻿using Demo.Data;
 using Demo.Models;
+using Demo.Repository.ModelsRepository.OrderItemRepository;
+using Demo.Repository.ModelsRepository.OrderModel;
 using Demo.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,87 +10,51 @@ namespace Demo.Controllers
 {
     public class OrderController : Controller
     {
-        AppDbContext context = new AppDbContext();
+        
+        private readonly IOrderItemRepository _orderItemRepository;
+        private readonly IOrderRepository _orderRepository;
+
+        public OrderController(IOrderItemRepository orderItemRepository, IOrderRepository orderRepository)
+        {
+
+            _orderItemRepository = orderItemRepository;
+            _orderRepository = orderRepository;
+        }
+
         public IActionResult Index()
         {
             int? userId = HttpContext.Session.GetInt32("UserID");
-            var order=context.Orders.Where(e=>e.CustomerId == userId && e.OrderStatus==0).SingleOrDefault();
-            var orderItems=context.OrderItems.Where(e=>e.OrderId==order.OrderId).Include(e=>e.Product)
-                .Select(e => new CartViewModel
-                {
-                    ProductId = e.ProductId,
-                    ProductName = e.Product.ProductName,
-                    Quantity = e.Quantity,
-                    ListPrice = e.ListPrice,
-                    TotalPrice = e.Quantity * e.ListPrice
-                })
-        .ToList();
+            var order=_orderRepository.GetUserOrder(userId);//get user order
+            var orderItems = _orderItemRepository.GetOrderItemsInSpacifcCart(order.OrderId);//get all order items that equal ioorder.orderid
             return View(orderItems);
         }
         [HttpPost]
         public IActionResult AddToCart(int id,int q)
         {
             
-            //var product=context.Products.Find(productId);
-            int? userId = HttpContext.Session.GetInt32("UserID");
-            var order = context.Orders.Where(e => e.CustomerId == userId && e.OrderStatus == 0).SingleOrDefault();
-            if (order == null)
-            {
-                order  = new Order()
-                {
-                    OrderStatus = 0,
-                    OrderDate = DateOnly.FromDateTime(DateTime.Now),
-                    CustomerId = userId,
-                };
-                context.Orders.Add(order);
-                context.SaveChanges();
-            }
-            var orderitems = context.OrderItems.
-                Where(e => e.ProductId == id && e.OrderId == order.OrderId)
-                .SingleOrDefault();
             if (q == 0)
             {
                 q = 1;
             }
+            int? userId = HttpContext.Session.GetInt32("UserID");
+           var order= _orderRepository.CreateFirstOrderIfNotExisted(userId);
+            var orderitems = _orderItemRepository.GetAll().
+                Where(e => e.ProductId == id && e.OrderId == order.OrderId)
+                .SingleOrDefault();
 
-            if (orderitems == null)
-            {
-                orderitems = new OrderItem()
-                {
-                    ItemId = id,
-                    OrderId = order.OrderId,
-                    ProductId = id,
-                    Quantity = q,
-                    ListPrice = context.Products.First(p => p.ProductId == id).ListPrice,
-                    Discount = 0
-                };
-                context.OrderItems.Add(orderitems);
-                context.SaveChanges();
-            }
-            else
-            {
-                orderitems.Quantity += q;
-            }
-            context.SaveChanges();
+          _orderItemRepository.createOrderItemsIfNotExisted(id,order.OrderId,q);
+            _orderItemRepository.Save();
             TempData["success"] = "Successfully Added To Cart";
 
             return RedirectToAction("Index","Home");
         }
         public IActionResult Delete(int id)
         {
-            var orderitem = context.OrderItems.FirstOrDefault(e=>e.ProductId==id);
-
-            if (orderitem == null)
-            {
-                return View("Error");
-            }
-            else
-            {
-                context.OrderItems.Remove(orderitem);
-                context.SaveChanges();
-                TempData["success"] = "Product is Deleted Successfully";
-                return RedirectToAction("Index");
-            }
+           _orderItemRepository.spacifcDelete(id);
+            
+            TempData["success"] = "Product is Deleted Successfully";
+            return RedirectToAction("Index");
+       
         }
     }
 }

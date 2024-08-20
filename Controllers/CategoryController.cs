@@ -1,5 +1,6 @@
 ﻿using Demo.Data;
 using Demo.Models;
+using Demo.Repository.ModelsRepository.CategoryModel;
 using Demo.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,10 +9,18 @@ namespace Demo.Controllers
 {
     public class CategoryController : Controller
     {
-        AppDbContext context=new AppDbContext();
+
+       private readonly ICategoryRepository _categoryRepository;
+
+        public CategoryController(ICategoryRepository categoryRepository)
+        {
+           
+            _categoryRepository = categoryRepository;
+        }
+
         public IActionResult Index()
         {
-            var categories=context.Categories.Include(e=>e.Products).ToList();
+            var categories= _categoryRepository.GetAll().AsQueryable().Include(e=>e.Products).ToList();
             CategoryViewModels models = new CategoryViewModels()
             {
                 Categories = categories
@@ -23,21 +32,26 @@ namespace Demo.Controllers
         {
             if (ModelState.IsValid)
             {
-                Category category = new Category()
-                {
-                    CategoryName = model.CategoryName,
-                };
+              
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
-                    return Json(new{isvalid = true});
+                    var category=_categoryRepository.GetAll().Where(e=>e.CategoryName == model.CategoryName).SingleOrDefault();
+                    if(category != null)
+                    {
+                        ModelState.AddModelError("", "Existed");
+                        return Json(new { isvalid = false ,errors="Existed",type="one" });
+                    }
+                    else
+                    {
+                        _categoryRepository.AddFromViewModel(model);
+                        return Json(new{isvalid = true});
+                    }
                 }
-                context.Categories.Add(category);
-                context.SaveChanges();
                 return RedirectToAction("Index");
             }
             else
             {
-                var categories = context.Categories.Include(e => e.Products).ToList();
+                var categories = _categoryRepository.GetAll().AsQueryable().Include(e => e.Products).ToList();
                 model.Categories = categories;
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
@@ -52,20 +66,29 @@ namespace Demo.Controllers
         {
             if (ModelState.IsValid)
             {
-                var cat = context.Categories.Find(model.CategoryId);
-                cat.CategoryName= model.CategoryName;
-
-                context.SaveChanges();
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
+                    var category=_categoryRepository.GetById(model.CategoryId);
+
+                    var Existed=_categoryRepository.GetAll().Where(e=>e.CategoryName == model.CategoryName).SingleOrDefault();
+                    if (Existed != null)
+                    {
+                        ModelState.AddModelError("", "Existed");
+                        return Json(new { isvalid = false, errors = "Existed", type = "one" });
+                    }
+                    else
+                    {
+                        category.CategoryName=model.CategoryName;
+                        _categoryRepository.Edit(category);
                     return Json(new { isvalid = true });
+                    }
                 }
                 return RedirectToAction("Index");
             }
             else
             {
 
-                var categories = context.Categories.Include(e => e.Products).ToList();
+                var categories = _categoryRepository.GetAll().AsQueryable().Include(e => e.Products).ToList();
                 model.Categories = categories;
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
@@ -74,21 +97,12 @@ namespace Demo.Controllers
                 }
                 return View("Index", model);
             }
-
         }
         public IActionResult Delete(int id) 
         {
-            var item = context.Categories.Find(id);
-            if (item == null)
-            {
-                return View("Error");
-            }
-            else
-            {
-                context.Categories.Remove(item);
-                context.SaveChanges();
-                return RedirectToAction("Index");
-            }
+            _categoryRepository.Delete(id);
+            return RedirectToAction("Index");
+        
         }
 
     }

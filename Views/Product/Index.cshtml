@@ -24,6 +24,7 @@
                 <a href=""> <img class="card-img-top" src="~/Images/@product.Image" style="height:15rem;" /></a>
                 <div class="card-body">
                 <h5 class="card-title">(@product.Category.CategoryName)</h5>
+                <h5 class="card-title">@product.Brand.BrandName</h5>
                     <h5 class="card-title">@product.ProductName</h5>
                     <h6 style="font-size:small;" class="card-text">@product.ProductDescription</h6>
                     <p class="card-text">
@@ -40,13 +41,13 @@
         }
     
 </div>
-<!-- Modal To Add Anew Caategory -->
+<!-- Modal To Add Anew Product -->
 <div class="modal fade" id="AddProduct" tabindex="-1" aria-labelledby="AddProductLabel" aria-hidden="true">
     <div class="modal-dialog ">
         <div class="modal-content">
             <form id="formProduct" method="post" action="/Product/Create">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="AddProductLabel">Create New Category</h5>
+                    <h5 class="modal-title" id="AddProductLabel">Create New Product</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -111,4 +112,4 @@
     </div>
 </div>
 
-<!-- End Modal To Add Anew Caategory -->
+<!-- End Modal To Add Anew Product -->

@@ -2,18 +2,18 @@
 
 namespace Demo.ViewModels
 {
-    public class CategoryAddToProduct
+    public class AddProductFromCategoryViewModel
     {
         public List<Category> Categories { get; set; }=new List<Category>();
         public int? CategoryId { get; set; }
         public List<Product> Products { get; set; } = new List<Product>();
-        public string catname {  get; set; }
+        public string CategoryName {  get; set; }=string.Empty;
 
 
 
-        //to add Product
+        //to add Productv//ProductModel
         public string ProductName { get; set; } = null!;
-        public string ProductDescription { get; set; }
+        public string ProductDescription { get; set; } = string.Empty;
         public int Rate { get; set; }
         public string Image { get; set; } = null!;
         public short ModelYear { get; set; }

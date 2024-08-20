@@ -1,13 +1,13 @@
-﻿@model Demo.ViewModels.ProductsViewModels
+﻿@model Product
 <form id="formProduct" method="post" action="/Product/Edit">
     <div class="modal-header">
-        <h5 class="modal-title" id="AddProductLabel">Create New Category</h5>
+        <h5 class="modal-title" id="AddProductLabel">Update This Product</h5>
         <a type="button" class="btn-close" href="/product" aria-label="Close"></a>
     </div>
     <div class="modal-body">
         <input type="hidden" asp-for="ProductId" value="@Model.ProductId" />
         <div class="form-group mb-3">
-            <label class="form-label" asp-for="ProductName">ProductName Name</label>
+            <label class="form-label" asp-for="ProductName">Product Name Nae</label>
             <input class="form-control" asp-for="ProductName" />
             <span class="text-danger" asp-validation-for="ProductName"></span>
 
@@ -15,7 +15,7 @@
         <div class="form-group mb-3">
             <label class="form-label" asp-for="CategoryId">Category Name</label>
             <select asp-for="CategoryId" class="form-select">
-                @foreach (var category in Model.Categories)
+                @foreach (var category in ViewBag.cats)
                 {
                     <option value="@category.CategoryId">@category.CategoryName</option>
                 }
@@ -26,7 +26,7 @@
         <div class="form-group mb-3">
             <label class="form-label" asp-for="BrandId">Brand Name</label>
             <select asp-for="BrandId" class="form-select">
-                @foreach (var brand in Model.Brands)
+                @foreach (var brand in ViewBag.brands)
                 {
                     <option value="@brand.BrandId">@brand.BrandName</option>
                 }
@@ -35,7 +35,7 @@
 
         </div>
         <div class="form-group mb-3">
-            <label class="form-label" asp-for="ProductDescription">ProductDescription</label>
+            <label class="form-label" asp-for="ProductDescription">Product Description</label>
             <input class="form-control" asp-for="ProductDescription" />
             <span class="text-danger" asp-validation-for="ProductDescription"></span>
 

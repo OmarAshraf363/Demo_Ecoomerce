@@ -1,5 +1,9 @@
 ﻿using Demo.Data;
 using Demo.Models;
+using Demo.Repository.ModelsRepository.BrandModel;
+using Demo.Repository.ModelsRepository.CategoryModel;
+using Demo.Repository.ModelsRepository.ProductModel;
+using Demo.Repository.ModelsRepository.StockModel;
 using Demo.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,63 +12,47 @@ namespace Demo.Controllers
 {
     public class ProductController : Controller
     {
-        AppDbContext context = new AppDbContext();
-        public IActionResult Index(ProductsViewModels model)
+       
+        IProductRepository _productRepository;
+        IStockRepository _stockRepository;
+        IBrandRepository _brandRepository;
+        ICategoryRepository _categoryRepository;
+
+        public ProductController(AppDbContext context, IProductRepository productRepository, IStockRepository stockRepository, IBrandRepository brandRepository, ICategoryRepository categoryRepository)
         {
-            var products = context.Products.Include(e => e.Category).Include(e => e.Brand).ToList();
-            var categories = context.Categories.ToList();
-            var brans = context.Brands.ToList();
-            model.Products = products;
-            model.Categories = categories;
-            model.Brands = brans;
-            return View(model);
+           
+            _productRepository = productRepository;
+            _stockRepository = stockRepository;
+            _brandRepository = brandRepository;
+            _categoryRepository = categoryRepository;
         }
+
+        public IActionResult Index()
+        {
+            ProductsViewModels model = new ProductsViewModels();
+            return View(_productRepository.putAllInfoInProductViewModel(model));//check ProductsView Models
+        }
+
+        
         public IActionResult MobCat(int id)
         {
-            var AllMob = context.Products.Include(e => e.Category).Include(e=>e.Brand).Where(e => e.Category.CategoryId == id).ToList();
-            var category = context.Categories.Find(id);
-            var brans = context.Brands.ToList();
-            CategoryAddToProduct model = new CategoryAddToProduct()
-            {
-                Products = AllMob,
-                CategoryId = id,
-                catname=category.CategoryName,
-                Brands= brans
-                
-
-            };
-            return View(model);
+            return View(_productRepository.getAllProductsWithspacifsCategory(id)); //check Categoet Add to
         }
         public IActionResult ProductsCategory( int id)
         {
-
-
-            var AllMob = context.Products.Include(e => e.Category).Include(e => e.Brand).Where(e => e.Category.CategoryId == id).ToList();
-            var category = context.Categories.Find(id);
-            var brans = context.Brands.ToList();
-            CategoryAddToProduct model = new CategoryAddToProduct()
-            {
-                Products = AllMob,
-                CategoryId = id,
-                catname = category.CategoryName,
-                Brands = brans
-
-
-            };
-            return View(model);
+            return View(_productRepository.getAllProductsWithspacifsCategory(id));
         }
-        public IActionResult Details(int id, ProductDetails product)
+        public IActionResult Details(int id, ProductDetails model)
         {
-            var item = context.Products.Include(e => e.Brand).SingleOrDefault(e => e.ProductId == id);
-            product.Product = item;
-            var Q = context.Stocks.Where(e => e.ProductId == id).SingleOrDefault();
-
+            var item =_productRepository.GetAll().AsQueryable().Include(e=>e.Brand).FirstOrDefault(e=>e.ProductId==id);
+            model.Product = item;
+            var Q =_stockRepository.GetAll().FirstOrDefault(e=>e.ProductId==id);
             if (Q != null)
             {
-                product.Quantity = Q.Quantity;
+                model.Quantity = Q.Quantity;
             }
-            else { product.Quantity = 0; }
-            return View(product);
+            else { model.Quantity = 0; }
+            return View(model);
         }
 
 
@@ -73,35 +61,17 @@ namespace Demo.Controllers
         {
             if (ModelState.IsValid)
             {
-                Product product = new Product()
-                {
-                    ProductName = model.ProductName,
-                    ProductDescription = model.ProductDescription,
-                    Image = model.Image,
-                    ListPrice = model.ListPrice,
-                    BrandId = model.BrandId,
-                    CategoryId = model.CategoryId,
-                    ModelYear = model.ModelYear,
-                    Rate = model.Rate,
-
-
-                };
+              var productId= _productRepository.createFromViewModel(model);//create and return Id to complete anotherMethod
                 if (Request.Headers["X-Requested-With"]== "XMLHttpRequest")
                 {
                     return Json(new {isvalid=true});
                 }
-                context.Products.Add(product);
-                context.SaveChanges();
-                return RedirectToAction("AddProductToStock", new {id=product.ProductId});
+                
+                return RedirectToAction("AddProductToStock", new {id= productId });
             }
             else
             {
-                var products = context.Products.Include(e => e.Category).Include(e => e.Brand).ToList();
-                var categories = context.Categories.ToList();
-                var brans = context.Brands.ToList();
-                model.Products = products;
-                model.Categories = categories;
-                model.Brands = brans;
+                _productRepository.putAllInfoInProductViewModel(model);
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
                     var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
@@ -112,67 +82,24 @@ namespace Demo.Controllers
         }
         public IActionResult Delete(int id)
         {
-            var product=context.Products.Find(id);
-            if (product != null)
-            {
-                context.Products.Remove(product);
-                context.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                return BadRequest();
-            }
+            _productRepository.Delete(id);
+            return RedirectToAction("Index");
         }
         public IActionResult Edit(int id)
         {
-            var product = context.Products.Include(e=>e.Category).Include(e=>e.Brand).SingleOrDefault(e=>e.ProductId==id);
-            if (product != null)
-            {
-                  var model = new ProductsViewModels
-                {
-                   ProductId = id,
-                    ProductName = product.ProductName,
-                    ProductDescription = product.ProductDescription,
-                    Image = product.Image,
-                    ListPrice = product.ListPrice,
-                    BrandId = product.BrandId,
-                    CategoryId = product.CategoryId,
-                    ModelYear = product.ModelYear,
-                    Rate = product.Rate,
-                    Categories = context.Categories.ToList(),
-                    Brands = context.Brands.ToList()
-                };
-                return View(model);
-            }
-            { 
-            return BadRequest();
-            }
+            var product = _productRepository.GetAll().AsQueryable().Include(e=>e.Category).Include(e=>e.Brand).SingleOrDefault(e=>e.ProductId==id);
+            ViewBag.brands = _brandRepository.GetAll();
+            ViewBag.cats = _categoryRepository.GetAll();
+            return View(product);
+           
         }
         [HttpPost]
         public IActionResult Edit(ProductsViewModels model)
         {
             if (ModelState.IsValid)
             {
-                var product = context.Products.Where(e => e.ProductId == model.ProductId).SingleOrDefault();
-
-                if (product != null)
-                {
-                    product.ProductName = model.ProductName;
-                    product.ProductDescription = model.ProductDescription;
-                    product.BrandId = model.BrandId;
-                    product.CategoryId = model.CategoryId;
-                    product.ModelYear = model.ModelYear;
-                    product.Rate = model.Rate;
-                    product.Image = model.Image;
-                    product.ListPrice = model.ListPrice;
-                    context.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    return View(model);
-                }
+                _productRepository.editFromViewModel(model);
+                 return RedirectToAction("Index"); 
             }
             else
             {
@@ -181,7 +108,7 @@ namespace Demo.Controllers
         }
         public IActionResult AddProductToStock(int id)
         {
-           
+ 
             Stock stock = new Stock()
             {
                 StoreId = 1,
@@ -189,8 +116,7 @@ namespace Demo.Controllers
                 Quantity=5
                 
             };
-            context.Stocks.Add(stock);
-            context.SaveChanges();
+           _stockRepository.Create(stock);
             return RedirectToAction("Index");
         }
         
