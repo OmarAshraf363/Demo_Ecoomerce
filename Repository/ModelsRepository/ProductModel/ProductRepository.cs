@@ -68,7 +68,7 @@ namespace Demo.Repository.ModelsRepository.ProductModel
 
         public ProductsViewModels putAllInfoInProductViewModel(ProductsViewModels model)
         {
-           var products=GetAll().AsQueryable().Include(e=>e.Category).Include(e=>e.Brand).ToList();
+           var products=Get(expression:null,e=>e.Brand,e=>e.Category).ToList();
             var categories = context.Categories.ToList();
             var brands=context.Brands.ToList();
 

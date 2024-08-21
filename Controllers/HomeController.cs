@@ -1,5 +1,6 @@
 ﻿using Demo.Data;
 using Demo.Models;
+using Demo.Repository.IRepository;
 using Demo.Repository.ModelsRepository.CategoryModel;
 using Demo.Repository.ModelsRepository.CustomarModel;
 using Demo.ViewModels;
@@ -13,20 +14,18 @@ namespace Demo.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ICategoryRepository _categoryRepository;
-        private readonly ICustomarRepository _customarRepository;
-        public HomeController(ILogger<HomeController> logger, ICategoryRepository categoryRepository, ICustomarRepository customarRepository)
+        private readonly IunitOfWork unitOfWork;
+        //private readonly ICustomarRepository _customarRepository;
+        public HomeController(ILogger<HomeController> logger,  IunitOfWork unitOfWork)
         {
             _logger = logger;
-
-            _categoryRepository = categoryRepository;
-            _customarRepository = customarRepository;
+            this.unitOfWork = unitOfWork;
         }
 
         public IActionResult Index(HomeViewModels model)
         {
 
-            var categories =_categoryRepository.GetAll().AsQueryable().Include(e=>e.Products).ToList();
+            var categories = unitOfWork.CategoryRepository.Get(includeProperties: e => e.Products).ToList();
             model.Categories = categories;  
             return View(model);
         }
@@ -35,8 +34,8 @@ namespace Demo.Controllers
         {
             if (ModelState.IsValid)
             {
-                var customer = _customarRepository.GetAll()
-                    .FirstOrDefault(e => e.Phone == model.Phone && e.Email == model.Email);
+                var customer = unitOfWork.CustomarRepository.GetOne(e => e.Phone == model.Phone && e.Email == model.Email);
+                   
 
                 if (customer == null)
                 {
@@ -84,11 +83,11 @@ namespace Demo.Controllers
             }
             else
             {
-                var checkUser = _customarRepository.GetAll()
-                    .Where(e => e.Email == model.Customar.Email || e.Phone == model.Customar.Phone).FirstOrDefault();
+                var checkUser = unitOfWork.CustomarRepository.GetOne(e => e.Email == model.Customar.Email || e.Phone == model.Customar.Phone);
+                    
                 if (checkUser == null)
                 {
-                   _customarRepository.AddFromViewModel(model);
+                   unitOfWork.CustomarRepository.AddFromViewModel(model);
                     if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                     {
                         return Json(new { isvalid = true });

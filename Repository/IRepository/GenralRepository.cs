@@ -1,6 +1,8 @@
 ﻿using Demo.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using System.Linq.Expressions;
 
 namespace Demo.Repository.IRepository
 {
@@ -18,15 +20,26 @@ namespace Demo.Repository.IRepository
         {
             context.SaveChanges();
         }
-        public IEnumerable<T> GetAll()
+        public IEnumerable<T> Get(Expression<Func<T, bool>>? expression = null, params Expression<Func<T, object>>[] includeProperties)
         {
-           return dbSet.AsQueryable();
+            IQueryable<T> query = dbSet;
+
+            if (expression != null)
+            {
+                query = query.Where(expression);
+            }
+
+            foreach (var includeProperty in includeProperties)
+            {
+                query = query.Include(includeProperty);
+            }
+
+            return query.ToList();
         }
 
-        public T? GetById(int id)
+        public T? GetOne(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includeProperties)
         {
-            return dbSet.Find(id);
-            
+            return Get(expression, includeProperties).FirstOrDefault();
         }
         public void Create(T entity)
         {

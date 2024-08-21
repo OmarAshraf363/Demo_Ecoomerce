@@ -1,4 +1,5 @@
 ﻿using Demo.Data;
+using Demo.Repository.IRepository;
 using Demo.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,11 +7,13 @@ namespace Demo.Controllers
 {
     public class AccountController : Controller
     {
-        AppDbContext context;
+        private readonly IunitOfWork unitOfWork;
 
-        public AccountController(AppDbContext context)
+
+        public AccountController(IunitOfWork unitOfWork)
         {
-            this.context = context;
+
+            this.unitOfWork = unitOfWork;
         }
 
         //public IActionResult Login(HomeViewModels model)

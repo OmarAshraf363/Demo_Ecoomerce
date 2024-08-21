@@ -1,5 +1,6 @@
 ﻿using Demo.Data;
 using Demo.Models;
+using Demo.Repository.IRepository;
 using Demo.Repository.ModelsRepository.OrderItemRepository;
 using Demo.Repository.ModelsRepository.OrderModel;
 using Demo.ViewModels;
@@ -11,21 +12,20 @@ namespace Demo.Controllers
     public class OrderController : Controller
     {
         
-        private readonly IOrderItemRepository _orderItemRepository;
-        private readonly IOrderRepository _orderRepository;
+        private readonly IunitOfWork unitOfWork;
 
-        public OrderController(IOrderItemRepository orderItemRepository, IOrderRepository orderRepository)
+        public OrderController( IunitOfWork unitOfWork)
         {
 
-            _orderItemRepository = orderItemRepository;
-            _orderRepository = orderRepository;
+           
+            this.unitOfWork = unitOfWork;
         }
 
         public IActionResult Index()
         {
             int? userId = HttpContext.Session.GetInt32("UserID");
-            var order=_orderRepository.GetUserOrder(userId);//get user order
-            var orderItems = _orderItemRepository.GetOrderItemsInSpacifcCart(order.OrderId);//get all order items that equal ioorder.orderid
+            var order=unitOfWork.OrderRepository.GetUserOrder(userId);//get user order
+            var orderItems = unitOfWork.OrderItemRepository.GetOrderItemsInSpacifcCart(order.OrderId);//get all order items that equal ioorder.orderid
             return View(orderItems);
         }
         [HttpPost]
@@ -37,20 +37,20 @@ namespace Demo.Controllers
                 q = 1;
             }
             int? userId = HttpContext.Session.GetInt32("UserID");
-           var order= _orderRepository.CreateFirstOrderIfNotExisted(userId);
-            var orderitems = _orderItemRepository.GetAll().
+           var order= unitOfWork.OrderRepository.CreateFirstOrderIfNotExisted(userId);
+            var orderitems = unitOfWork.OrderItemRepository.Get().
                 Where(e => e.ProductId == id && e.OrderId == order.OrderId)
                 .SingleOrDefault();
 
-          _orderItemRepository.createOrderItemsIfNotExisted(id,order.OrderId,q);
-            _orderItemRepository.Save();
+          unitOfWork.OrderItemRepository.createOrderItemsIfNotExisted(id,order.OrderId,q);
+            unitOfWork.OrderItemRepository.Save();
             TempData["success"] = "Successfully Added To Cart";
 
             return RedirectToAction("Index","Home");
         }
         public IActionResult Delete(int id)
         {
-           _orderItemRepository.spacifcDelete(id);
+           unitOfWork.OrderItemRepository.spacifcDelete(id);
             
             TempData["success"] = "Product is Deleted Successfully";
             return RedirectToAction("Index");

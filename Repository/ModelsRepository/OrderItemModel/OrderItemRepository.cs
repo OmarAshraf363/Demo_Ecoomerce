@@ -16,7 +16,7 @@ namespace Demo.Repository.ModelsRepository.OrderItemRepository
 
        public IEnumerable<CartViewModel> GetOrderItemsInSpacifcCart(int? orderId)
         {
-            var orderItems = GetAll().AsQueryable().Include(e => e.Product).Where(e => e.OrderId == orderId)
+            var orderItems = Get(e=>e.OrderId==orderId,e=>e.Product)
              .Select(e => new CartViewModel
              {
                  ProductId = e.ProductId,
@@ -31,9 +31,8 @@ namespace Demo.Repository.ModelsRepository.OrderItemRepository
         }
        public void createOrderItemsIfNotExisted(int productId, int orderId,int quantity)
         {
-            var orderitems = GetAll().
-                Where(e => e.ProductId == productId && e.OrderId == orderId)
-                .SingleOrDefault();
+            var orderitems = GetOne(e => e.ProductId == productId && e.OrderId == orderId);
+              
             if (orderitems == null)
             {
                 orderitems = new OrderItem()

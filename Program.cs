@@ -1,4 +1,5 @@
 using Demo.Data;
+using Demo.Repository.IRepository;
 using Demo.Repository.ModelsRepository.BrandModel;
 using Demo.Repository.ModelsRepository.CategoryModel;
 using Demo.Repository.ModelsRepository.CustomarModel;
@@ -22,15 +23,7 @@ namespace Demo
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-            builder.Services.AddScoped<IBrandRepository, BrandRepository>();
-            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-            builder.Services.AddScoped<ICustomarRepository, CustomarRepository>();
-            builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
-            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-            builder.Services.AddScoped<IProductRepository, ProductRepository>();
-            builder.Services.AddScoped<IStaffRepository, StaffRepository>();
-            builder.Services.AddScoped<IStockRepository, StockRepository>();
-            builder.Services.AddScoped<IStoreRepository, StoreRepository>();
+            builder.Services.AddScoped<IunitOfWork,unitOfWork>();
             builder.Services.AddSession();
 
             var app = builder.Build();

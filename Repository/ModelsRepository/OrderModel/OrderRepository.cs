@@ -12,7 +12,7 @@ namespace Demo.Repository.ModelsRepository.OrderModel
 
         public Order? GetUserOrder(int? userId)
         {
-           return GetAll().Where(e => e.CustomerId == userId && e.OrderStatus == 0).SingleOrDefault();
+           return GetOne(e=>e.CustomerId==userId && e.OrderStatus==0);
         }
         public Order CreateFirstOrderIfNotExisted(int? userId)
         {

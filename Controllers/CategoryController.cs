@@ -1,5 +1,6 @@
 ﻿using Demo.Data;
 using Demo.Models;
+using Demo.Repository.IRepository;
 using Demo.Repository.ModelsRepository.CategoryModel;
 using Demo.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -10,17 +11,18 @@ namespace Demo.Controllers
     public class CategoryController : Controller
     {
 
-       private readonly ICategoryRepository _categoryRepository;
+        private readonly IunitOfWork unitOfWork;
 
-        public CategoryController(ICategoryRepository categoryRepository)
+
+        public CategoryController(IunitOfWork unitOfWork)
         {
-           
-            _categoryRepository = categoryRepository;
+
+            this.unitOfWork = unitOfWork;
         }
 
         public IActionResult Index()
         {
-            var categories= _categoryRepository.GetAll().AsQueryable().Include(e=>e.Products).ToList();
+            var categories= unitOfWork.CategoryRepository.Get(includeProperties:e=>e.Products).ToList();
             CategoryViewModels models = new CategoryViewModels()
             {
                 Categories = categories
@@ -35,7 +37,7 @@ namespace Demo.Controllers
               
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
-                    var category=_categoryRepository.GetAll().Where(e=>e.CategoryName == model.CategoryName).SingleOrDefault();
+                    var category=unitOfWork.CategoryRepository.GetOne(expression: e => e.CategoryName == model.CategoryName);
                     if(category != null)
                     {
                         ModelState.AddModelError("", "Existed");
@@ -43,7 +45,7 @@ namespace Demo.Controllers
                     }
                     else
                     {
-                        _categoryRepository.AddFromViewModel(model);
+                        unitOfWork.CategoryRepository.AddFromViewModel(model);
                         return Json(new{isvalid = true});
                     }
                 }
@@ -51,7 +53,7 @@ namespace Demo.Controllers
             }
             else
             {
-                var categories = _categoryRepository.GetAll().AsQueryable().Include(e => e.Products).ToList();
+                var categories = unitOfWork.CategoryRepository.Get(includeProperties: e => e.Products).ToList();
                 model.Categories = categories;
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
@@ -68,9 +70,9 @@ namespace Demo.Controllers
             {
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
-                    var category=_categoryRepository.GetById(model.CategoryId);
+                    var category=unitOfWork.CategoryRepository.GetOne(e=>e.CategoryId==model.CategoryId);
 
-                    var Existed=_categoryRepository.GetAll().Where(e=>e.CategoryName == model.CategoryName).SingleOrDefault();
+                    var Existed=unitOfWork.CategoryRepository.GetOne(expression: e => e.CategoryName == model.CategoryName);
                     if (Existed != null)
                     {
                         ModelState.AddModelError("", "Existed");
@@ -79,7 +81,7 @@ namespace Demo.Controllers
                     else
                     {
                         category.CategoryName=model.CategoryName;
-                        _categoryRepository.Edit(category);
+                        unitOfWork.CategoryRepository.Edit(category);
                     return Json(new { isvalid = true });
                     }
                 }
@@ -88,7 +90,7 @@ namespace Demo.Controllers
             else
             {
 
-                var categories = _categoryRepository.GetAll().AsQueryable().Include(e => e.Products).ToList();
+                var categories = unitOfWork.CategoryRepository.Get(includeProperties: e => e.Products).ToList();
                 model.Categories = categories;
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
@@ -100,7 +102,7 @@ namespace Demo.Controllers
         }
         public IActionResult Delete(int id) 
         {
-            _categoryRepository.Delete(id);
+            unitOfWork.CategoryRepository.Delete(id);
             return RedirectToAction("Index");
         
         }

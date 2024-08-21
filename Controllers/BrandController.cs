@@ -1,5 +1,6 @@
 ﻿using Demo.Data;
 using Demo.Models;
+using Demo.Repository.IRepository;
 using Demo.Repository.ModelsRepository.BrandModel;
 using Demo.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -9,16 +10,19 @@ namespace Demo.Controllers
 {
     public class BrandController : Controller
     {
-        private readonly IBrandRepository brandRepository;
+        private readonly IunitOfWork unitOfWork;
 
-        public BrandController(IBrandRepository brandRepository)
+
+        public BrandController(IunitOfWork unitOfWork)
         {
-            this.brandRepository = brandRepository;
+
+            this.unitOfWork = unitOfWork;
         }
 
         public IActionResult Index()
         {
-            var brands = brandRepository.GetAll().AsQueryable().Include(e => e.Products).ToList();
+            //var brands = unitOfWork.BrandRepository.GetAll().AsQueryable().Include(e => e.Products).ToList();
+            var brands = unitOfWork.BrandRepository.Get(includeProperties: e => e.Products).ToList();
             BrandViewModels model = new BrandViewModels()
             {
                 Brands = brands
@@ -32,7 +36,7 @@ namespace Demo.Controllers
             {
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
-                    var brands = brandRepository.GetAll().Where(e => e.BrandName == model.BrandName).SingleOrDefault();
+                    var brands = unitOfWork.BrandRepository.GetOne(expression:e=>e.BrandName==model.BrandName);
                     if (brands != null)
                     {
                         ModelState.AddModelError("", "Existed");
@@ -40,7 +44,7 @@ namespace Demo.Controllers
                     }
                     else
                     {
-                        brandRepository.AddFromViewModel(model);
+                        unitOfWork.BrandRepository.AddFromViewModel(model);
                         return Json(new { isvalid = true });
                     }
                 }
@@ -58,7 +62,7 @@ namespace Demo.Controllers
         }
         public IActionResult Delete(int id)
         {
-            brandRepository.Delete(id);
+            unitOfWork.BrandRepository.Delete(id);
             return RedirectToAction("Index");
         }
         [HttpPost]
@@ -66,16 +70,16 @@ namespace Demo.Controllers
         {
             if (ModelState.IsValid)
             {
-                var brand = brandRepository.GetById(model.BrandId);
+                var brand = unitOfWork.BrandRepository.GetOne(e=>e.BrandId==model.BrandId);
                 if (brand != null)
                 {
                     if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                     {
-                        var brands = brandRepository.GetAll().Where(e => e.BrandName == model.BrandName).SingleOrDefault();
+                        var brands = unitOfWork.BrandRepository.GetOne(expression: e => e.BrandName == model.BrandName);
                         if (brands == null)
                         {
                             brand.BrandName = model.BrandName;
-                            brandRepository.Edit(brand);
+                            unitOfWork.BrandRepository.Edit(brand);
                             return Json(new { isvalid = true });
                         }
                         else
