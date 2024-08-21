@@ -1,19 +1,21 @@
 ﻿using Demo.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<IdentityUser>
     {
         public AppDbContext(DbContextOptions options) : base(options)
         {
         }
-
+        public DbSet<AppUser> appUsers { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
 
         public virtual DbSet<Category> Categories { get; set; }
 
-        public virtual DbSet<Customer> Customers { get; set; }
+        //public virtual DbSet<Customer> Customers { get; set; }
 
         public virtual DbSet<Order> Orders { get; set; }
 
@@ -21,7 +23,7 @@ namespace Demo.Data
 
         public virtual DbSet<Product> Products { get; set; }
 
-        public virtual DbSet<Staff> Staffs { get; set; }
+        //public virtual DbSet<Staff> Staffs { get; set; }
 
         public virtual DbSet<Stock> Stocks { get; set; }
 
@@ -50,14 +52,14 @@ namespace Demo.Data
             {
                 entity.HasKey(e => e.OrderId);
 
-                entity.HasOne(e => e.Customer)
+                entity.HasOne(e => e.AppUser)
                       .WithMany(c => c.Orders)
-                      .HasForeignKey(e => e.CustomerId)
+                      .HasForeignKey(e => e.AppUserId)
                       .OnDelete(DeleteBehavior.NoAction);
 
-                entity.HasOne(e => e.Staff)
+                entity.HasOne(e => e.AppUser)
                       .WithMany(s => s.Orders)
-                      .HasForeignKey(e => e.StaffId)
+                      .HasForeignKey(e => e.AppUserStaffId)
                       .OnDelete(DeleteBehavior.NoAction);
 
                 entity.HasOne(e => e.Store)

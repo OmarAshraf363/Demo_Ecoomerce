@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Demo.ViewModels.CartViewModel>
+@{
+    decimal? totalResult=0;
+}
+@if (TempData["success"] != null)
+{
+    <div id="successmsg">
+        @TempData["success"]
+    </div>
+}
+<div class="container">
+    <h2>Your Cart</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Handel</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.ProductName</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.ListPrice</td>
+                <td><a href="/Order/Delete/@item.ProductId">Delete</a></td>
+                    <td>@item.TotalPrice</td>
+                </tr>
+                
+                    totalResult += item.TotalPrice;
+               
+
+            }
+            
+           
+            <tr>
+                <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                <td><strong>@totalResult</strong></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="text-end">
+        <a href="/Order/Checkout" class="btn btn-primary">Proceed to Checkout</a>
+    </div>
+</div>

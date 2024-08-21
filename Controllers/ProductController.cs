@@ -1,4 +1,5 @@
-﻿using Demo.Models;
+﻿using Azure.Core;
+using Demo.Models;
 using Demo.Repository.IRepository;
 using Demo.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +12,10 @@ namespace Demo.Controllers
 
         private readonly IunitOfWork unitOfWork;
 
-        public ProductController( IunitOfWork unitOfWork)
+        public ProductController(IunitOfWork unitOfWork)
         {
 
-           
+
             this.unitOfWork = unitOfWork;
         }
 
@@ -24,20 +25,20 @@ namespace Demo.Controllers
             return View(unitOfWork.ProductRepository.putAllInfoInProductViewModel(model));//check ProductsView Models
         }
 
-        
+
         public IActionResult MobCat(int id)
         {
             return View(unitOfWork.ProductRepository.getAllProductsWithspacifsCategory(id)); //check Categoet Add to
         }
-        public IActionResult ProductsCategory( int id)
+        public IActionResult ProductsCategory(int id)
         {
             return View(unitOfWork.ProductRepository.getAllProductsWithspacifsCategory(id));
         }
         public IActionResult Details(int id, ProductDetails model)
         {
-            var item =unitOfWork.ProductRepository.GetOne(e=>e.ProductId==id,e=>e.Brand);
+            var item = unitOfWork.ProductRepository.GetOne(e => e.ProductId == id, e => e.Brand);
             model.Product = item;
-            var Q =unitOfWork.StockRepository.GetOne(e=>e.ProductId==id);
+            var Q = unitOfWork.StockRepository.GetOne(e => e.ProductId == id);
             if (Q != null)
             {
                 model.Quantity = Q.Quantity;
@@ -46,29 +47,35 @@ namespace Demo.Controllers
             return View(model);
         }
 
-
+        [HttpGet]
+        public IActionResult Create()
+        {
+            var model = new ProductsViewModels
+            {
+                Categories = unitOfWork.CategoryRepository.Get().ToList(),
+                Brands = unitOfWork.BrandRepository.Get().ToList()
+            };
+            return PartialView("_AddPartialView", model);
+        }
         [HttpPost]
         public IActionResult Create(ProductsViewModels model)
         {
             if (ModelState.IsValid)
             {
-              var productId= unitOfWork.ProductRepository.createFromViewModel(model);//create and return Id to complete anotherMethod
-                if (Request.Headers["X-Requested-With"]== "XMLHttpRequest")
-                {
-                    return Json(new {isvalid=true});
-                }
-                
-                return RedirectToAction("AddProductToStock", new {id= productId });
+                var productId = unitOfWork.ProductRepository.createFromViewModel(model);//create and return Id to complete anotherMethod
+
+
+                var result = Check.Methods.CheckValidation(ModelState, Request, true);
+                if (result != null) { return result; }
+
+                return RedirectToAction("AddProductToStock", new { id = productId });
             }
             else
             {
                 unitOfWork.ProductRepository.putAllInfoInProductViewModel(model);
-                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-                {
-                    var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-                    return Json(new { isvalid = false , errors= errors.LastOrDefault() });
-                }
-                return View("Index",model);
+                var result = Check.Methods.CheckValidation(ModelState, Request, false);
+                if (result != null) { return result; }
+                return View("Index", model);
             }
         }
         public IActionResult Delete(int id)
@@ -80,49 +87,43 @@ namespace Demo.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            
-            return View();
+            var product=unitOfWork.ProductRepository.GetOne(e=>e.ProductId==id);
+            ViewBag.Categories = unitOfWork.CategoryRepository.Get().ToList();
+            ViewBag.Brands = unitOfWork.BrandRepository.Get().ToList();
+            return PartialView("_EditPartialView",product);
         }
 
-
-
-
-
-        //public IActionResult Edit(int id)
-        //{
-        //    var product = unitOfWork.ProductRepository.GetAll().AsQueryable().Include(e=>e.Category).Include(e=>e.Brand).SingleOrDefault(e=>e.ProductId==id);
-        //    ViewBag.brands = unitOfWork.BrandRepository.GetAll();
-        //    ViewBag.cats = unitOfWork.CategoryRepository.GetAll();
-        //    return View(product);
-           
-        //}
-        //[HttpPost]
-        //public IActionResult Edit(ProductsViewModels model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        unitOfWork.ProductRepository.editFromViewModel(model);
-        //         return RedirectToAction("Index"); 
-        //    }
-        //    else
-        //    {
-        //        return View(model);
-        //    }
-        //}
+        [HttpPost]
+        public IActionResult Edit(ProductsViewModels model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result=Check.Methods.CheckValidation(ModelState,Request, true);
+                if(result != null) { return result; }
+                unitOfWork.ProductRepository.editFromViewModel(model);
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var result = Check.Methods.CheckValidation(ModelState, Request, false);
+                if (result != null) { return result; }
+                return View(model);
+            }
+        }
         public IActionResult AddProductToStock(int id)
         {
- 
+
             Stock stock = new Stock()
             {
                 StoreId = 1,
                 ProductId = id,
-                Quantity=5
-                
+                Quantity = 5
+
             };
-           unitOfWork.StockRepository.Create(stock);
+            unitOfWork.StockRepository.Create(stock);
             return RedirectToAction("Index");
         }
-        
+
 
 
 

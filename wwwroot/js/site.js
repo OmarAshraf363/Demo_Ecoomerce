@@ -9,10 +9,9 @@ function allConfirm(id) {
         method: form.method,
         body: new FormData(form),
         headers: { 'X-Requested-With': 'XMLHttpRequest' }
-    }).then(respone => respone.json())
+    }).then(response => response.json())
         .then(data => {
             if (data.isvalid) {
-
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
@@ -22,15 +21,22 @@ function allConfirm(id) {
                 }).then(() => {
                     form.submit();
                 });
-            } else if (!data.isvalid && data.type == "all") {
-                let span = form.querySelector(".spn");
-                span.innerHTML = data.errors
-            } else if (!data.isvalid && data.type == "one") {
-                let span = form.querySelector(".spn");
-                span.innerHTML = data.errors
             } else {
-                let span = form.querySelector(".spn");
-                span.innerHTML = data.errors
+
+                form.querySelectorAll("span.text-danger").forEach(span => {
+                    span.innerHTML = "";
+                });
+
+
+                for (let fieldName in data.nameErrors) {
+                    let field = document.querySelector(`#${id} #${fieldName}`);
+                    if (field) {
+                        let span = field.nextElementSibling;
+                        if (span && span.classList.contains('text-danger')) {
+                            span.innerHTML = data.nameErrors[fieldName].join("<br>");
+                        }
+                    }
+                }
             }
         });
 }
@@ -128,3 +134,39 @@ $(document).ready(function () {
         $("#successmsg").fadeOut("slow");
     }, 4000);
 });
+
+
+
+function openModal(id, controllerName, modalname, actionName) {
+    let url;
+    if (id === null || id === undefined) {
+        url = `/${controllerName}/${actionName}`;
+    } else {
+        url = `/${controllerName}/${actionName}/${id}`;
+    }
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function (data) {
+            $(`#${modalname} .modal-content`).html(data);
+            $(`#${modalname}`).modal('show');
+        },
+        error: function (xhr, status, error) {
+            console.log(error);
+        }
+    });
+}
+//function openCreatModal(controllerName, modalname, actionName) {
+//    $.ajax({
+//        url: `/${controllerName}/${actionName}`,
+//        type: 'GET',
+//        success: function (data) {
+//            $(`#${modalname} .modal-content`).html(data);
+//            $(`#${modalname}`).modal('show');
+//        },
+//        error: function (xhr, status, error) {
+//            console.log(error);
+//        }
+//    });
+//}
+

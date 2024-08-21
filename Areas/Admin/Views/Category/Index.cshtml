@@ -1,0 +1,105 @@
+﻿@model Demo.ViewModels.CategoryViewModels
+@{
+    int index = 0;
+}
+<div style="padding-right:8rem; border-radius:2mm; background-color:#eee;" class="container  mt-3  d-flex  justify-content-between  align-items-center">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Create New Category
+    </button>
+    <h2>Categories</h2>
+    <span> Contains : @Model.Categories.Count</span>
+</div>
+<div class="container">
+    <table class="table table-dark table-hover ">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Products</th>
+                <th scope="col">Handel</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Categories)
+            {
+
+
+                <tr>
+                    <th scope="row">@(index += 1)</th>
+                    <td>@item.CategoryName (@item.Products.Count)</td>
+                    <td class="ps-3"><a class="btn btn-outline-primary" href="/product/mobcat/@item.CategoryId">Get</a> </td>
+                    <td>
+                        <button class=" btn btn-outline-warning" onclick="Edit('@item.CategoryName',@item.CategoryId,'editModal')">Edit</button>
+
+                        <a class=" btn btn-outline-danger" onclick="showAlert(@item.CategoryId,'Category')">Delete</a>
+
+
+                    </td>
+
+
+                </tr>
+
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+<!-- Modal To Add Anew Caategory -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="catform" method="post" action="/Category/Create">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Create New Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label class="form-label" asp-for="CategoryName">Category Name</label>
+                        <input class="form-control" asp-for="CategoryName" />
+                        
+                    </div>
+                    <span class="spn text-danger"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" onclick="allConfirm('catform')" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- End Modal To Add Anew Caategory -->
+<!--modal to Edit-->
+<div class="modal fade " id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="EditForm" method="post" action="/Category/Edit">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit This Category</h5>
+                    <button type="button" onclick="test('editModal')" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="CategoryName">Category Name</label>
+                        <input class="form-control" id="editCategoryName" name="CategoryName"  />
+                        <input class="form-control" type="hidden" id="editCategoryId" name="CategoryId" />
+                        
+                    </div>
+                    <span class="spn text-danger"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="test('editModal')" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" onclick="allConfirm('EditForm')" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--End Modal Edit-->
+<script src="~/js/site.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

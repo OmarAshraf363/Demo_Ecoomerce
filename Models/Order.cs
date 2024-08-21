@@ -7,7 +7,7 @@ namespace Demo.Models
     {
         public int OrderId { get; set; }
 
-        public int? CustomerId { get; set; }
+        public int? StoreId { get; set; }
 
         public byte OrderStatus { get; set; }
 
@@ -17,17 +17,17 @@ namespace Demo.Models
 
         public DateOnly? ShippedDate { get; set; }
 
-        public int? StoreId { get; set; }
+        public string? AppUserStaffId { get; set; }
 
-        public int? StaffId { get; set; }
+        public string? AppUserId { get; set; }
 
-        [ForeignKey("CustomerId")]
-        public virtual Customer? Customer { get; set; }
+        [ForeignKey("AppUserId")]
+        public virtual AppUser? AppUser { get; set; }
 
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
-        [ForeignKey("StaffId")]
-        public virtual Staff Staff { get; set; } = null!;
+        [ForeignKey("AppUserStaffId")]
+        public virtual AppUser AppUserStaff { get; set; } = null!;
 
         [ForeignKey("StoreId")]
         public virtual Store Store { get; set; } = null!;

@@ -1,0 +1,130 @@
+﻿
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Demo</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Demo.styles.css" asp-append-version="true" />
+    <link href="~/css/all.min.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div style="background-color:black;" class="container-fluid  d-flex justify-content-center align-items-center">
+        <p style="color:#eee;" class="m-2">Be Carfull , All Designed To Be Comfort To You !! </p>
+    </div>
+    <header class="container-fluid d-flex justify-content-between align-items-center bg-white border-bottom box-shadow">
+        <nav class="navbar d-flex justify-content-between align-items-center navbar-expand-sm navbar-toggleable-sm navbar-light  ">
+            <div class="container-fluid">
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        @if (Context.Session.GetInt32("UserID") != null)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Shop</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Category</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Products</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Brand" asp-action="Index">Brands</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Shop</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Gifts</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Contact Us</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">About</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+        </nav>
+        <div>
+            <h2>Easly</h2>
+        </div>
+        <nav class="navbar d-flex justify-content-between align-items-center navbar-expand-sm navbar-toggleable-sm navbar-light  ">
+            <div class="container-fluid">
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+
+                    <ul class="navbar-nav flex-grow-1 align-items-center">
+                        @if (Context.Session.GetInt32("UserID") == null)
+                        {
+                            <li class="nav-item">
+                                <a class=" btn btn-outline-dark me-3 ms-3 pe-3 ps-3" data-bs-toggle="modal" data-bs-target="#Register">Register  </a>
+                            </li>
+                            <li class="nav-item">
+                                <button class=" btn btn-outline-dark me-3 ms-3 pe-3 ps-3" data-bs-toggle="modal" data-bs-target="#Login">Sign In</button>
+                            </li>
+                            <li class="nav-item">
+                                <a style="font-size:20px;" class=" me-3 ms-3 pe-3 ps-3 " asp-area="" asp-controller="Order" asp-action="Index"><i style="color:black" class="fa-solid fa-cart-shopping"></i> </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class=" btn btn-outline-danger me-3 ms-3 pe-3 ps-3" asp-area="" asp-controller="Account" asp-action="Logout">Logout </a>
+                            </li>
+                            <li class="nav-item">
+                                <a style="font-size:20px;" class=" me-3 ms-3 pe-3 ps-3 " asp-area="" asp-controller="Order" asp-action="Index"><i style="color:black" class="fa-solid fa-cart-shopping"></i> </a>
+                            </li>
+
+                        }
+                    </ul>
+                </div>
+            </div>
+
+        </nav>
+
+
+
+    </header>
+
+    <div class="container-fluid">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+    @*     <footer class="container-fluid position-sticky top-100   d-flex justify-content-between align-items-center">
+    <div> <h5>Easly || 2024</h5></div>
+    <div> <h6>All Reight Reversed |By Easly Team 2024  </h6></div>
+
+    </footer> *@
+
+
+
+
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
