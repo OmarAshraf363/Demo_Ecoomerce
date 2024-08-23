@@ -1,6 +1,6 @@
 ﻿@* AddPartialvirw*@
 @model Demo.ViewModels.ProductsViewModels
-<form id="formProduct" method="post" action="/Product/Create">
+<form id="formProduct" method="post" action="/Admin/Product/Create">
     <div class="modal-header">
         <h5 class="modal-title" id="AddProductLabel">Create New Product</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -13,6 +13,33 @@
 
 
         </div>
+
+
+        <div class="form-group mb-3">
+            <label class="form-label" asp-for="Quantity">Quantity</label>
+            <input class="form-control" asp-for="Quantity" />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+
+
+        </div>
+
+
+
+        <div class="form-group mb-3">
+            <label class="form-label" asp-for="StoreId">Stores Name</label>
+            <select asp-for="StoreId" class="form-select">
+                @foreach (var store in Model.Stores)
+                {
+                    <option value="@store.StoreId">@store.StoreName</option>
+                }
+            </select>
+            <span asp-validation-for="StoreId" class="text-danger"></span>
+
+        </div>
+
+
+
+
         <div class="form-group mb-3">
             <label class="form-label" asp-for="CategoryId">Category Name</label>
             <select asp-for="CategoryId" class="form-select">
@@ -53,6 +80,8 @@
             <span asp-validation-for="ListPrice" class="text-danger"></span>
 
         </div>
+    
+        
         <div class="form-group mb-3">
             <label class="form-label" asp-for="ModelYear">Year </label>
             <input class="form-control" asp-for="ModelYear" />

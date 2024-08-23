@@ -84,7 +84,7 @@ function showAlert(categoryId, controler) {
                 timer: 1500
             }).then(() => {
 
-                window.location.href = `/${controler}/Delete/${categoryId}`;
+                window.location.href = `/Admin/${controler}/Delete/${categoryId}`;
 
             });
         }
@@ -137,12 +137,12 @@ $(document).ready(function () {
 
 
 
-function openModal(id, controllerName, modalname, actionName) {
+function openModal(id1, controllerName, modalname, actionName) {
     let url;
-    if (id === null || id === undefined) {
-        url = `/${controllerName}/${actionName}`;
+    if (id1 === null || id1 === undefined) {
+        url = `/Admin/${controllerName}/${actionName}`;
     } else {
-        url = `/${controllerName}/${actionName}/${id}`;
+        url = `/Admin/${controllerName}/${actionName}/${id}`;
     }
     $.ajax({
         url: url,
@@ -156,17 +156,29 @@ function openModal(id, controllerName, modalname, actionName) {
         }
     });
 }
-//function openCreatModal(controllerName, modalname, actionName) {
-//    $.ajax({
-//        url: `/${controllerName}/${actionName}`,
-//        type: 'GET',
-//        success: function (data) {
-//            $(`#${modalname} .modal-content`).html(data);
-//            $(`#${modalname}`).modal('show');
-//        },
-//        error: function (xhr, status, error) {
-//            console.log(error);
-//        }
-//    });
-//}
+
+function openModalStock(id1, id2, controllerName, modalname, actionName) {
+    let url;
+
+    // Check if storeId or productId are null or undefined
+    if (id1 === null || id1 === undefined || id2 === null || id2 === undefined) {
+        url = `/Admin/${controllerName}/${actionName}`;
+    } else {
+        // Include both storeId and productId in the URL for the edit action
+        url = `/Admin/${controllerName}/${actionName}?storeId=${id1}&productId=${id2}`;
+    }
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function (data) {
+            $(`#${modalname} .modal-content`).html(data);
+            $(`#${modalname}`).modal('show');
+        },
+        error: function (xhr, status, error) {
+            console.log(error);
+        }
+    });
+}
+
 

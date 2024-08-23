@@ -28,6 +28,7 @@ namespace Demo.Repository.ModelsRepository.ProductModel
                 Rate = model.Rate,
 
 
+
             };
             Create(product);
             return product.ProductId;
@@ -78,6 +79,17 @@ namespace Demo.Repository.ModelsRepository.ProductModel
             
             return model;
             
+        }
+
+        public ProductsViewModels PrepareProductViewModel(Product product = null)
+        {
+            var model = new ProductsViewModels
+            {
+                Product = product ?? new Product(),
+                Categories = context.Categories.ToList(),
+                Brands =context.Brands.ToList()
+            };
+            return model;
         }
     }
 }

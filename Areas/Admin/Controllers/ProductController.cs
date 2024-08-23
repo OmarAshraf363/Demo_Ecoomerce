@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Controllers
 {
+    [Area("Admin")]
     public class ProductController : Controller
     {
 
@@ -53,7 +54,8 @@ namespace Demo.Controllers
             var model = new ProductsViewModels
             {
                 Categories = unitOfWork.CategoryRepository.Get().ToList(),
-                Brands = unitOfWork.BrandRepository.Get().ToList()
+                Brands = unitOfWork.BrandRepository.Get().ToList(),
+                Stores=unitOfWork.StoreRepository.Get().ToList(),
             };
             return PartialView("_AddPartialView", model);
         }
@@ -62,13 +64,13 @@ namespace Demo.Controllers
         {
             if (ModelState.IsValid)
             {
+                var result = Check.Methods.CheckValidation(ModelState, Request, true);
+                if (result != null) { return result; }
                 var productId = unitOfWork.ProductRepository.createFromViewModel(model);//create and return Id to complete anotherMethod
 
 
-                var result = Check.Methods.CheckValidation(ModelState, Request, true);
-                if (result != null) { return result; }
 
-                return RedirectToAction("AddProductToStock", new { id = productId });
+                return RedirectToAction("AddProductToStock", new { id = productId , quantity=model.Quantity , storeId = model.StoreId});
             }
             else
             {
@@ -87,10 +89,11 @@ namespace Demo.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var product=unitOfWork.ProductRepository.GetOne(e=>e.ProductId==id);
+            var product = unitOfWork.ProductRepository.GetOne(e => e.ProductId == id);
             ViewBag.Categories = unitOfWork.CategoryRepository.Get().ToList();
             ViewBag.Brands = unitOfWork.BrandRepository.Get().ToList();
-            return PartialView("_EditPartialView",product);
+
+            return PartialView("_EditPartialView", product);
         }
 
         [HttpPost]
@@ -98,8 +101,8 @@ namespace Demo.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result=Check.Methods.CheckValidation(ModelState,Request, true);
-                if(result != null) { return result; }
+                var result = Check.Methods.CheckValidation(ModelState, Request, true);
+                if (result != null) { return result; }
                 unitOfWork.ProductRepository.editFromViewModel(model);
                 return RedirectToAction("Index");
             }
@@ -110,14 +113,14 @@ namespace Demo.Controllers
                 return View(model);
             }
         }
-        public IActionResult AddProductToStock(int id)
+        public IActionResult AddProductToStock(int id,int quantity,int storeId)
         {
 
-            Stock stock = new Stock()
+            var stock = new Stock()
             {
-                StoreId = 1,
+                StoreId =storeId ,
                 ProductId = id,
-                Quantity = 5
+                Quantity = quantity
 
             };
             unitOfWork.StockRepository.Create(stock);

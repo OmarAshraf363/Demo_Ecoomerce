@@ -3,20 +3,23 @@ using Demo.Models;
 using Demo.Repository.IRepository;
 using Demo.Repository.ModelsRepository.BrandModel;
 using Demo.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Demo.Controllers
+namespace Demo.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class BrandController : Controller
     {
         private readonly IunitOfWork unitOfWork;
+        private readonly RoleManager<IdentityRole> role ;
 
-
-        public BrandController(IunitOfWork unitOfWork)
+        public BrandController(IunitOfWork unitOfWork, RoleManager<IdentityRole> role)
         {
 
             this.unitOfWork = unitOfWork;
+            this.role = role;
         }
 
         public IActionResult Index()
@@ -36,7 +39,7 @@ namespace Demo.Controllers
             {
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
-                    var brands = unitOfWork.BrandRepository.GetOne(expression:e=>e.BrandName==model.BrandName);
+                    var brands = unitOfWork.BrandRepository.GetOne(expression: e => e.BrandName == model.BrandName);
                     if (brands != null)
                     {
                         ModelState.AddModelError("", "Existed");
@@ -55,7 +58,7 @@ namespace Demo.Controllers
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
                     var errors = ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage);
-                    return Json(new { isvalid = false, errors = errors, type = "one" });
+                    return Json(new { isvalid = false, errors, type = "one" });
                 }
                 return View("Index", model);
             }
@@ -70,7 +73,7 @@ namespace Demo.Controllers
         {
             if (ModelState.IsValid)
             {
-                var brand = unitOfWork.BrandRepository.GetOne(e=>e.BrandId==model.BrandId);
+                var brand = unitOfWork.BrandRepository.GetOne(e => e.BrandId == model.BrandId);
                 if (brand != null)
                 {
                     if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
@@ -101,12 +104,18 @@ namespace Demo.Controllers
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
                     var errors = ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage);
-                    return Json(new { isvalid = false, errors = errors, typr = "one" });
+                    return Json(new { isvalid = false, errors, typr = "one" });
 
                 }
                 return View("Index", model);
             }
 
+        }
+        public async Task<IActionResult> addroles()
+        {
+           await role.CreateAsync(new IdentityRole("Admin"));
+            await role.CreateAsync(new IdentityRole("Customer"));
+            return Content("addedd");
         }
     }
 }

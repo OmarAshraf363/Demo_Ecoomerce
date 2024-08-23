@@ -1,0 +1,64 @@
+﻿@model IEnumerable<Demo.Models.Stock>
+
+@{
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center">Stock Management</h2>
+
+    <!-- Filter Form -->
+    <form asp-action="Index" method="get" class="d-flex justify-content-start mb-3">
+        <input type="text" name="storeName" class="form-control me-2" placeholder="Filter by Store Name" value="@ViewBag.CurrentFilterStoreName" />
+        <input type="text" name="productName" class="form-control me-2" placeholder="Filter by Product Name" value="@ViewBag.CurrentFilterProductName" />
+        <button type="submit" class="btn btn-secondary">Filter</button>
+    </form>
+
+  
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Store Name</th>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var stock in Model)
+            {
+                <tr>
+                    <td>@stock.Store.StoreName</td>
+                    <td>
+                        <img src="~/Images/@stock.Product.Image" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                        @stock.Product.ProductName
+                    </td>
+                    <td>@stock.Quantity</td>
+                    <td>
+                        <a class="btn btn-warning btn-sm" href="javascript:void(0)" onclick="openModalStock(@stock.StoreId, @stock.ProductId, 'Stock', 'editStockModal', 'Edit')">Edit</a>
+                        <a class="btn btn-danger btn-sm" href="@Url.Action("Delete", new { storeId = stock.StoreId, productId = stock.ProductId })">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal for creating a new stock -->
+<div id="createStockModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Content will be loaded here via AJAX -->
+        </div>
+    </div>
+</div>
+
+<!-- Modal for editing a stock -->
+<div id="editStockModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Content will be loaded here via AJAX -->
+        </div>
+    </div>
+</div>

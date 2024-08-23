@@ -11,5 +11,7 @@ namespace Demo.Repository.ModelsRepository.ProductModel
         AddProductFromCategoryViewModel getAllProductsWithspacifsCategory(int? categoryId);
         int createFromViewModel(ProductsViewModels model);
         ProductsViewModels editFromViewModel(ProductsViewModels model);
+
+        ProductsViewModels PrepareProductViewModel(Product product = null);
     }
 }

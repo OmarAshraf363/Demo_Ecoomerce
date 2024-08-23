@@ -1,0 +1,36 @@
+﻿@model Demo.Models.Stock
+
+
+<form id="editStock" method="post" action="/Admin/Stock/Edit">
+
+    <div class="modal-header">
+        <h5 class="modal-title" id="AddProductLabel">Create New Product</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+
+            <input asp-for="StoreId" type="hidden" class="form-control" />
+            <input asp-for="ProductId" type="hidden" class="form-control" />
+
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Quantity" class="control-label"></label>
+            <input asp-for="Quantity" class="form-control" />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="form-group">
+            <button type="button" onclick="allConfirm('editStock')" class="btn btn-primary"> Save</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

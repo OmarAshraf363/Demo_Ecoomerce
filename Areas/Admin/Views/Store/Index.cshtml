@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Demo.Models.Store>
+@{
+    Layout = "_AdminLayout";
+}
+<div class="container mt-5">
+    <h2 class="text-center">Store Management</h2>
+    <div class="d-flex justify-content-end mb-3">
+        <a class="btn btn-primary" href="javascript:void(0)" onclick="openModal(null,'Store','createStoreModal','Create')">Add New Store</a>
+    </div>
+
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Store Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var store in Model)
+            {
+                <tr>
+                    <td>@store.StoreName</td>
+                    <td>@store.Phone</td>
+                    <td>@store.Email</td>
+                    <td>@store.Street, @store.City, @store.State, @store.ZipCode</td>
+                    <td>
+                        <a class="btn btn-warning btn-sm" href="javascript:void(0)" onclick="openModal(@store.StoreId,'Store','editStoreModal','Edit')">Edit</a>
+                        <a class="btn btn-danger btn-sm" onclick="showAlert(@store.StoreId,'Store')" @* href="@Url.Action("Delete", new { id = store.StoreId })" *@>Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal for creating a new store -->
+<div id="createStoreModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Content will be loaded here via AJAX -->
+        </div>
+    </div>
+</div>
+
+<!-- Modal for editing a store -->
+<div id="editStoreModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Content will be loaded here via AJAX -->
+        </div>
+    </div>
+</div>
+
+@* @section Scripts {
+    <script>
+        function openCreateModal() {
+            $.get('@Url.Action("Create")', function (data) {
+                $('#createStoreModal .modal-content').html(data);
+                $('#createStoreModal').modal('show');
+            });
+        }
+
+        function openEditModal(id) {
+            $.get('@Url.Action("Edit", new { id = 0 })'.replace('0', id), function (data) {
+                $('#editStoreModal .modal-content').html(data);
+                $('#editStoreModal').modal('show');
+            });
+        }
+    </script>
+} *@

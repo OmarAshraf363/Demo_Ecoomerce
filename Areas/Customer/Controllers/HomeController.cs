@@ -25,7 +25,10 @@ namespace Demo.Controllers
 
         public IActionResult Index(HomeViewModels model)
         {
-
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "Product", new { Area = "Admin" });
+            }
             var categories = unitOfWork.CategoryRepository.Get(includeProperties: e => e.Products).ToList();
             model.Categories = categories;  
             return View(model);

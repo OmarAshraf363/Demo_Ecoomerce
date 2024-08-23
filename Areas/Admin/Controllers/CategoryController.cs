@@ -6,8 +6,9 @@ using Demo.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Demo.Controllers
+namespace Demo.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
 
@@ -22,7 +23,7 @@ namespace Demo.Controllers
 
         public IActionResult Index()
         {
-            var categories= unitOfWork.CategoryRepository.Get(includeProperties:e=>e.Products).ToList();
+            var categories = unitOfWork.CategoryRepository.Get(includeProperties: e => e.Products).ToList();
             CategoryViewModels models = new CategoryViewModels()
             {
                 Categories = categories
@@ -34,19 +35,19 @@ namespace Demo.Controllers
         {
             if (ModelState.IsValid)
             {
-              
+
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
-                    var category=unitOfWork.CategoryRepository.GetOne(expression: e => e.CategoryName == model.CategoryName);
-                    if(category != null)
+                    var category = unitOfWork.CategoryRepository.GetOne(expression: e => e.CategoryName == model.CategoryName);
+                    if (category != null)
                     {
                         ModelState.AddModelError("", "Existed");
-                        return Json(new { isvalid = false ,errors="Existed",type="one" });
+                        return Json(new { isvalid = false, errors = "Existed", type = "one" });
                     }
                     else
                     {
                         unitOfWork.CategoryRepository.AddFromViewModel(model);
-                        return Json(new{isvalid = true});
+                        return Json(new { isvalid = true });
                     }
                 }
                 return RedirectToAction("Index");
@@ -58,11 +59,11 @@ namespace Demo.Controllers
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
                     var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-                    return Json(new { isvalid = false, errors = errors });
+                    return Json(new { isvalid = false, errors });
                 }
-                return View("Index", model); 
+                return View("Index", model);
             }
-           
+
         }
         public IActionResult Edit(CategoryViewModels model)
         {
@@ -70,9 +71,9 @@ namespace Demo.Controllers
             {
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
-                    var category=unitOfWork.CategoryRepository.GetOne(e=>e.CategoryId==model.CategoryId);
+                    var category = unitOfWork.CategoryRepository.GetOne(e => e.CategoryId == model.CategoryId);
 
-                    var Existed=unitOfWork.CategoryRepository.GetOne(expression: e => e.CategoryName == model.CategoryName);
+                    var Existed = unitOfWork.CategoryRepository.GetOne(expression: e => e.CategoryName == model.CategoryName);
                     if (Existed != null)
                     {
                         ModelState.AddModelError("", "Existed");
@@ -80,9 +81,9 @@ namespace Demo.Controllers
                     }
                     else
                     {
-                        category.CategoryName=model.CategoryName;
+                        category.CategoryName = model.CategoryName;
                         unitOfWork.CategoryRepository.Edit(category);
-                    return Json(new { isvalid = true });
+                        return Json(new { isvalid = true });
                     }
                 }
                 return RedirectToAction("Index");
@@ -95,16 +96,16 @@ namespace Demo.Controllers
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
                     var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-                    return Json(new { isvalid = false, errors = errors });
+                    return Json(new { isvalid = false, errors });
                 }
                 return View("Index", model);
             }
         }
-        public IActionResult Delete(int id) 
+        public IActionResult Delete(int id)
         {
             unitOfWork.CategoryRepository.Delete(id);
             return RedirectToAction("Index");
-        
+
         }
 
     }

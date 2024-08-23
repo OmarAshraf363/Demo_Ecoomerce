@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demo.Models
 {
@@ -10,8 +11,9 @@ namespace Demo.Models
         public int ProductId { get; set; }
 
         public int? Quantity { get; set; }
-
+        [ValidateNever]
         public virtual Product Product { get; set; } = null!;
+        [ValidateNever]
 
         public virtual Store Store { get; set; } = null!;
     }

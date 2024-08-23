@@ -1,11 +1,14 @@
 ﻿@model Demo.ViewModels.ProductsViewModels
 
-
+@{
+   
+    Layout = "_AdminLayout";
+}
 
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Product Management</h2>
-        <button onclick="openModal(null, 'Product', 'AddProduct', 'Create')" class="btn btn-success">Add New Product</button>
+        <h2 class="text-center">Product Management</h2>
+    <div class="d-flex justify-content-end align-items-center mb-3">
+        <button onclick="openModal(null, 'Product', 'AddProduct', 'Create')" class="btn btn-primary">Add New Product</button>
     </div>
 
     <div class="table-responsive">

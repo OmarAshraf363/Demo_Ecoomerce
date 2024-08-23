@@ -31,6 +31,11 @@
                 <label asp-for="Input.ConfirmPassword">Confirm Password</label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Address" class="form-control rounded-pill" placeholder="Address" />
+                <label asp-for="Input.Address">Address</label>
+                <span asp-validation-for="Input.Address" class="text-danger"></span>
+            </div>
 
             <button id="registerSubmit" type="submit" class="btn btn-primary btn-lg w-100 rounded-pill mt-3">Register</button>
         </form>
