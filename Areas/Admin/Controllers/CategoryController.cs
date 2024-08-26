@@ -5,6 +5,7 @@ using Demo.Repository.ModelsRepository.CategoryModel;
 using Demo.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Demo.Areas.Admin.Controllers
 {
@@ -21,9 +22,15 @@ namespace Demo.Areas.Admin.Controllers
             this.unitOfWork = unitOfWork;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string categoryName)
         {
             var categories = unitOfWork.CategoryRepository.Get(includeProperties: e => e.Products).ToList();
+            if (!string.IsNullOrEmpty(categoryName))
+            {
+                var lowerCategoryName = categoryName.ToLower();
+                categories = categories.Where(e => e.CategoryName.ToLower().IndexOf(lowerCategoryName, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                ViewBag.CurrentFilterCcategoryName=categoryName;
+            }
             CategoryViewModels models = new CategoryViewModels()
             {
                 Categories = categories

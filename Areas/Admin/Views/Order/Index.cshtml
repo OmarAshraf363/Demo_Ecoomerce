@@ -1,57 +1,80 @@
 ﻿@model IEnumerable<Order>
 @{
-    decimal? totalResult=0;
+    decimal? totalResult = 0;
     Layout = "_AdminLayout";
 }
+
 @if (TempData["success"] != null)
 {
-    <div id="successmsg">
+    <div id="successmsg" class="alert alert-success">
         @TempData["success"]
     </div>
 }
+
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="">Orders</h2>
-        <form asp-action="Index" method="get" class="d-flex justify-content-start align-items-center m-0">
+        <h2 class="mb-0">Orders</h2>
+        <form asp-action="Index" method="get" class="d-flex justify-content-start align-items-center">
             <input type="text" name="productName" class="form-control me-2" placeholder="Filter by Product Name" value="@ViewBag.CurrentFilterProductName" />
             <button type="submit" class="btn btn-secondary">Filter</button>
         </form>
-
     </div>
+
     <div class="bg-light p-4 rounded-3 table-responsive">
         <table class="table table-hover">
-            <thead style="background-color:#262d34; color:#ccc;" class="rounded-3">
-            <tr>
-                <th>#</th>
-                <th>Email </th>
-                <th>Address</th>
-                <th>Created At</th>
-                <th>Shipped At</th>
-               
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
+            <thead style="background-color: #262d34; color: #ccc;" class="rounded-3">
                 <tr>
-                    <td>@item.OrderId</td>
-                    <td>@item.AppUser.Email</td>
-                    <td>@item.AppUser.Address</td>
-                        <td>@item.OrderDate</td>
-
-                    <td>@item.ShippedDate</td>
-                    <td>@item.OrderItems.Sum(e=>e.TotalPrice)</td>
-               
+                    <th>#</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                    <th>Created At</th>
+                    <th>Shipped At</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                 </tr>
- 
-
-            }
-            
-           
-          
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.OrderId</td>
+                        <td>@item.AppUser.Email</td>
+                        <td>@item.AppUser.Address</td>
+                        <td>@item.OrderDate</td>
+                        <td>@item.ShippedDate</td>
+                        <td>@item.OrderItems.Sum(e => e.TotalPrice)</td>
+                        <td>
+                            @if (item.OrderStatus == 0)
+                            {
+                                <span class="badge badge-warning">Pending</span>
+                            }
+                            else if (item.OrderStatus == 1)
+                            {
+                                <span class="badge badge-success">Confirmed</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="ConfirmOrder" asp-controller="checkout" asp-route-id="@item.OrderId" class="btn btn-sm btn-success">Confirm</a>
+                            <a asp-action="RejectOrder" asp-controller="checkout" asp-route-id="@item.OrderId" class="btn btn-sm btn-danger">Reject</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
- 
 </div>
+
+
+
+<style>
+    .badge-warning {
+        background-color: #ffc107;
+        color: #000;
+    }
+
+    .badge-success {
+        background-color: #28a745;
+        color: #fff;
+    }
+</style>

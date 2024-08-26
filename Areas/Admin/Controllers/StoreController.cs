@@ -14,10 +14,16 @@ namespace Demo.Areas.Admin.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string storeName)
         {
             // Get all stores and pass them to the view
             var stores = _unitOfWork.StoreRepository.Get(includeProperties:e=>e.Stocks).ToList();
+            if (!string.IsNullOrEmpty(storeName))
+            {
+                var lowerStoreName = storeName.ToLower();
+                stores = stores.Where(e => e.StoreName.ToLower().IndexOf(lowerStoreName, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            }
+            ViewBag.CurrentFilterStoreName=storeName;
             return View(stores);
         }
 

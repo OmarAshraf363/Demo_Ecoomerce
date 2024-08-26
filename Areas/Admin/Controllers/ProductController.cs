@@ -20,10 +20,17 @@ namespace Demo.Controllers
             this.unitOfWork = unitOfWork;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string productName)
         {
             ProductsViewModels model = new ProductsViewModels();
-            return View(unitOfWork.ProductRepository.putAllInfoInProductViewModel(model));//check ProductsView Models
+           model= unitOfWork.ProductRepository.putAllInfoInProductViewModel(model);
+            if (!string.IsNullOrEmpty(productName))
+            {
+                var loweerProductName = productName.ToLower();
+                model.Products=model.Products.Where(e=>e.ProductName.ToLower().IndexOf(loweerProductName, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            }
+            ViewBag.CurrentFilterProductName=productName;
+            return View(model);//check ProductsView Models
         }
 
 
