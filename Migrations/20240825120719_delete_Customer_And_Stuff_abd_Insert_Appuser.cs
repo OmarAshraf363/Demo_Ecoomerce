@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Demo.Migrations
 {
     /// <inheritdoc />
-    public partial class insertAppUserandIsentity : Migration
+    public partial class delete_Customer_And_Stuff_abd_Insert_Appuser : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,66 +19,93 @@ namespace Demo.Migrations
                 name: "FK_Orders_Staffs_StaffId",
                 table: "Orders");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_Staffs_Staffs_ManagerId",
-                table: "Staffs");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Staffs_Stores_StoreId",
-                table: "Staffs");
-
             migrationBuilder.DropTable(
                 name: "Customers");
+
+            migrationBuilder.DropTable(
+                name: "Staffs");
 
             migrationBuilder.DropIndex(
                 name: "IX_Orders_CustomerId",
                 table: "Orders");
 
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_Staffs",
-                table: "Staffs");
+            migrationBuilder.DropIndex(
+                name: "IX_Orders_StaffId",
+                table: "Orders");
 
             migrationBuilder.DropColumn(
                 name: "CustomerId",
                 table: "Orders");
 
-            migrationBuilder.RenameTable(
-                name: "Staffs",
-                newName: "Staff");
+            migrationBuilder.DropColumn(
+                name: "StaffId",
+                table: "Orders");
 
-            migrationBuilder.RenameIndex(
-                name: "IX_Staffs_StoreId",
-                table: "Staff",
-                newName: "IX_Staff_StoreId");
+            migrationBuilder.AlterColumn<string>(
+                name: "ZipCode",
+                table: "Stores",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)",
+                oldNullable: true);
 
-            migrationBuilder.RenameIndex(
-                name: "IX_Staffs_ManagerId",
-                table: "Staff",
-                newName: "IX_Staff_ManagerId");
+            migrationBuilder.AlterColumn<string>(
+                name: "Street",
+                table: "Stores",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)",
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "State",
+                table: "Stores",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)",
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Phone",
+                table: "Stores",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)",
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Email",
+                table: "Stores",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)",
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "City",
+                table: "Stores",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)",
+                oldNullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "AppUserId",
                 table: "Orders",
-                type: "nvarchar(max)",
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "AppUserStaffId",
-                table: "Orders",
                 type: "nvarchar(450)",
                 nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "AppUserStaffId1",
-                table: "Orders",
-                type: "nvarchar(450)",
-                nullable: false,
-                defaultValue: "");
-
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_Staff",
-                table: "Staff",
-                column: "StaffId");
 
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
@@ -167,8 +194,8 @@ namespace Demo.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -212,8 +239,8 @@ namespace Demo.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -227,15 +254,24 @@ namespace Demo.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Orders_AppUserStaffId",
-                table: "Orders",
-                column: "AppUserStaffId");
+            migrationBuilder.UpdateData(
+                table: "Products",
+                keyColumn: "ProductId",
+                keyValue: 3,
+                column: "Image",
+                value: "5.png");
+
+            migrationBuilder.UpdateData(
+                table: "Products",
+                keyColumn: "ProductId",
+                keyValue: 5,
+                column: "Image",
+                value: "Book.jpeg");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_AppUserStaffId1",
+                name: "IX_Orders_AppUserId",
                 table: "Orders",
-                column: "AppUserStaffId1");
+                column: "AppUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -277,65 +313,19 @@ namespace Demo.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Orders_AspNetUsers_AppUserStaffId",
+                name: "FK_Orders_AspNetUsers_AppUserId",
                 table: "Orders",
-                column: "AppUserStaffId",
+                column: "AppUserId",
                 principalTable: "AspNetUsers",
                 principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Orders_AspNetUsers_AppUserStaffId1",
-                table: "Orders",
-                column: "AppUserStaffId1",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Orders_Staff_StaffId",
-                table: "Orders",
-                column: "StaffId",
-                principalTable: "Staff",
-                principalColumn: "StaffId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Staff_Staff_ManagerId",
-                table: "Staff",
-                column: "ManagerId",
-                principalTable: "Staff",
-                principalColumn: "StaffId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Staff_Stores_StoreId",
-                table: "Staff",
-                column: "StoreId",
-                principalTable: "Stores",
-                principalColumn: "StoreId",
-                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Orders_AspNetUsers_AppUserStaffId",
+                name: "FK_Orders_AspNetUsers_AppUserId",
                 table: "Orders");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Orders_AspNetUsers_AppUserStaffId1",
-                table: "Orders");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Orders_Staff_StaffId",
-                table: "Orders");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Staff_Staff_ManagerId",
-                table: "Staff");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Staff_Stores_StoreId",
-                table: "Staff");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -359,42 +349,60 @@ namespace Demo.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropIndex(
-                name: "IX_Orders_AppUserStaffId",
+                name: "IX_Orders_AppUserId",
                 table: "Orders");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Orders_AppUserStaffId1",
-                table: "Orders");
-
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_Staff",
-                table: "Staff");
 
             migrationBuilder.DropColumn(
                 name: "AppUserId",
                 table: "Orders");
 
-            migrationBuilder.DropColumn(
-                name: "AppUserStaffId",
-                table: "Orders");
+            migrationBuilder.AlterColumn<string>(
+                name: "ZipCode",
+                table: "Stores",
+                type: "nvarchar(max)",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
 
-            migrationBuilder.DropColumn(
-                name: "AppUserStaffId1",
-                table: "Orders");
+            migrationBuilder.AlterColumn<string>(
+                name: "Street",
+                table: "Stores",
+                type: "nvarchar(max)",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
 
-            migrationBuilder.RenameTable(
-                name: "Staff",
-                newName: "Staffs");
+            migrationBuilder.AlterColumn<string>(
+                name: "State",
+                table: "Stores",
+                type: "nvarchar(max)",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
 
-            migrationBuilder.RenameIndex(
-                name: "IX_Staff_StoreId",
-                table: "Staffs",
-                newName: "IX_Staffs_StoreId");
+            migrationBuilder.AlterColumn<string>(
+                name: "Phone",
+                table: "Stores",
+                type: "nvarchar(max)",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
 
-            migrationBuilder.RenameIndex(
-                name: "IX_Staff_ManagerId",
-                table: "Staffs",
-                newName: "IX_Staffs_ManagerId");
+            migrationBuilder.AlterColumn<string>(
+                name: "Email",
+                table: "Stores",
+                type: "nvarchar(max)",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "City",
+                table: "Stores",
+                type: "nvarchar(max)",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
 
             migrationBuilder.AddColumn<int>(
                 name: "CustomerId",
@@ -402,10 +410,11 @@ namespace Demo.Migrations
                 type: "int",
                 nullable: true);
 
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_Staffs",
-                table: "Staffs",
-                column: "StaffId");
+            migrationBuilder.AddColumn<int>(
+                name: "StaffId",
+                table: "Orders",
+                type: "int",
+                nullable: true);
 
             migrationBuilder.CreateTable(
                 name: "Customers",
@@ -427,10 +436,69 @@ namespace Demo.Migrations
                     table.PrimaryKey("PK_Customers", x => x.CustomerId);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Staffs",
+                columns: table => new
+                {
+                    StaffId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ManagerId = table.Column<int>(type: "int", nullable: true),
+                    StoreId = table.Column<int>(type: "int", nullable: false),
+                    Active = table.Column<byte>(type: "tinyint", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Staffs", x => x.StaffId);
+                    table.ForeignKey(
+                        name: "FK_Staffs_Staffs_ManagerId",
+                        column: x => x.ManagerId,
+                        principalTable: "Staffs",
+                        principalColumn: "StaffId");
+                    table.ForeignKey(
+                        name: "FK_Staffs_Stores_StoreId",
+                        column: x => x.StoreId,
+                        principalTable: "Stores",
+                        principalColumn: "StoreId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.UpdateData(
+                table: "Products",
+                keyColumn: "ProductId",
+                keyValue: 3,
+                column: "Image",
+                value: "smartphone.jpg");
+
+            migrationBuilder.UpdateData(
+                table: "Products",
+                keyColumn: "ProductId",
+                keyValue: 5,
+                column: "Image",
+                value: "novel.jpg");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerId",
                 table: "Orders",
                 column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_StaffId",
+                table: "Orders",
+                column: "StaffId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Staffs_ManagerId",
+                table: "Staffs",
+                column: "ManagerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Staffs_StoreId",
+                table: "Staffs",
+                column: "StoreId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Orders_Customers_CustomerId",
@@ -445,21 +513,6 @@ namespace Demo.Migrations
                 column: "StaffId",
                 principalTable: "Staffs",
                 principalColumn: "StaffId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Staffs_Staffs_ManagerId",
-                table: "Staffs",
-                column: "ManagerId",
-                principalTable: "Staffs",
-                principalColumn: "StaffId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Staffs_Stores_StoreId",
-                table: "Staffs",
-                column: "StoreId",
-                principalTable: "Stores",
-                principalColumn: "StoreId",
-                onDelete: ReferentialAction.Cascade);
         }
     }
 }

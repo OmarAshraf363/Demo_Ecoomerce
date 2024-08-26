@@ -97,7 +97,7 @@ namespace Demo.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            _unitOfWork.StockRepository.Delete(stock.StoreId);
+            _unitOfWork.StockRepository.Delete(stock);
             return RedirectToAction("Index");
         }
     }

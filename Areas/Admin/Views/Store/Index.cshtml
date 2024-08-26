@@ -3,13 +3,20 @@
     Layout = "_AdminLayout";
 }
 <div class="container mt-5">
-    <h2 class="text-center">Store Management</h2>
-    <div class="d-flex justify-content-end mb-3">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="">Store Management</h2>
+        <form asp-action="Index" method="get" class="d-flex justify-content-start align-items-center m-0">
+            <input type="text" name="productName" class="form-control me-2" placeholder="Filter by Product Name" value="@ViewBag.CurrentFilterProductName" />
+            <button type="submit" class="btn btn-secondary">Filter</button>
+        </form>
         <a class="btn btn-primary" href="javascript:void(0)" onclick="openModal(null,'Store','createStoreModal','Create')">Add New Store</a>
+
     </div>
 
-    <table class="table table-bordered">
-        <thead class="table-dark">
+    <div class="bg-light p-4 rounded-3 table-responsive">
+        <table class="table table-hover">
+            <thead style="background-color:#262d34; color:#ccc;" class="rounded-3">
             <tr>
                 <th>Store Name</th>
                 <th>Phone</th>
@@ -27,14 +34,17 @@
                     <td>@store.Email</td>
                     <td>@store.Street, @store.City, @store.State, @store.ZipCode</td>
                     <td>
-                        <a class="btn btn-warning btn-sm" href="javascript:void(0)" onclick="openModal(@store.StoreId,'Store','editStoreModal','Edit')">Edit</a>
-                        <a class="btn btn-danger btn-sm" onclick="showAlert(@store.StoreId,'Store')" @* href="@Url.Action("Delete", new { id = store.StoreId })" *@>Delete</a>
+                            <a class="btn btn-warning btn-sm" href="javascript:void(0)" onclick="openModal(@store.StoreId,'Store','editStoreModal','Edit')"><i class="fa-regular fa-pen-to-square"></i></a>
+                            <a class="btn btn-danger btn-sm" onclick="showAlert(@store.StoreId,'Store','Admin')" @* href="@Url.Action("Delete", new { id = store.StoreId })" *@>
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-</div>
+    </div>
+</div>  
 
 <!-- Modal for creating a new store -->
 <div id="createStoreModal" class="modal fade">

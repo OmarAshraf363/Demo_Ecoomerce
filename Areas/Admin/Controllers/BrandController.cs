@@ -65,7 +65,8 @@ namespace Demo.Areas.Admin.Controllers
         }
         public IActionResult Delete(int id)
         {
-            unitOfWork.BrandRepository.Delete(id);
+            var item=unitOfWork.BrandRepository.GetOne(e=>e.BrandId == id);
+            unitOfWork.BrandRepository.Delete(item);
             return RedirectToAction("Index");
         }
         [HttpPost]

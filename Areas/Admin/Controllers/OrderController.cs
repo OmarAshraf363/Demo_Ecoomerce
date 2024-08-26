@@ -4,6 +4,7 @@ using Demo.Repository.IRepository;
 using Demo.Repository.ModelsRepository.OrderItemRepository;
 using Demo.Repository.ModelsRepository.OrderModel;
 using Demo.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,20 +15,21 @@ namespace Demo.Areas.Admin.Controllers
     {
 
         private readonly IunitOfWork unitOfWork;
+        private readonly UserManager<IdentityUser> userManager;
 
-        public OrderController(IunitOfWork unitOfWork)
+        public OrderController(IunitOfWork unitOfWork, UserManager<IdentityUser> userManager)
         {
 
 
             this.unitOfWork = unitOfWork;
+            this.userManager = userManager;
         }
 
         public IActionResult Index()
         {
-            int? userId = HttpContext.Session.GetInt32("UserID");
-            var order = unitOfWork.OrderRepository.GetUserOrder(userId);//get user order
-            var orderItems = unitOfWork.OrderItemRepository.GetOrderItemsInSpacifcCart(order.OrderId);//get all order items that equal ioorder.orderid
-            return View(orderItems);
+            var orders = unitOfWork.OrderRepository.Get(null,e=>e.AppUser,expression=>expression.OrderItems);//get user order
+            //get all order items that equal ioorder.orderid
+            return View(orders);
         }
         [HttpPost]
         public IActionResult AddToCart(int id, int q)
@@ -37,7 +39,7 @@ namespace Demo.Areas.Admin.Controllers
             {
                 q = 1;
             }
-            int? userId = HttpContext.Session.GetInt32("UserID");
+            var userId = userManager.GetUserId(User);
             var order = unitOfWork.OrderRepository.CreateFirstOrderIfNotExisted(userId);
             var orderitems = unitOfWork.OrderItemRepository.Get().
                 Where(e => e.ProductId == id && e.OrderId == order.OrderId)
@@ -47,7 +49,7 @@ namespace Demo.Areas.Admin.Controllers
             unitOfWork.OrderItemRepository.Save();
             TempData["success"] = "Successfully Added To Cart";
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { Area = "Customer" });
         }
         public IActionResult Delete(int id)
         {

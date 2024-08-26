@@ -5,6 +5,16 @@ namespace Demo.Check
 {
     public static class Methods
     {
+
+        public static string StaticData_CustomerRole = "Customer";
+        public static string StaticData_AdminRole = "Admin";
+
+
+
+
+
+
+
         public static JsonResult CheckValidation(ModelStateDictionary modelState, HttpRequest request, bool state)
         {
 

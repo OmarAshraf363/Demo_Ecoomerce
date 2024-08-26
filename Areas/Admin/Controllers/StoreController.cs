@@ -86,7 +86,7 @@ namespace Demo.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            _unitOfWork.StoreRepository.Delete(store.StoreId);
+            _unitOfWork.StoreRepository.Delete(store);
            
             return RedirectToAction("Index");
         }

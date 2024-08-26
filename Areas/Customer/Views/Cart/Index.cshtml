@@ -1,0 +1,166 @@
+﻿@model IEnumerable<Demo.ViewModels.CartViewModel>
+@{
+    decimal? totalResult = 0;
+   
+}
+
+<div class="container d-flex justify-content-between align-items-center py-5">
+    <div style="width: 60%; border: 1px solid #303030; background-color: #ffffff;" class="container rounded-3 shadow-lg p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold">Shopping Cart</h2>
+            <span class="text-muted">@Model.Count() Items</span>
+        </div>
+        <hr />
+        <div class="container">
+            @foreach (var item in Model)
+            {
+                <div class="p-3 d-flex gap-3 align-items-center border-bottom">
+                    <img src="~/Images/@item.Img" style="width: 10%; height: auto;" alt="@item.ProductName" class="rounded shadow-sm" />
+
+                    <div class="d-flex flex-column justify-content-between w-75">
+                        <div>
+                            <h5 class="fw-bold">@item.ProductName</h5>
+                            <p class="text-muted">@item.ProductDescription</p>
+                        </div>
+                        <div class="d-flex gap-4 align-items-center quantity-control">
+                            <div class="d-flex gap-2 align-items-center">
+                                <button class="btn btn-sm btn-dark" onclick="updateQuantity(@item.OrderId, @item.ProductId, -1)">
+                                    <i class="fa-solid fa-minus"></i>
+                                </button>
+                                <span id="quantity-@item.ProductId" class="fw-bold">@item.Quantity</span>
+                                <button class="btn btn-sm btn-dark" onclick="updateQuantity(@item.OrderId, @item.ProductId, 1)">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
+                            <p class="m-0 fw-bold" id="total-@item.ProductId"> $@item.TotalPrice</p>
+                        </div>
+                    </div>
+
+                    <div class="cart-item-actions">
+                        <a onclick="showAlert(@item.ProductId,'Cart','Customer')" class="text-danger"><i class="fa-solid fa-xmark text-danger"></i></a>
+                    </div>
+                </div>
+                totalResult += item.TotalPrice;
+            }
+            <div class="back-home mt-4 text-center">
+                <a asp-action="Index" asp-controller="Home" class="text-decoration-none text-dark">
+                    <i class="fa-solid fa-arrow-left"></i> Back To Shop
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- Cart Summary -->
+    <div class="container w-25">
+        <div class="bg-light rounded-3 shadow-lg p-4">
+            <h4 class="fw-bold mb-4">Order Summary</h4>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span>Subtotal</span>
+                <span id="grand-total">$@totalResult</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span>Tax (10%)</span>
+                <span id="tax">$@( totalResult * (decimal)0.1)</span>
+
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <span class="fw-bold">Total</span>
+                <span id="sum" class="fw-bold">$@(totalResult *(decimal) 1.1)</span>
+            </div>
+            <a href="/Order/Checkout" class="btn btn-primary w-100">Proceed to Checkout</a>
+        </div>
+    </div>
+</div>
+
+
+
+
+<style>
+    body {
+        background-color: #f7f7f7;
+    }
+
+    .container {
+        background-color: #ffffff;
+        border-radius: 10px;
+    }
+
+    .shadow-lg {
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .fw-bold {
+        font-weight: 700;
+    }
+
+    .text-muted {
+        color: #6c757d;
+    }
+
+    .border-bottom {
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .rounded-3 {
+        border-radius: 16px;
+    }
+
+    .gap-3 {
+        gap: 1rem;
+    }
+
+    .gap-4 {
+        gap: 1.5rem;
+    }
+
+    .p-3 {
+        padding: 1rem;
+    }
+
+    .p-4 {
+        padding: 1.5rem;
+    }
+
+    .m-0 {
+        margin: 0;
+    }
+
+    .mb-4 {
+        margin-bottom: 1.5rem;
+    }
+
+    .mt-4 {
+        margin-top: 1.5rem;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+</style>
+
+<script>
+    function updateQuantity(orderId, productId, change) {
+        $.ajax({
+            url: '@Url.Action("UpdateQuantity", "Cart")',
+            type: 'POST',
+            data: {
+                id: orderId,
+                productId: productId,
+                change: change
+            },
+            success: function (response) {
+                
+                $('#quantity-' + productId).text(response.newQuantity);
+                $('#total-' + productId).text('$' + response.newTotalPrice);
+                $('#grand-total').text('$' + response.grandTotal);
+                $('#tax').text('$' + response.grandTotal*0.1);
+
+                $('#sum').text('$' + response.grandTotal*1.1)
+
+
+            },
+            error: function () {
+                alert('An error occurred while updating the quantity.');
+            }
+        });
+    }
+</script>

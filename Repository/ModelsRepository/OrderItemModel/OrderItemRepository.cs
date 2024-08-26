@@ -19,11 +19,15 @@ namespace Demo.Repository.ModelsRepository.OrderItemRepository
             var orderItems = Get(e=>e.OrderId==orderId,e=>e.Product)
              .Select(e => new CartViewModel
              {
+                 OrderId=orderId,
                  ProductId = e.ProductId,
                  ProductName = e.Product.ProductName,
                  Quantity = e.Quantity,
                  ListPrice = e.ListPrice,
-                 TotalPrice = e.Quantity * e.ListPrice
+                 TotalPrice = e.Quantity * e.ListPrice,
+                 Img=e.Product.Image,
+                 ProductDescription=e.Product.ProductDescription,
+                 
                  
              }).ToList();
 
@@ -42,7 +46,8 @@ namespace Demo.Repository.ModelsRepository.OrderItemRepository
                     ProductId = productId,
                     Quantity = quantity,
                     ListPrice = context.Products.First(p => p.ProductId == productId).ListPrice,
-                    Discount = 0
+                    Discount = 0,
+                   
                 };
                Create(orderitems);
             }else

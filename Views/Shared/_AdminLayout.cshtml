@@ -9,26 +9,33 @@
     <link rel="stylesheet" href="~/Demo.styles.css" asp-append-version="true" />
     <link href="~/css/all.min.css" rel="stylesheet" />
 </head>
-<body>
-    <nav style="background-color:#333; padding: 1rem;">
-        <div class="container-fluid d-flex justify-content-between">
-            <a href="#" class="navbar-brand text-white">Admin Dashboard</a>
-            <ul class="nav">
-                <li class="nav-item"><a href="#" class="nav-link text-white">Dashboard</a></li>
-                <li class="nav-item"><a asp-area="Admin" asp-action="Index" asp-controller="Category" class="nav-link text-white">Categories</a></li>
+<body style="font-family:SANS-SERIF;" class="d-flex">
+    <div style="width:20%;" class="container p-0">
 
-                <li class="nav-item"><a asp-area="Admin" asp-action="Index" asp-controller="Product"  class="nav-link text-white">Products</a></li>
-                <li class="nav-item"><a asp-area ="Admin" asp-action="Index" asp-controller="order" class="nav-link text-white">Orders</a></li>
-                <li class="nav-item"><a href="#" class="nav-link text-white">Users</a></li>
-                <li class="nav-item"><a asp-area="Admin" asp-action="Index" asp-controller="Store" class="nav-link text-white">Stores</a></li>
-                <li class="nav-item"><a asp-area="Admin" asp-action="Index" asp-controller="Stock" class="nav-link text-white">Stocks</a></li>
+        <nav style="background-color:#262d34; padding: 1rem;">
+            <div class="container-fluid">
+                <div class="mb-3">
 
+                <h2  style="color:#ccc" class="">Easly</h2>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a href="#" class="nav-link text-white">Dashboard</a></li>
+                    <li class="nav-item"><a asp-area="Admin" asp-action="Index" asp-controller="Product" class="nav-link text-white">Products</a></li>
+                    <li class="nav-item"><a asp-area="Admin" asp-action="Index" asp-controller="Category" class="nav-link text-white">Categories</a></li>
+                    <li class="nav-item"><a asp-area="Admin" asp-action="Index" asp-controller="Order" class="nav-link text-white">Orders</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link text-white">Users</a></li>
+                    <li class="nav-item"><a asp-area="Admin" asp-action="Index" asp-controller="Store" class="nav-link text-white">Stores</a></li>
+                    <li class="nav-item"><a asp-area="Admin" asp-action="Index" asp-controller="Stock" class="nav-link text-white">Stocks</a></li>
+                    <li class="nav-item">
+                        <partial name="_LoginPartial"></partial>
+                    </li>
+                </ul>
+            </div>
+        </nav>
 
-            </ul>
-        </div>
-    </nav>
+    </div>
 
-    <div>
+    <div style="width:80%; background-color:#f6f6f6" class="container">
         @RenderBody()
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -1,43 +1,63 @@
 ﻿@model Demo.ViewModels.AddProductFromCategoryViewModel
-
-   
+@{
+    Layout = "_AdminLayout";
+}
 @if (Model.Products.Count != 0)
 {
+    <div class="container mt-4">
+
     <div style=" border-radius:2mm; background-color:#eee;" class="container pe-5 ps-6  mt-3  d-flex  justify-content-between  align-items-center">
-        <a href="/category" style="border:none;" class="btn btn-outline-secondary  ps-4 pe-4"> <i style="font-size:30px;" class="fa-solid fa-arrow-left"></i> </a>
+        <a asp-controller="Category" asp-action="Index" asp-area="Admin" style="border:none;" class="btn btn-outline-secondary  ps-4 pe-4"> <i style="font-size:30px;" class="fa-solid fa-arrow-left"></i> </a>
         <h2>@Model.CategoryName</h2>
         <span> Contains : @Model.Products.Count</span>
         <button data-bs-toggle="modal" data-bs-target="#AddProduct" style="border:none;" class="btn btn-outline-secondary  ps-4 pe-4"> Add New Product </button>
     </div>
 
 
+    <div class="bg-light p-4 rounded-3 table-responsive">
+        <table class="table table-hover">
+            <thead style="background-color:#262d34; color:#ccc;" class="rounded-3">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Brand</th>
+                    <th scope="col">Rating</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model.Products)
+                {
+                    <tr>
+                        <th scope="row">@product.ProductId</th>
+                        <td>
+                            <img src="~/Images/@product.Image" alt="@product.ProductName" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                        </td>
+                        <td>@product.ProductName</td>
+                        <td>@product.Category.CategoryName</td>
+                        <td>@product.Brand.BrandName</td>
+                        <td><i class="fa-regular fa-star text-warning"></i> @product.Rate </td>
+                        <td>@product.ListPrice $</td>
+                        <td>
+                            <button onclick="openModal(@product.ProductId, 'Product', 'editProduct', 'Edit')" class="btn btn-dark btn-sm" title="Edit Product">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="showAlert(@product.ProductId, 'Product','Admin')" class="btn btn-danger btn-sm" title="Delete Product">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                            <a asp-action="Details" asp-route-id="@product.ProductId" class="btn btn-info btn-sm" title="View Details">
+                                <i class="fa-solid fa-circle-info"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
 
-
-    <div class="container d-flex align-items-lg-start flex-wrap ">
-        @foreach (var product in Model.Products)
-        {
-
-            <div class="card m-3 " style="width: 17.8rem;">
-                <a href=""> <img class="card-img-top" src="~/Images/@product.Image" style="height:15rem;" /></a>
-                <div class="card-body">
-                    <h5 class="card-title">@product.ProductName</h5>
-                    <h6 style="font-size:small;" class="card-text">@product.ProductDescription</h6>
-                    <p class="card-text">
-                        @for (int i = 0; i < product.Rate; i++)
-                        {
-
-                            <a href="#">  <i class="fa-regular fa-star "></i> </a>
-
-                        }
-                        <span class="ms-3">@product.ListPrice $</span>
-
-                    </p>
-                    <a href="/Product/GetById/@product.ProductId" class="btn btn-primary">Details</a>
-                    <a href="/Product/GetById/@product.ProductId" class="btn btn-primary">Cart <i class="fa-solid fa-plus"></i></a>
-                </div>
-            </div>
-
-        }
+            </tbody>
+        </table>
+    </div>
     </div>
 }
 else

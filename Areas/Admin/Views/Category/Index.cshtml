@@ -3,17 +3,30 @@
     int index = 0;
     Layout = "_AdminLayout";
 }
-<div style="padding-right:8rem; border-radius:2mm; background-color:#eee;" class="container  mt-3  d-flex  justify-content-between  align-items-center">
+@* <div style="padding-right:8rem; border-radius:2mm; background-color:#eee;" class="container  mt-3  d-flex  justify-content-between  align-items-center">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Create New Category
     </button>
     <h2>Categories</h2>
     <span> Contains : @Model.Categories.Count</span>
-</div>
-<div class="container">
-    <table class="table table-dark table-hover ">
-        <thead>
-            <tr>
+</div> *@
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="">Category Management</h2>
+        <form asp-action="Index" method="get" class="d-flex justify-content-start align-items-center m-0">
+            <input type="text" name="productName" class="form-control me-2" placeholder="Filter by Product Name" value="@ViewBag.CurrentFilterProductName" />
+            <button type="submit" class="btn btn-secondary">Filter</button>
+        </form>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Create New Category
+        </button>
+    </div>
+
+    <div class="bg-light p-4 rounded-3 table-responsive">
+        <table class="table table-hover">
+            <thead style="background-color:#262d34; color:#ccc;" class="rounded-3">
+                <tr>
                 <th scope="col">#</th>
                 <th scope="col">Name</th>
                 <th scope="col">Products</th>
@@ -29,11 +42,13 @@
                 <tr>
                     <th scope="row">@(index += 1)</th>
                     <td>@item.CategoryName (@item.Products.Count)</td>
-                    <td class="ps-3"><a class="btn btn-outline-primary" href="/product/mobcat/@item.CategoryId">Get</a> </td>
+                        <td class="ps-3"><a class="btn btn-outline-primary" href="/Admin/product/mobcat/@item.CategoryId"><i class="fa-regular fa-eye"></i></a> </td>
                     <td>
-                        <button class=" btn btn-outline-warning" onclick="Edit('@item.CategoryName',@item.CategoryId,'editModal')">Edit</button>
+                            <button class=" btn btn-outline-warning" onclick="Edit('@item.CategoryName',@item.CategoryId,'editModal')"> <i class="fa-regular fa-pen-to-square"></i></button>
 
-                        <a class=" btn btn-outline-danger" onclick="showAlert(@item.CategoryId,'Category')">Delete</a>
+                            <a class=" btn btn-outline-danger" onclick="showAlert(@item.CategoryId,'Category','Admin')">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
 
 
                     </td>
@@ -45,6 +60,20 @@
         </tbody>
     </table>
 </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

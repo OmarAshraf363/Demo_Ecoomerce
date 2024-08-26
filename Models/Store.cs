@@ -24,9 +24,7 @@ namespace Demo.Models
         public string? ZipCode { get; set; }
         [ValidateNever]
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
-        [ValidateNever]
-
-        public virtual ICollection<Staff> Staff { get; set; } = new List<Staff>();
+       
         [ValidateNever]
 
         public virtual ICollection<Stock> Stocks { get; set; } = new List<Stock>();

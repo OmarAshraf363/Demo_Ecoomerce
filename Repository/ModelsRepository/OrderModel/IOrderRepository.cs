@@ -5,7 +5,7 @@ namespace Demo.Repository.ModelsRepository.OrderModel
 {
     public interface IOrderRepository:IGenralRepository<Order>
     {
-        Order? GetUserOrder(int? userId);
-        Order CreateFirstOrderIfNotExisted(int? userId);
+        Order? GetUserOrder(string? userId);
+        Order CreateFirstOrderIfNotExisted(string? userId);
     }
 }

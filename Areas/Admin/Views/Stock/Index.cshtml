@@ -5,60 +5,69 @@
 }
 
 <div class="container mt-5">
-    <h2 class="text-center">Stock Management</h2>
+    <div class="container mt-5">
 
-    <!-- Filter Form -->
-    <form asp-action="Index" method="get" class="d-flex justify-content-start mb-3">
-        <input type="text" name="storeName" class="form-control me-2" placeholder="Filter by Store Name" value="@ViewBag.CurrentFilterStoreName" />
-        <input type="text" name="productName" class="form-control me-2" placeholder="Filter by Product Name" value="@ViewBag.CurrentFilterProductName" />
-        <button type="submit" class="btn btn-secondary">Filter</button>
-    </form>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="">Store Management</h2>
+            <form asp-action="Index" method="get" class="d-flex justify-content-start mb-3">
+                <input type="text" name="storeName" class="form-control me-2" placeholder="Filter by Store Name" value="@ViewBag.CurrentFilterStoreName" />
+                <input type="text" name="productName" class="form-control me-2" placeholder="Filter by Product Name" value="@ViewBag.CurrentFilterProductName" />
+                <button type="submit" class="btn btn-secondary">Filter</button>
+            </form>
 
-  
+        </div>
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Store Name</th>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var stock in Model)
-            {
-                <tr>
-                    <td>@stock.Store.StoreName</td>
-                    <td>
-                        <img src="~/Images/@stock.Product.Image" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
-                        @stock.Product.ProductName
-                    </td>
-                    <td>@stock.Quantity</td>
-                    <td>
-                        <a class="btn btn-warning btn-sm" href="javascript:void(0)" onclick="openModalStock(@stock.StoreId, @stock.ProductId, 'Stock', 'editStockModal', 'Edit')">Edit</a>
-                        <a class="btn btn-danger btn-sm" href="@Url.Action("Delete", new { storeId = stock.StoreId, productId = stock.ProductId })">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
-
-<!-- Modal for creating a new stock -->
-<div id="createStockModal" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <!-- Content will be loaded here via AJAX -->
+        <div class="bg-light p-4 rounded-3 table-responsive">
+            <table class="table table-hover">
+                <thead style="background-color:#262d34; color:#ccc;">
+                    <tr>
+                        <th style="width: 25%;">Store Name</th>
+                        <th style="width: 35%;">Product Name</th>
+                        <th style="width: 20%;">Quantity</th>
+                        <th style="width: 20%;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var stock in Model)
+                    {
+                        <tr>
+                            <td>@stock.Store.StoreName</td>
+                            <td class="d-flex align-items-center">
+                                <img src="~/Images/@stock.Product.Image"
+                                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; margin-right: 10px;">
+                                <span>@stock.Product.ProductName</span>
+                            </td>
+                            <td>@stock.Quantity</td>
+                            <td>
+                                <a class="btn btn-warning btn-sm" href="javascript:void(0)"
+                                   onclick="openModalStock(@stock.StoreId, @stock.ProductId, 'Stock', 'editStockModal', 'Edit')">
+                                    <i class="fa-regular fa-pen-to-square"></i>
+                                </a>
+                                <a class="btn btn-danger btn-sm" href="@Url.Action("Delete", new { storeId = stock.StoreId, productId = stock.ProductId })">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
-</div>
 
-<!-- Modal for editing a stock -->
-<div id="editStockModal" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <!-- Content will be loaded here via AJAX -->
+    <!-- Modal for creating a new stock -->
+    <div id="createStockModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Content will be loaded here via AJAX -->
+            </div>
         </div>
     </div>
-</div>
+
+    <!-- Modal for editing a stock -->
+    <div id="editStockModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Content will be loaded here via AJAX -->
+            </div>
+        </div>
+    </div>

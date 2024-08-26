@@ -2,10 +2,11 @@
 using Demo.Models;
 using Demo.Repository.IRepository;
 using Demo.Repository.ModelsRepository.CategoryModel;
-using Demo.Repository.ModelsRepository.CustomarModel;
 using Demo.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -16,99 +17,158 @@ namespace Demo.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IunitOfWork unitOfWork;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<IdentityUser> _userManager;
+
         //private readonly ICustomarRepository _customarRepository;
-        public HomeController(ILogger<HomeController> logger,  IunitOfWork unitOfWork)
+        public HomeController(ILogger<HomeController> logger, IunitOfWork unitOfWork, RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
             _logger = logger;
             this.unitOfWork = unitOfWork;
+            this._roleManager = roleManager;
+            _userManager = userManager;
         }
 
-        public IActionResult Index(HomeViewModels model)
+        public  IActionResult Index(HomeViewModels model)
         {
-            if (User.IsInRole("Admin"))
+            //// Check if roles are empty and create default roles if necessary
+            //if (!_roleManager.Roles.Any())
+            //{
+            //    // Create customer role if it doesn't exist
+            //    if (!await _roleManager.RoleExistsAsync(Check.Methods.StaticData_CustomerRole))
+            //    {
+            //        await _roleManager.CreateAsync(new IdentityRole(Check.Methods.StaticData_CustomerRole));
+            //    }
+
+            //    // Create admin role if it doesn't exist
+            //    if (!await _roleManager.RoleExistsAsync(Check.Methods.StaticData_AdminRole))
+            //    {
+            //        await _roleManager.CreateAsync(new IdentityRole(Check.Methods.StaticData_AdminRole));
+            //    }
+
+            //    // Create admin user if it doesn't exist
+            //    var adminUser = await _userManager.FindByEmailAsync("Admin@gmail.com");
+            //    if (adminUser == null)
+            //    {
+            //        var user = new AppUser
+            //        {
+            //            UserName = "Admin@gmail.com",
+            //            Email = "Admin@gmail.com",
+            //            EmailConfirmed = false,
+            //        };
+
+            //        var result = await _userManager.CreateAsync(user, "AdminPassword123!"); // Ensure strong password policy
+
+            //        if (result.Succeeded)
+            //        {
+            //            await _userManager.AddToRoleAsync(user, Check.Methods.StaticData_AdminRole);
+            //            return RedirectToAction("Login", "Account", new { Area = "identity" });
+            //        }
+            //    }
+            //}
+
+            // Redirect to Admin area if the user is in the Admin role
+            if (User.IsInRole(Check.Methods.StaticData_AdminRole))
             {
                 return RedirectToAction("Index", "Product", new { Area = "Admin" });
             }
-            var categories = unitOfWork.CategoryRepository.Get(includeProperties: e => e.Products).ToList();
-            model.Categories = categories;  
+
+           
+           var categories = unitOfWork.CategoryRepository.Get(includeProperties: e=>e.Products).ToList();
+            model.Categories = categories;
+
             return View(model);
         }
-        [HttpPost]
-        public IActionResult Login(LoginViewModel  model)
+        public IActionResult ProductsCategory(int id)  => View(unitOfWork.ProductRepository.getAllProductsWithspacifsCategory(id));
+        
+        public IActionResult Details(int id, ProductDetails model)
         {
-            if (ModelState.IsValid)
+            var item = unitOfWork.ProductRepository.GetOne(e => e.ProductId == id, e => e.Brand,expression=>expression.Category);
+            model.Product = item;
+            var Q = unitOfWork.StockRepository.GetOne(e => e.ProductId == id);
+            if (Q != null)
             {
-                var customer = unitOfWork.CustomarRepository.GetOne(e => e.Phone == model.Phone && e.Email == model.Email);
-                   
+                model.Quantity = Q.Quantity;
+            }
+            else { model.Quantity = 0; }
+            return View(model);
+        }
+        //[HttpPost]
+        //public IActionResult Login(LoginViewModel  model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var customer = unitOfWork.CustomarRepository.GetOne(e => e.Phone == model.Phone && e.Email == model.Email);
 
-                if (customer == null)
-                {
-                    ModelState.AddModelError("", "Wrong Email or Phone");
-                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-                    {
-                        return Json(new {isvalid=false , errors = "Wrong Email or Phone", type = "all" });
-                    }
-                  
-                    return View("Index", model); 
-                }
-                else
-                {
-                    HttpContext.Session.SetInt32("UserID", customer.CustomerId);
-                    HttpContext.Session.SetString("UserName", $"{customer.FirstName} {customer.LastName}");
-                    HttpContext.Session.SetString("UserType", "Customer");
-                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-                    {
-                        return Json(new { isvalid = true });
-                    }
-                    return RedirectToAction("Index");
-                }
-            }
-            else
-            {
-                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-                {
-                    
-                    return Json(new { isvalid = false, errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage),type="one" });
-                }
-                return View("Index", model); 
-            }
-        }
-        [HttpPost]
-        public IActionResult Register(HomeViewModels model)
-        {
-            if (!ModelState.IsValid)
-            {
-                if (Request.Headers["X-Requested-With"]=="XMLHttpRequest")
-                {
-                    return Json(new { isvalid = false, errors = ModelState.Values
-                        .SelectMany(v => v.Errors).Select(e => e.ErrorMessage), type = "one" });
-                }
-                return View("Index",model);
-            }
-            else
-            {
-                var checkUser = unitOfWork.CustomarRepository.GetOne(e => e.Email == model.Customar.Email || e.Phone == model.Customar.Phone);
-                    
-                if (checkUser == null)
-                {
-                   unitOfWork.CustomarRepository.AddFromViewModel(model);
-                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-                    {
-                        return Json(new { isvalid = true });
-                    }
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-                    {
-                        return Json(new { isvalid = false, errors = "Wrong Email or Phone", type = "all" });
-                    }
-                    return View("Index",model);
-                }
-            }
-          
-        }
+
+        //        if (customer == null)
+        //        {
+        //            ModelState.AddModelError("", "Wrong Email or Phone");
+        //            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+        //            {
+        //                return Json(new {isvalid=false , errors = "Wrong Email or Phone", type = "all" });
+        //            }
+
+        //            return View("Index", model); 
+        //        }
+        //        else
+        //        {
+        //            HttpContext.Session.SetInt32("UserID", customer.CustomerId);
+        //            HttpContext.Session.SetString("UserName", $"{customer.FirstName} {customer.LastName}");
+        //            HttpContext.Session.SetString("UserType", "Customer");
+        //            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+        //            {
+        //                return Json(new { isvalid = true });
+        //            }
+        //            return RedirectToAction("Index");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+        //        {
+
+        //            return Json(new { isvalid = false, errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage),type="one" });
+        //        }
+        //        return View("Index", model); 
+        //    }
+        //}
+        //[HttpPost]
+        //public IActionResult Register(HomeViewModels model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        if (Request.Headers["X-Requested-With"]=="XMLHttpRequest")
+        //        {
+        //            return Json(new { isvalid = false, errors = ModelState.Values
+        //                .SelectMany(v => v.Errors).Select(e => e.ErrorMessage), type = "one" });
+        //        }
+        //        return View("Index",model);
+        //    }
+        //    else
+        //    {
+        //        var checkUser = unitOfWork.CustomarRepository.GetOne(e => e.Email == model.Customar.Email || e.Phone == model.Customar.Phone);
+
+        //        if (checkUser == null)
+        //        {
+        //           unitOfWork.CustomarRepository.AddFromViewModel(model);
+        //            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+        //            {
+        //                return Json(new { isvalid = true });
+        //            }
+        //            return RedirectToAction("Index");
+        //        }
+        //        else
+        //        {
+        //            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+        //            {
+        //                return Json(new { isvalid = false, errors = "Wrong Email or Phone", type = "all" });
+        //            }
+        //            return View("Index",model);
+        //        }
+        //    }
+
+        //}
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

@@ -9,7 +9,7 @@ namespace Demo.Repository.IRepository
         T? GetOne(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includeProperties);
         void Edit(T entity);
         void Create(T entity);
-        void Delete(int id);
+        void Delete(T entity);
 
     }
 }

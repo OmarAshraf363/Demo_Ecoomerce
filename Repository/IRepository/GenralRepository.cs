@@ -47,14 +47,12 @@ namespace Demo.Repository.IRepository
             Save();
         }
 
-        public void Delete(int id)
+        public void Delete(T entity)
         {
-            var entity = dbSet.Find(id);
-            if (entity != null)
-            {
+          
                 dbSet.Remove(entity);
                 Save();
-            }
+            
         }
 
         public void Edit(T entity)

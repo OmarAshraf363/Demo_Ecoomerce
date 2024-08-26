@@ -103,7 +103,8 @@ namespace Demo.Areas.Admin.Controllers
         }
         public IActionResult Delete(int id)
         {
-            unitOfWork.CategoryRepository.Delete(id);
+            var item=unitOfWork.CategoryRepository.GetOne(e=>e.CategoryId == id);
+            unitOfWork.CategoryRepository.Delete(item);
             return RedirectToAction("Index");
 
         }

@@ -27,17 +27,12 @@ namespace Demo.Controllers
         }
 
 
-        public IActionResult MobCat(int id)
-        {
-            return View(unitOfWork.ProductRepository.getAllProductsWithspacifsCategory(id)); //check Categoet Add to
-        }
-        public IActionResult ProductsCategory(int id)
-        {
-            return View(unitOfWork.ProductRepository.getAllProductsWithspacifsCategory(id));
-        }
+        public IActionResult MobCat(int id) => View(unitOfWork.ProductRepository.getAllProductsWithspacifsCategory(id)); //check Categoet Add to
+
+       
         public IActionResult Details(int id, ProductDetails model)
         {
-            var item = unitOfWork.ProductRepository.GetOne(e => e.ProductId == id, e => e.Brand);
+            var item = unitOfWork.ProductRepository.GetOne(e => e.ProductId == id, e => e.Brand,expression=>expression.Category);
             model.Product = item;
             var Q = unitOfWork.StockRepository.GetOne(e => e.ProductId == id);
             if (Q != null)
@@ -82,7 +77,9 @@ namespace Demo.Controllers
         }
         public IActionResult Delete(int id)
         {
-            unitOfWork.ProductRepository.Delete(id);
+            var item = unitOfWork.ProductRepository.GetOne(e => e.ProductId == id);
+            
+            unitOfWork.ProductRepository.Delete(item);
             return RedirectToAction("Index");
         }
 

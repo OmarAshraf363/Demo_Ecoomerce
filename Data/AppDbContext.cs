@@ -10,7 +10,7 @@ namespace Demo.Data
         public AppDbContext(DbContextOptions options) : base(options)
         {
         }
-        public DbSet<AppUser> appUsers { get; set; }
+        public DbSet<AppUser> AppUsers { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
 
         public virtual DbSet<Category> Categories { get; set; }
@@ -41,11 +41,49 @@ namespace Demo.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<OrderItem>().HasKey(e => new { e.OrderId ,e.ItemId});
-           
+            modelBuilder.Entity<OrderItem>().HasKey(e => new { e.OrderId, e.ItemId });
+
 
             modelBuilder.Entity<Stock>()
                  .HasKey(s => new { s.StoreId, s.ProductId });
+
+            modelBuilder.Entity<AppUser>().HasData(
+       new AppUser
+       {
+           Id = "123548458", // User ID should be a string
+           UserName = "Admin@gmail.com",
+           Email = "Admin@gmail.com",
+           NormalizedUserName = "ADMIN@GMAIL.COM",
+           NormalizedEmail = "ADMIN@GMAIL.COM",
+           EmailConfirmed = false,
+           PasswordHash = new PasswordHasher<AppUser>().HashPassword(null, "Admin@123"),
+           SecurityStamp = Guid.NewGuid().ToString(), // Ensure this is unique
+           Address = "Test"
+       }
+   );
+
+            modelBuilder.Entity<IdentityRole>().HasData(
+                new IdentityRole
+                {
+                    Id = "1", // Role ID should be a string
+                    Name = Check.Methods.StaticData_AdminRole,
+                    NormalizedName = Check.Methods.StaticData_AdminRole.ToUpper()
+                },
+                new IdentityRole
+                {
+                    Id = "2", // Role ID should be a string
+                    Name = Check.Methods.StaticData_CustomerRole,
+                    NormalizedName = Check.Methods.StaticData_CustomerRole.ToUpper()
+                }
+            );
+
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(
+                new IdentityUserRole<string>
+                {
+                    RoleId = "1", // Role ID as string
+                    UserId = "123548458" // User ID as string
+                }
+            );
 
 
             modelBuilder.Entity<Order>(entity =>
@@ -57,10 +95,7 @@ namespace Demo.Data
                       .HasForeignKey(e => e.AppUserId)
                       .OnDelete(DeleteBehavior.NoAction);
 
-                entity.HasOne(e => e.AppUser)
-                      .WithMany(s => s.Orders)
-                      .HasForeignKey(e => e.AppUserStaffId)
-                      .OnDelete(DeleteBehavior.NoAction);
+
 
                 entity.HasOne(e => e.Store)
                       .WithMany(st => st.Orders)
@@ -91,7 +126,7 @@ namespace Demo.Data
             ProductName = "Smartphone",
             ProductDescription = "Latest model with advanced features.",
             Rate = 5,
-            Image = "smartphone.jpg",
+            Image = "5.png",
             BrandId = brands.First(b => b.BrandName == "Brand A").BrandId,
             CategoryId = categories.First(c => c.CategoryName == "Electronics").CategoryId,
             ModelYear = 2023,
@@ -115,7 +150,7 @@ namespace Demo.Data
             ProductName = "Novel",
             ProductDescription = "Bestselling novel by a famous author.",
             Rate = 4,
-            Image = "novel.jpg",
+            Image = "Book.jpeg",
             BrandId = brands.First(b => b.BrandName == "Brand C").BrandId,
             CategoryId = categories.First(c => c.CategoryName == "Books").CategoryId,
             ModelYear = 2021,

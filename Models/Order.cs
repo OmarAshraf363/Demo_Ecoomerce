@@ -17,7 +17,7 @@ namespace Demo.Models
 
         public DateOnly? ShippedDate { get; set; }
 
-        public string? AppUserStaffId { get; set; }
+       
 
         public string? AppUserId { get; set; }
 
@@ -26,8 +26,7 @@ namespace Demo.Models
 
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
-        [ForeignKey("AppUserStaffId")]
-        public virtual AppUser AppUserStaff { get; set; } = null!;
+    
 
         [ForeignKey("StoreId")]
         public virtual Store Store { get; set; } = null!;

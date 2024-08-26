@@ -10,11 +10,11 @@ namespace Demo.Repository.ModelsRepository.OrderModel
         {
         }
 
-        public Order? GetUserOrder(int? userId)
+        public Order? GetUserOrder(string? userId)
         {
            return GetOne(e=>e.AppUserId==userId.ToString() && e.OrderStatus==0);
         }
-        public Order CreateFirstOrderIfNotExisted(int? userId)
+        public Order CreateFirstOrderIfNotExisted(string? userId)
         {
             var order=GetUserOrder(userId);
             if (order == null)
@@ -24,6 +24,7 @@ namespace Demo.Repository.ModelsRepository.OrderModel
                     OrderStatus = 0,
                     OrderDate = DateOnly.FromDateTime(DateTime.Now),
                     AppUserId = userId.ToString(),
+                   
                 };
                 Create(order);
             }

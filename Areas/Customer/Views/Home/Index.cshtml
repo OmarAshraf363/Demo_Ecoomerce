@@ -1,8 +1,16 @@
 ﻿@model Demo.ViewModels.HomeViewModels
 @{
-   
-    int? id = Context.Session.GetInt32("UserID");
-   
+    var id = User.Identity.IsAuthenticated;
+    bool check;
+    if (id)
+    {
+        check = true;
+    }
+    else
+    {
+        check = false;
+    }
+
 }
 @if(TempData["success"]!=null){
     <div  id="successmsg" >
@@ -19,7 +27,7 @@
                 @foreach (var items in Model.Categories)
                 {
                     <li class="nav-item">
-                        <a class="ms-2 me-2 btn btn-outline-secondary " asp-area="" asp-controller="Product" asp-action="productscategory" asp-route-id="@items.CategoryId">@items.CategoryName</a>
+                        <a class="ms-2 me-2 btn btn-outline-secondary " asp-area="" asp-controller="Home" asp-action="productscategory" asp-route-id="@items.CategoryId">@items.CategoryName</a>
                     </li>
                 }
             </ul>
@@ -46,8 +54,8 @@
                         <span class="ms-3">@product.ListPrice $</span>
 
                     </p>
-                    <a href="/Product/Details/@product.ProductId" class="btn btn-primary">Details</a>
-                    <a @* href="/Order/AddToCart/@product.ProductId" *@ onclick="AddToCart(@product.ProductId,@id)" class="btn btn-primary">Cart <i class="fa-solid fa-plus"></i></a>
+                    <a href="/Customer/Home/Details/@product.ProductId" class="btn btn-primary">Details</a>
+                    <a @* href="/Order/AddToCart/@product.ProductId" *@ onclick="AddToCart(@product.ProductId, @(check ? "true" : "false"))" class="btn btn-primary">Cart <i class="fa-solid fa-plus"></i></a>
                 </div>
             </div>
         }
@@ -157,16 +165,16 @@
 <div class="modal fade" id="addtocart" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form id="catform" method="post" action="/Order/AddToCart">
+            <form id="catform" method="post" action="/Admin/Order/AddToCart">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Quantity</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group mb-3">
                         <input type="hidden" id="pId" name="id"  />
+                    <div class="form-group mb-3">
                         <label class="form-label" >Quantity of Product</label>
-                        <input type="number" class="form-control" name="q" />
+                        <input type="number" value="1" class="form-control" name="q" />
 
                     </div>
                     <span class="spn text-danger"></span>

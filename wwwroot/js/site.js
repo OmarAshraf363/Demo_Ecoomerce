@@ -44,28 +44,30 @@ function allConfirm(id) {
 
 
 
-function addToCart(productId) {
+
+
+//function addToCart(productId) {
    
-    fetch(`/Order/AddToCart/${productId}`, {
-        method: 'GET'
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.isvalid) {
-                alert('Product added to cart successfully!');
-            } else {
-                alert('Failed to add product to cart.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-}
+//    fetch(`/Admin/Order/AddToCart/${productId}`, {
+//        method: 'GET'
+//    })
+//        .then(response => response.json())
+//        .then(data => {
+//            if (data.isvalid) {
+//                alert('Product added to cart successfully!');
+//            } else {
+//                alert('Failed to add product to cart.');
+//            }
+//        })
+//        .catch(error => {
+//            console.error('Error:', error);
+//        });
+//}
 
 
 
 //Start Section Of Delet Item And Shoe Alert
-function showAlert(categoryId, controler) {
+function showAlert(categoryId, controler,area) {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -84,7 +86,7 @@ function showAlert(categoryId, controler) {
                 timer: 1500
             }).then(() => {
 
-                window.location.href = `/Admin/${controler}/Delete/${categoryId}`;
+                window.location.href = `/${area}/${controler}/Delete/${categoryId}`;
 
             });
         }
@@ -113,9 +115,10 @@ function EditBrand(brand) {
 function AddToCart(productId, check) {
  
 
-    if (check == null) {
-        var modalLogin = new bootstrap.Modal(document.getElementById("Login"));
-        modalLogin.show();
+    if (!check) {
+        //var modalLogin = new bootstrap.Modal(document.getElementById("Login"));
+        //modalLogin.show();
+        window.location.href = `identity/account/login`;
     } else {
 
     var modal = new bootstrap.Modal(document.getElementById("addtocart"));
@@ -137,9 +140,9 @@ $(document).ready(function () {
 
 
 
-function openModal(id1, controllerName, modalname, actionName) {
+function openModal(id, controllerName, modalname, actionName) {
     let url;
-    if (id1 === null || id1 === undefined) {
+    if (id === null || id === undefined) {
         url = `/Admin/${controllerName}/${actionName}`;
     } else {
         url = `/Admin/${controllerName}/${actionName}/${id}`;
