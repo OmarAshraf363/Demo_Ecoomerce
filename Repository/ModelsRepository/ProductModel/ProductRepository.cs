@@ -52,19 +52,42 @@ namespace Demo.Repository.ModelsRepository.ProductModel
 
         }
 
-        public AddProductFromCategoryViewModel getAllProductsWithspacifsCategory(int? categoryId)
+        public AddProductFromCategoryViewModel getAllProductsWithspacifsCategoryOrBrand(int? id,bool brand)
         {
-            var AllMob = context.Products.Include(e => e.Category).Include(e => e.Brand).Where(e => e.Category.CategoryId == categoryId).ToList();
-            var category = context.Categories.Find(categoryId);
-            var brans = context.Brands.ToList();
-            AddProductFromCategoryViewModel model = new AddProductFromCategoryViewModel()
+            if (brand)
             {
-                Products = AllMob,
-                CategoryId = categoryId,
-                CategoryName = category.CategoryName,
-                Brands = brans
-            };
-            return model;
+                var result = Get(e => e.BrandId == id, e => e.Brand, e => e.Category);
+                var thisBrand = context.Brands.Find(id);
+                var categories = context.Categories.ToList();
+                AddProductFromCategoryViewModel model = new AddProductFromCategoryViewModel()
+                {
+                    Products = result,
+                    BrandId = id,
+                    BrandName = thisBrand.BrandName,
+                    Categories = categories,
+                    Is_brand= brand,
+                    Stores=context.Stores.ToList(),
+                    
+                };
+                return model;
+            }
+            else
+            {
+
+                var AllMob = context.Products.Include(e => e.Category).Include(e => e.Brand).Where(e => e.Category.CategoryId == id).ToList();
+                var category = context.Categories.Find(id);
+                var brans = context.Brands.ToList();
+                AddProductFromCategoryViewModel model = new AddProductFromCategoryViewModel()
+                {
+                    Products = AllMob,
+                    CategoryId = id,
+                    CategoryName = category.CategoryName,
+                    Brands = brans,
+                    Stores = context.Stores.ToList(),
+
+                };
+                return model;
+            }
         }
 
         public ProductsViewModels putAllInfoInProductViewModel(ProductsViewModels model)

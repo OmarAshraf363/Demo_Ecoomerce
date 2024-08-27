@@ -1,0 +1,21 @@
+﻿@model Demo.ViewModels.BrandViewModels
+<form id="EditForm" method="post" action="/Admin/Brand/Edit">
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit This Category</h5>
+        <button type="button" onclick="test('editModal')" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div class="form-group mb-3">
+            <input class="form-control" type="hidden"  asp-for="BrandId" />
+            <label class="form-label" asp-for="Name">Brand Name</label>
+            <input class="form-control" asp-for="Name" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" onclick="test('editModal')" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" onclick="allConfirm('EditForm')" class="btn btn-primary">Save Changes</button>
+    </div>
+</form>

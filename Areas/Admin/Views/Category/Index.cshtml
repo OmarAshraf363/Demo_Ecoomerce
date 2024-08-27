@@ -44,7 +44,7 @@
                     <td>@item.CategoryName (@item.Products.Count)</td>
                         <td class="ps-3"><a class="btn btn-outline-primary" href="/Admin/product/mobcat/@item.CategoryId"><i class="fa-regular fa-eye"></i></a> </td>
                     <td>
-                            <button class=" btn btn-outline-warning" onclick="Edit('@item.CategoryName',@item.CategoryId,'editModal')"> <i class="fa-regular fa-pen-to-square"></i></button>
+                            <button class=" btn btn-outline-warning" onclick="openModal(@item.CategoryId,'Category','editModal','Edit')"> <i class="fa-regular fa-pen-to-square"></i></button>
 
                             <a class=" btn btn-outline-danger" onclick="showAlert(@item.CategoryId,'Category','Admin')">
                                 <i class="fa-solid fa-trash"></i>
@@ -81,18 +81,18 @@
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form id="catform" method="post" action="/Category/Create">
+            <form id="catform" method="post" action="/Admin/Category/Create">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Create New Category</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group mb-3">
-                        <label class="form-label" asp-for="CategoryName">Category Name</label>
-                        <input class="form-control" asp-for="CategoryName" />
+                        <label class="form-label" asp-for="Name">Category Name</label>
+                        <input class="form-control" asp-for="Name" />
                         
+                    <span  asp-validation-for="Name" class="text-danger"></span>
                     </div>
-                    <span class="spn text-danger"></span>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -108,25 +108,7 @@
 <div class="modal fade " id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form id="EditForm" method="post" action="/Category/Edit">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit This Category</h5>
-                    <button type="button" onclick="test('editModal')" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group mb-3">
-                        <label class="form-label" for="CategoryName">Category Name</label>
-                        <input class="form-control" id="editCategoryName" name="CategoryName"  />
-                        <input class="form-control" type="hidden" id="editCategoryId" name="CategoryId" />
-                        
-                    </div>
-                    <span class="spn text-danger"></span>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" onclick="test('editModal')" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" onclick="allConfirm('EditForm')" class="btn btn-primary">Save Changes</button>
-                </div>
-            </form>
+           
         </div>
     </div>
 </div>

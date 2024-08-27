@@ -13,7 +13,7 @@ namespace Demo.Areas.Admin.Controllers
     public class BrandController : Controller
     {
         private readonly IunitOfWork unitOfWork;
-        private readonly RoleManager<IdentityRole> role ;
+        private readonly RoleManager<IdentityRole> role;
 
         public BrandController(IunitOfWork unitOfWork, RoleManager<IdentityRole> role)
         {
@@ -22,14 +22,19 @@ namespace Demo.Areas.Admin.Controllers
             this.role = role;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string brandName)
         {
-            //var brands = unitOfWork.BrandRepository.GetAll().AsQueryable().Include(e => e.Products).ToList();
             var brands = unitOfWork.BrandRepository.Get(includeProperties: e => e.Products).ToList();
+            if (!string.IsNullOrEmpty(brandName))
+            {
+                var lowerBrandName = brandName.ToLower();
+                brands = brands.Where(e => e.BrandName.ToLower().IndexOf(brandName, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            }
             BrandViewModels model = new BrandViewModels()
             {
                 Brands = brands
             };
+            ViewBag.CurrentFilterBrandName = brandName;
             return View(model);
         }
         [HttpPost]
@@ -37,38 +42,54 @@ namespace Demo.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+
+                var brands = unitOfWork.BrandRepository.GetOne(expression: e => e.BrandName == model.Name);
+                if (brands != null)
                 {
-                    var brands = unitOfWork.BrandRepository.GetOne(expression: e => e.BrandName == model.BrandName);
-                    if (brands != null)
+                    ModelState.AddModelError("Name", "Existed");
+                    var result = Check.Methods.CheckValidation(ModelState, Request, false);
+                    if (result != null) { return result; }
+                }
+                else
+                {
+                    var result = Check.Methods.CheckValidation(ModelState, Request, true);
+                    if (result != null) { return result; }
+                    var brand = new Brand()
                     {
-                        ModelState.AddModelError("", "Existed");
-                        return Json(new { isvalid = false, errors = "Existed", type = "one" });
-                    }
-                    else
-                    {
-                        unitOfWork.BrandRepository.AddFromViewModel(model);
-                        return Json(new { isvalid = true });
-                    }
+                        BrandName = model.Name,
+                    };
+                    unitOfWork.BrandRepository.Create(brand);
                 }
                 return RedirectToAction("Index");
             }
             else
             {
-                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-                {
-                    var errors = ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage);
-                    return Json(new { isvalid = false, errors, type = "one" });
-                }
+                var result = Check.Methods.CheckValidation(ModelState, Request, false);
+                if (result != null) { return result; }
                 return View("Index", model);
             }
         }
         public IActionResult Delete(int id)
         {
-            var item=unitOfWork.BrandRepository.GetOne(e=>e.BrandId == id);
+            var item = unitOfWork.BrandRepository.GetOne(e => e.BrandId == id);
             unitOfWork.BrandRepository.Delete(item);
             return RedirectToAction("Index");
         }
+
+
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var brand =unitOfWork.BrandRepository.GetOne(e=>e.BrandId==id);
+            var model = new BrandViewModels()
+            {
+                BrandId = brand.BrandId,
+                Name = brand.BrandName
+            };
+            return PartialView("_EditBrandPartial", model);
+        }
+
+
         [HttpPost]
         public IActionResult Edit(BrandViewModels model)
         {
@@ -77,22 +98,24 @@ namespace Demo.Areas.Admin.Controllers
                 var brand = unitOfWork.BrandRepository.GetOne(e => e.BrandId == model.BrandId);
                 if (brand != null)
                 {
-                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    
+                    var existedBrand = unitOfWork.BrandRepository.GetOne(expression: e => e.BrandName == model.Name);
+                    if (existedBrand != null)
                     {
-                        var brands = unitOfWork.BrandRepository.GetOne(expression: e => e.BrandName == model.BrandName);
-                        if (brands == null)
-                        {
-                            brand.BrandName = model.BrandName;
-                            unitOfWork.BrandRepository.Edit(brand);
-                            return Json(new { isvalid = true });
-                        }
-                        else
-                        {
-                            ModelState.AddModelError("", "Existed");
-                            return Json(new { isvalid = false, errors = "Existed", type = "one" });
-                        }
+                        ModelState.AddModelError("Name", "Existed");
+                        var result = Check.Methods.CheckValidation(ModelState, Request, false);
+                        if (result != null) { return result; }
 
                     }
+                    else
+                    {
+                        var result = Check.Methods.CheckValidation(ModelState, Request, true);
+                        if (result != null) { return result; }
+                        brand.BrandName = model.Name;
+                        unitOfWork.BrandRepository.Edit(brand);
+                      
+                    }
+
                     return RedirectToAction("Index");
                 }
                 else
@@ -102,21 +125,17 @@ namespace Demo.Areas.Admin.Controllers
             }
             else
             {
-                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-                {
-                    var errors = ModelState.Values.SelectMany(x => x.Errors).Select(e => e.ErrorMessage);
-                    return Json(new { isvalid = false, errors, typr = "one" });
-
-                }
+                var result = Check.Methods.CheckValidation(ModelState, Request, false);
+                if (result != null) { return result; }
                 return View("Index", model);
             }
 
         }
-        public async Task<IActionResult> addroles()
-        {
-           await role.CreateAsync(new IdentityRole("Admin"));
-            await role.CreateAsync(new IdentityRole("Customer"));
-            return Content("addedd");
-        }
+        //public async Task<IActionResult> addroles()
+        //{
+        //   await role.CreateAsync(new IdentityRole("Admin"));
+        //    await role.CreateAsync(new IdentityRole("Customer"));
+        //    return Content("addedd");
+        //}
     }
 }

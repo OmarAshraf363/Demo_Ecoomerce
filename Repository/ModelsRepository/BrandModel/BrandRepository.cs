@@ -17,7 +17,7 @@ namespace Demo.Repository.ModelsRepository.BrandModel
         {
             Brand brand = new Brand()
             {
-                BrandName = model.BrandName,
+                BrandName = model.Name,
             };
             Create(brand);
            

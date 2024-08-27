@@ -29,7 +29,7 @@ namespace Demo.Areas.Admin.Controllers
             {
                 var lowerCategoryName = categoryName.ToLower();
                 categories = categories.Where(e => e.CategoryName.ToLower().IndexOf(lowerCategoryName, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
-                ViewBag.CurrentFilterCcategoryName=categoryName;
+                ViewBag.CurrentFilterCcategoryName = categoryName;
             }
             CategoryViewModels models = new CategoryViewModels()
             {
@@ -43,56 +43,73 @@ namespace Demo.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
 
-                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+
+                var category = unitOfWork.CategoryRepository.GetOne(expression: e => e.CategoryName == model.Name);
+                if (category != null)
                 {
-                    var category = unitOfWork.CategoryRepository.GetOne(expression: e => e.CategoryName == model.CategoryName);
-                    if (category != null)
-                    {
-                        ModelState.AddModelError("", "Existed");
-                        return Json(new { isvalid = false, errors = "Existed", type = "one" });
-                    }
-                    else
-                    {
-                        unitOfWork.CategoryRepository.AddFromViewModel(model);
-                        return Json(new { isvalid = true });
-                    }
+                    ModelState.AddModelError("Name", "Existed");
+                    var result = Check.Methods.CheckValidation(ModelState, Request, false);
+                    if (result != null) { return result; }
                 }
+                else
+                {
+                    var result = Check.Methods.CheckValidation(ModelState, Request, true);
+                    if (result != null) { return result; }
+                    unitOfWork.CategoryRepository.AddFromViewModel(model);
+
+                }
+
                 return RedirectToAction("Index");
             }
             else
             {
                 var categories = unitOfWork.CategoryRepository.Get(includeProperties: e => e.Products).ToList();
                 model.Categories = categories;
-                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-                {
-                    var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-                    return Json(new { isvalid = false, errors });
-                }
+                var result = Check.Methods.CheckValidation(ModelState, Request, false);
+                if (result != null) { return result; }
                 return View("Index", model);
             }
 
         }
+
+
+
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var category=unitOfWork.CategoryRepository.GetOne(e=>e.CategoryId == id);
+            CategoryViewModels model = new()
+            {
+                CategoryId = category.CategoryId ,
+                Name = category.CategoryName
+            };
+            return PartialView("_EditCategoryPartial",model);
+
+        }
+        [HttpPost]
         public IActionResult Edit(CategoryViewModels model)
         {
             if (ModelState.IsValid)
             {
-                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-                {
-                    var category = unitOfWork.CategoryRepository.GetOne(e => e.CategoryId == model.CategoryId);
 
-                    var Existed = unitOfWork.CategoryRepository.GetOne(expression: e => e.CategoryName == model.CategoryName);
-                    if (Existed != null)
-                    {
-                        ModelState.AddModelError("", "Existed");
-                        return Json(new { isvalid = false, errors = "Existed", type = "one" });
-                    }
-                    else
-                    {
-                        category.CategoryName = model.CategoryName;
-                        unitOfWork.CategoryRepository.Edit(category);
-                        return Json(new { isvalid = true });
-                    }
+                var category = unitOfWork.CategoryRepository.GetOne(e => e.CategoryId == model.CategoryId);
+
+                var Existed = unitOfWork.CategoryRepository.GetOne(expression: e => e.CategoryName == model.Name);
+                if (Existed != null)
+                {
+                    ModelState.AddModelError("Name", "Existed");
+                    var result = Check.Methods.CheckValidation(ModelState, Request, false);
+                    if (result != null) { return result; }
                 }
+                else
+                {
+                    var result = Check.Methods.CheckValidation(ModelState, Request, true);
+                    if (result != null) { return result; }
+                    category.CategoryName = model.Name;
+                    unitOfWork.CategoryRepository.Edit(category);
+                    
+                }
+
                 return RedirectToAction("Index");
             }
             else
@@ -100,17 +117,14 @@ namespace Demo.Areas.Admin.Controllers
 
                 var categories = unitOfWork.CategoryRepository.Get(includeProperties: e => e.Products).ToList();
                 model.Categories = categories;
-                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-                {
-                    var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-                    return Json(new { isvalid = false, errors });
-                }
+                var result = Check.Methods.CheckValidation(ModelState, Request, false);
+                if (result != null) { return result; }
                 return View("Index", model);
             }
         }
         public IActionResult Delete(int id)
         {
-            var item=unitOfWork.CategoryRepository.GetOne(e=>e.CategoryId == id);
+            var item = unitOfWork.CategoryRepository.GetOne(e => e.CategoryId == id);
             unitOfWork.CategoryRepository.Delete(item);
             return RedirectToAction("Index");
 

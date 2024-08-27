@@ -6,8 +6,12 @@ namespace Demo.ViewModels
     {
         public List<Category> Categories { get; set; }=new List<Category>();
         public int? CategoryId { get; set; }
-        public List<Product> Products { get; set; } = new List<Product>();
+       
+        public bool Is_brand { get; set; } =false;
+        public IEnumerable<Product> Products { get; set; } = new List<Product>();
         public string CategoryName {  get; set; }=string.Empty;
+        public string BrandName { get; set; } = string.Empty;
+
 
 
 
@@ -19,7 +23,12 @@ namespace Demo.ViewModels
         public short ModelYear { get; set; }
 
         public decimal ListPrice { get; set; }
-        public int BrandId { get; set; }
+        public int? BrandId { get; set; }
         public List<Brand> Brands { get; set; } = new List<Brand>();
+        public int? Quantity { get; set; }
+
+
+        public int? StoreId { get; set; }
+        public List<Store> Stores { get; set; } = new List<Store>();
     }
 }

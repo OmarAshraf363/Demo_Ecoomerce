@@ -1,13 +1,20 @@
 ﻿using Demo.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace Demo.ViewModels
 {
     public class BrandViewModels
     {
-        public List<Brand> Brands { get; set; }=new List<Brand>();
-        public Brand? Brand { get; set; }
-        public int BrandId { get; set; }
+        [ValidateNever]
+        public List<Brand>? Brands { get; set; }
+        
 
-        public string BrandName { get; set; } = null!;
+       
+        
+
+        public int BrandId { get; set; }
+        [Required]
+        public string Name { get; set; } = string.Empty;
     }
 }

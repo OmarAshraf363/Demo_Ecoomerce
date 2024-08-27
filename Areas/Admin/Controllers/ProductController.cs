@@ -34,7 +34,12 @@ namespace Demo.Controllers
         }
 
 
-        public IActionResult MobCat(int id) => View(unitOfWork.ProductRepository.getAllProductsWithspacifsCategory(id)); //check Categoet Add to
+        public IActionResult MobCat(int id) => View(unitOfWork.ProductRepository.getAllProductsWithspacifsCategoryOrBrand(id,brand:false)); //check Categoet Add to
+        public IActionResult ProductsBrand(int id)
+        {
+            var model= unitOfWork.ProductRepository.getAllProductsWithspacifsCategoryOrBrand(id, brand: true);
+            return View("MobCat", model);
+        }
 
        
         public IActionResult Details(int id, ProductDetails model)

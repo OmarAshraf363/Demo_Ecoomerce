@@ -2,14 +2,14 @@
 @{
     Layout = "_AdminLayout";
 }
-@if (Model.Products.Count != 0)
+@if (Model.Products.Count() != 0)
 {
     <div class="container mt-4">
 
     <div style=" border-radius:2mm; background-color:#eee;" class="container pe-5 ps-6  mt-3  d-flex  justify-content-between  align-items-center">
-        <a asp-controller="Category" asp-action="Index" asp-area="Admin" style="border:none;" class="btn btn-outline-secondary  ps-4 pe-4"> <i style="font-size:30px;" class="fa-solid fa-arrow-left"></i> </a>
-        <h2>@Model.CategoryName</h2>
-        <span> Contains : @Model.Products.Count</span>
+        <a asp-controller=@(Model.Is_brand?"Brand":"Category") asp-action="Index" asp-area="Admin" style="border:none;" class="btn btn-outline-secondary  ps-4 pe-4"> <i style="font-size:30px;" class="fa-solid fa-arrow-left"></i> </a>
+            <h2>@(Model.Is_brand?Model.BrandName:Model.CategoryName)</h2>
+        <span> Contains : @Model.Products.Count()</span>
         <button data-bs-toggle="modal" data-bs-target="#AddProduct" style="border:none;" class="btn btn-outline-secondary  ps-4 pe-4"> Add New Product </button>
     </div>
 
@@ -63,7 +63,7 @@
 else
 {
     <div style=" border-radius:2mm; background-color:#eee;" class="container pe-5 ps-6  mt-3  d-flex  justify-content-between  align-items-center">
-        <a href="/home" style="border:none;" class="btn btn-outline-secondary  ps-4 pe-4"> <i style="font-size:30px;" class="fa-solid fa-arrow-left"></i> </a>
+        <a asp-controller=@(Model.Is_brand?"Brand":"Category") asp-action="Index" asp-area="Admin" style="border:none;" class="btn btn-outline-secondary  ps-4 pe-4"> <i style="font-size:30px;" class="fa-solid fa-arrow-left"></i> </a>
         <h2>NO Products...!</h2>
         <span> Contains : 0</span>
     </div>
@@ -74,7 +74,7 @@ else
 <div class="modal fade" id="AddProduct" tabindex="-1" aria-labelledby="AddProductLabel" aria-hidden="true">
     <div class="modal-dialog ">
         <div class="modal-content">
-            <form id="formProduct" method="post" action="/Product/Create">
+            <form id="formProduct" method="post" action="/Admin/Product/Create">
                 <div class="modal-header">
                     <h5 class="modal-title" id="AddProductLabel">Create New Category</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -84,13 +84,36 @@ else
                         <label class="form-label" asp-for="ProductName">Product Name </label>
                         <input class="form-control" asp-for="ProductName" />
 
+
                     </div>
+
+
+
+
                     <div class="form-group mb-3">
-                        
+                        @if(Model.Is_brand){
+                            <input type="hidden" asp-for="BrandId" value="@Model.BrandId" />
+
+                        }else{ 
+
                         <input type="hidden" asp-for="CategoryId" value="@Model.CategoryId" />
+                        }
 
                     </div>
                     <div class="form-group mb-3">
+                        @if (Model.Is_brand)
+                        {
+
+                            <label class="form-label" asp-for="CategoryId">Category Name</label>
+                            <select asp-for="CategoryId" class="form-select">
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <option value="@category.CategoryId">@category.CategoryName</option>
+                                }
+                            </select>
+                        
+                        }else{
+                             
                         <label class="form-label" asp-for="BrandId">Brand Name</label>
                         <select asp-for="BrandId" class="form-select">
                             @foreach (var brand in Model.Brands)
@@ -98,8 +121,36 @@ else
                                 <option value="@brand.BrandId">@brand.BrandName</option>
                             }
                         </select>
+                        }
 
                     </div>
+
+
+
+                    <div class="form-group mb-3">
+                        <label class="form-label" asp-for="Quantity">Quantity</label>
+                        <input class="form-control" asp-for="Quantity" />
+                        <span asp-validation-for="Quantity" class="text-danger"></span>
+
+
+                    </div>
+
+
+
+                    <div class="form-group mb-3">
+                        <label class="form-label" asp-for="StoreId">Stores Name</label>
+                        <select asp-for="StoreId" class="form-select">
+                            @foreach (var store in Model.Stores)
+                            {
+                                <option value="@store.StoreId">@store.StoreName</option>
+                            }
+                        </select>
+                        <span asp-validation-for="StoreId" class="text-danger"></span>
+
+                    </div>
+
+
+
                     <div class="form-group mb-3">
                         <label class="form-label" asp-for="ProductDescription">Product Description</label>
                         <input class="form-control" asp-for="ProductDescription" />

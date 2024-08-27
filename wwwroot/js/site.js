@@ -104,7 +104,7 @@ function Edit(name, id, modalName) {
 }
 //End Edit And Alerts
 function EditBrand(brand) {
-    document.getElementById('brandname').value = brand.name;
+    document.getElementById('Name').value = brand.name;
     document.getElementById('brandid').value = brand.id;
     var editModal = new bootstrap.Modal(document.getElementById("editModal"));
     editModal.show();

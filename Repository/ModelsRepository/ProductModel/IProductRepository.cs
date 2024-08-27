@@ -7,8 +7,8 @@ namespace Demo.Repository.ModelsRepository.ProductModel
     public interface IProductRepository:IGenralRepository<Product>
     {
         ProductsViewModels putAllInfoInProductViewModel(ProductsViewModels model);
-        
-        AddProductFromCategoryViewModel getAllProductsWithspacifsCategory(int? categoryId);
+
+        AddProductFromCategoryViewModel getAllProductsWithspacifsCategoryOrBrand(int? id, bool brand);
         int createFromViewModel(ProductsViewModels model);
         ProductsViewModels editFromViewModel(ProductsViewModels model);
 

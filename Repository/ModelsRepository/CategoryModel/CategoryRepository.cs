@@ -14,7 +14,7 @@ namespace Demo.Repository.ModelsRepository.CategoryModel
         {
            Category category=new Category()
            {
-               CategoryName = model.CategoryName,
+               CategoryName = model.Name,
                
            };
             Create(category);

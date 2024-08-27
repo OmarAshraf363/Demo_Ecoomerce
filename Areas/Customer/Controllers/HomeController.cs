@@ -31,55 +31,21 @@ namespace Demo.Controllers
 
         public  IActionResult Index(HomeViewModels model)
         {
-            //// Check if roles are empty and create default roles if necessary
-            //if (!_roleManager.Roles.Any())
-            //{
-            //    // Create customer role if it doesn't exist
-            //    if (!await _roleManager.RoleExistsAsync(Check.Methods.StaticData_CustomerRole))
-            //    {
-            //        await _roleManager.CreateAsync(new IdentityRole(Check.Methods.StaticData_CustomerRole));
-            //    }
-
-            //    // Create admin role if it doesn't exist
-            //    if (!await _roleManager.RoleExistsAsync(Check.Methods.StaticData_AdminRole))
-            //    {
-            //        await _roleManager.CreateAsync(new IdentityRole(Check.Methods.StaticData_AdminRole));
-            //    }
-
-            //    // Create admin user if it doesn't exist
-            //    var adminUser = await _userManager.FindByEmailAsync("Admin@gmail.com");
-            //    if (adminUser == null)
-            //    {
-            //        var user = new AppUser
-            //        {
-            //            UserName = "Admin@gmail.com",
-            //            Email = "Admin@gmail.com",
-            //            EmailConfirmed = false,
-            //        };
-
-            //        var result = await _userManager.CreateAsync(user, "AdminPassword123!"); // Ensure strong password policy
-
-            //        if (result.Succeeded)
-            //        {
-            //            await _userManager.AddToRoleAsync(user, Check.Methods.StaticData_AdminRole);
-            //            return RedirectToAction("Login", "Account", new { Area = "identity" });
-            //        }
-            //    }
-            //}
-
-            // Redirect to Admin area if the user is in the Admin role
+          
             if (User.IsInRole(Check.Methods.StaticData_AdminRole))
             {
                 return RedirectToAction("Index", "Product", new { Area = "Admin" });
             }
 
-           
-           var categories = unitOfWork.CategoryRepository.Get(includeProperties: e=>e.Products).ToList();
+
+            var categories = unitOfWork.CategoryRepository.Get(includeProperties: e => e.Products).ToList();
+            
             model.Categories = categories;
+            model.Stocks = unitOfWork.StockRepository.Get().ToList();
 
             return View(model);
         }
-        public IActionResult ProductsCategory(int id)  => View(unitOfWork.ProductRepository.getAllProductsWithspacifsCategory(id));
+        public IActionResult ProductsCategory(int id)  => View(unitOfWork.ProductRepository.getAllProductsWithspacifsCategoryOrBrand(id,brand:false));
         
         public IActionResult Details(int id, ProductDetails model)
         {
