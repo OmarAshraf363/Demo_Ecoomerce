@@ -44,24 +44,6 @@ function allConfirm(id) {
 
 
 
-
-
-//function addToCart(productId) {
-   
-//    fetch(`/Admin/Order/AddToCart/${productId}`, {
-//        method: 'GET'
-//    })
-//        .then(response => response.json())
-//        .then(data => {
-//            if (data.isvalid) {
-//                alert('Product added to cart successfully!');
-//            } else {
-//                alert('Failed to add product to cart.');
-//            }
-//        })
-//        .catch(error => {
-//            console.error('Error:', error);
-//        });
 //}
 
 
@@ -118,7 +100,7 @@ function AddToCart(productId, check) {
     if (!check) {
         //var modalLogin = new bootstrap.Modal(document.getElementById("Login"));
         //modalLogin.show();
-        window.location.href = `identity/account/login`;
+        window.location.href = `/identity/account/login`;
     } else {
 
     var modal = new bootstrap.Modal(document.getElementById("addtocart"));

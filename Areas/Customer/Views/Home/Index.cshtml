@@ -14,10 +14,12 @@
 }
 @if (TempData["success"] != null)
 {
-    <div id="successmsg">
+    <div id="successmsg" class="alert alert-success alert-dismissible fade show" role="alert">
         @TempData["success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
+
 <div style="border-radius:2mm; background-color:#303030;;" class="container-fluid  d-flex justify-content-center align-items-center mt-3 ">
     <p style="color:#eee" class=" m-2">TakeCare About Color And Availabilty !! </p>
 </div>

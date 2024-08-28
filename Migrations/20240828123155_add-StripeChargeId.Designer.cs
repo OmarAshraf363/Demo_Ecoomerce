@@ -4,6 +4,7 @@ using Demo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Demo.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240828123155_add-StripeChargeId")]
+    partial class addStripeChargeId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,9 +109,6 @@ namespace Demo.Migrations
 
                     b.Property<byte>("OrderStatus")
                         .HasColumnType("tinyint");
-
-                    b.Property<string>("PaymentStatus")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateOnly>("RequiredDate")
                         .HasColumnType("date");
@@ -544,15 +544,15 @@ namespace Demo.Migrations
                         {
                             Id = "123548458",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "efc0295f-1247-4605-81c3-b5c10d8bc9b7",
+                            ConcurrencyStamp = "74bdaebe-60a7-4c7b-aab9-814155bdea73",
                             Email = "Admin@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKh+SnNtOLlsX0ntmOkMqIwKHUrHd1qTpPcNxR5nHLwxvqgvqeQcfu818UzWc4p7pA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPqbIrSgkG0JGSEl8JLkBPThpceTEODhcTkvQFapP3op5DcAO7e9cHkiff+jQxEgnQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "408a1c36-654c-4e72-9308-e2737d7cde74",
+                            SecurityStamp = "a730af55-d810-421c-bc6a-8062ebe5af53",
                             TwoFactorEnabled = false,
                             UserName = "Admin@gmail.com",
                             Address = "Test"

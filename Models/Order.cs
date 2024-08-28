@@ -16,8 +16,10 @@ namespace Demo.Models
         public DateOnly RequiredDate { get; set; }
 
         public DateOnly? ShippedDate { get; set; }
+        public string? StripeChargeId { get; set; }
 
-       
+
+        public string? PaymentStatus {  get; set; }
 
         public string? AppUserId { get; set; }
 

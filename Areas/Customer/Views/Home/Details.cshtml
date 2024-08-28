@@ -1,7 +1,19 @@
 ﻿@model Demo.ViewModels.ProductDetails
-@{
-    int? id = Context.Session.GetInt32("UserID");
-}
+
+    @{
+    var id = User.Identity.IsAuthenticated;
+    bool check;
+    if (id)
+    {
+        check = true;
+    }
+    else
+    {
+        check = false;
+
+    }
+    }
+
 
 <div class="d-flex justify-content-between align-items-center m-3">
     <h2>Product Details</h2>
@@ -17,8 +29,9 @@
         <hr />
         <div class="container d-flex align-items-center justify-content-center gap-2 mb-3">
             <a href="/Order/CreateOrder/@Model.Product.ProductId" style="background-color: #eee;" class="btn">Buy Now</a>
-            <a onclick="AddToCart(@Model.Product.ProductId, @id)" style="background-color: #ff6c2f;" class="btn btn-primary">Add To Cart <i class="fa-solid fa-cart-shopping"></i></a>
-            <a><i style="font-size: 20px;" class="fa-solid fa-heart"></i></a>
+            <button onclick="AddToCart(@Model.Product.ProductId, @(check ? "true" : "false"))" class="btn btn-cart">
+                Add to Cart <i class="fa-solid fa-cart-plus"></i>
+            </button>            <a><i style="font-size: 20px;" class="fa-solid fa-heart"></i></a>
         </div>
     </div>
 
@@ -29,7 +42,7 @@
                 <div class="info">
                     <h4 class="card-title">@Model.Product.ProductName</h4>
                     <h5 class="text-dark fw-medium">Description:</h5>
-                    <p style="font-size: small;" class="card-text w-50">@Model.Product.ProductDescription</p>
+                    <p style="font-size: small; width:50%;" class="card-text">@Model.Product.ProductDescription</p>
                     <p class="card-text">
                         @for (int i = 0; i < 5; i++)
                         {
@@ -101,25 +114,25 @@
 </div>
 
 <!-- Modal To Add to cart -->
-<div class="modal fade" id="addtocart" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="addtocart" tabindex="-1" aria-labelledby="addToCartLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form id="catform" method="post" action="/Order/AddToCart">
+            <form id="catform" method="post" action="/Admin/Order/AddToCart">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Quantity</h5>
+                    <h5 class="modal-title" id="addToCartLabel">Select Quantity</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group mb-3">
-                        <input type="hidden" id="pId" name="id" />
-                        <label class="form-label">Quantity of Product</label>
-                        <input type="number" class="form-control" name="q" />
+                    <input type="hidden" id="pId" name="id" />
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Quantity</label>
+                        <input type="number" value="1" class="form-control" name="q" min="1" id="quantity" />
                     </div>
-                    <span class="spn text-danger"></span>
+                    <span class="text-danger spn"></span>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="submit" class="btn btn-primary">Add to Cart</button>
                 </div>
             </form>
         </div>

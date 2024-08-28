@@ -1,9 +1,11 @@
 ﻿@model IEnumerable<Demo.ViewModels.CartViewModel>
 @{
     decimal? totalResult = 0;
-   
-}
 
+}
+@if (Model.Any())
+{
+    
 <div class="container d-flex justify-content-between align-items-center py-5">
     <div style="width: 60%; border: 1px solid #303030; background-color: #ffffff;" class="container rounded-3 shadow-lg p-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -37,7 +39,7 @@
                     </div>
 
                     <div class="cart-item-actions">
-                        <a onclick="showAlert(@item.ProductId,'Cart','Customer')" class="text-danger"><i class="fa-solid fa-xmark text-danger"></i></a>
+                        <a asp-action="Delete" asp-route-id="@item.ProductId" class="text-danger"><i class="fa-solid fa-xmark text-danger"></i></a>
                     </div>
                 </div>
                 totalResult += item.TotalPrice;
@@ -66,10 +68,27 @@
                 <span class="fw-bold">Total</span>
                 <span id="sum" class="fw-bold">$@(totalResult *(decimal) 1.1)</span>
             </div>
-            <a href="/Order/Checkout" class="btn btn-primary w-100">Proceed to Checkout</a>
+            <a href="/Customer/Cart/Pay" class="btn btn-primary w-100">Proceed to Checkout</a>
         </div>
     </div>
+    </div>
+}
+else
+{
+
+
+
+<div class="container text-center mt-5">
+    <div class="d-flex flex-column align-items-center">
+        <img src="~/Images/empty-cart.png" alt="Empty Cart" style="width: 150px; height: auto;" />
+        <h2 class="mt-4">Your Cart is Empty</h2>
+        <p class="text-muted">It looks like you haven't added any items to your cart yet.</p>
+        <a asp-action="Index" asp-controller="Home" class="btn btn-primary mt-3">Continue Shopping</a>
+    </div>
 </div>
+
+}
+
 
 
 

@@ -2,6 +2,13 @@
 using Demo.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Stripe.Checkout;
+using Stripe;
+using System.Net.Mail;
+using Newtonsoft.Json;
+using Demo.ViewModels;
+using Demo.Check;
+
 
 namespace Demo.Areas.Customer.Controllers
 {
@@ -22,9 +29,20 @@ namespace Demo.Areas.Customer.Controllers
         public IActionResult Index()
         {
             var userId = userManager.GetUserId(User);
-            var order = unitOfWork.OrderRepository.GetUserOrder(userId);//get user order
+            var order = unitOfWork.OrderRepository.GetOne(e => e.AppUserId == userId&&e.OrderStatus==0);
+            if(order == null)
+            {
+             
+                    return View(new List<CartViewModel>());
+                
+            }
+          //get user order
             var orderItems = unitOfWork.OrderItemRepository.GetOrderItemsInSpacifcCart(order.OrderId);//get all order items that equal ioorder.orderid
+           
+            TempData["shoppingCart"] = JsonConvert.SerializeObject(orderItems);
             return View(orderItems);
+            
+          
         }
 
         [HttpPost]
@@ -58,7 +76,7 @@ namespace Demo.Areas.Customer.Controllers
         public IActionResult Delete(int id)
         {
             var userId = userManager.GetUserId(User);
-            var order = unitOfWork.OrderRepository.GetOne(e => e.AppUserId == userId);
+            var order = unitOfWork.OrderRepository.GetOne(e => e.AppUserId == userId&&e.OrderStatus==0);
             if (order != null)
             {
                 var item = unitOfWork.OrderItemRepository.GetOne(e => e.ProductId == id && e.OrderId == order.OrderId);
@@ -74,5 +92,49 @@ namespace Demo.Areas.Customer.Controllers
             return BadRequest();
 
         }
+
+
+        public IActionResult Pay()
+        {
+            var items = JsonConvert.DeserializeObject<IEnumerable<CartViewModel>>((string)TempData["shoppingCart"]);
+            var order = unitOfWork.OrderRepository.Get(e => e.OrderId == items.FirstOrDefault().OrderId)?.FirstOrDefault();
+            var options = new SessionCreateOptions
+            {
+                PaymentMethodTypes = new List<string> { "card" },
+                LineItems = new List<SessionLineItemOptions>(),
+
+                Mode = "payment",
+                SuccessUrl = $"{Request.Scheme}://{Request.Host}/{Methods.StaticData_CustomerRole}/checkout/success",
+                CancelUrl = $"{Request.Scheme}://{Request.Host}/{Methods.StaticData_CustomerRole}/checkout/cancel",
+            };
+            foreach (var model in items)
+            {
+                var result = new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        Currency = "usd",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = model.ProductName,
+                        },
+                        UnitAmount = (long)model.ListPrice * 100,
+                    },
+                    Quantity = model.Quantity,
+                };
+                options.LineItems.Add(result);
+            }
+            var service = new SessionService();
+            var session = service.Create(options);
+
+            if (order != null)
+            {
+                order.StripeChargeId = session.Id; // Save the session ID or charge ID as needed
+                unitOfWork.OrderRepository.Save();
+            }
+            return Redirect(session.Url);
+        }
+
+
     }
 }

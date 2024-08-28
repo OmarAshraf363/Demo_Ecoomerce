@@ -16,7 +16,7 @@ namespace Demo.Repository.ModelsRepository.OrderItemRepository
 
        public IEnumerable<CartViewModel> GetOrderItemsInSpacifcCart(int? orderId)
         {
-            var orderItems = Get(e=>e.OrderId==orderId,e=>e.Product)
+            var orderItems = Get(e=>e.OrderId==orderId,e=>e.Product,e=>e.Order)
              .Select(e => new CartViewModel
              {
                  OrderId=orderId,
