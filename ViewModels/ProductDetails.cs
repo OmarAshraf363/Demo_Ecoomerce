@@ -6,5 +6,7 @@ namespace Demo.ViewModels
     {
         public Product? Product { get; set; }
         public int? Quantity {  get; set; }
+
+        public IEnumerable<Product>? Products { get; set; }
     }
 }

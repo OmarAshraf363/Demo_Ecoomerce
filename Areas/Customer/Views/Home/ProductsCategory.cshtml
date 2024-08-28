@@ -1,10 +1,22 @@
 ﻿@model Demo.ViewModels.AddProductFromCategoryViewModel
+@{
+    var id = User.Identity.IsAuthenticated;
+    bool check;
+    if (id)
+    {
+        check = true;
+    }
+    else
+    {
+        check = false;
+    }
 
+}
 
 @if (Model.Products.Count() != 0)
 {
     <div style=" border-radius:2mm; background-color:#eee;" class="container pe-5 ps-6  mt-3  d-flex  justify-content-between  align-items-center">
-        <a href="/home" style="border:none;" class="btn btn-outline-secondary  ps-4 pe-4"> <i style="font-size:30px;" class="fa-solid fa-arrow-left"></i> </a>
+        <a asp-area="customer" asp-action="Index" style="border:none;" class="btn btn-outline-secondary  ps-4 pe-4"> <i style="font-size:30px;" class="fa-solid fa-arrow-left"></i> </a>
         <h2>@Model.CategoryName</h2>
         <span> Contains : @Model.Products.Count()</span>
        
@@ -17,23 +29,65 @@
         @foreach (var product in Model.Products)
         {
 
-            <div class="card m-3 " style="width: 17.8rem;">
-                <a href=""> <img class="card-img-top" src="~/Images/@product.Image" style="height:15rem;" /></a>
+            <div class="card product-card m-3 p-3 rounded-3 position-relative shadow-sm" style="width: 18rem; height: 40rem;">
+                <a href="/Customer/Home/Details/@product.ProductId">
+                    <img class="card-img-top rounded-3" src="~/Images/@product.Image" style="height: 15rem;" />
+                </a>
+                <span class="position-absolute top-0 end-0 p-2">
+                    <i class="fa-regular fa-heart fa-lg text-danger"></i>
+                </span>
                 <div class="card-body">
-                    <h5 class="card-title">@product.ProductName</h5>
-                    <h6 style="font-size:small;" class="card-text">@product.ProductDescription</h6>
-                    <p class="card-text">
-                        @for (int i = 0; i < product.Rate; i++)
+                    <h5 class="card-title text-primary">@product.ProductName</h5>
+                    <p class="card-text text-muted">
+                        @if (product.ProductDescription.Length > 80)
                         {
 
-                            <a href="#">  <i class="fa-regular fa-star "></i> </a>
+                            @for (int i = 0; i < 100; i++)
+                            {
 
+                                @product.ProductDescription[i]
+
+                            }
+                            <a asp-action="Details" asp-route-id="@product.ProductId">More...</a>
                         }
-                        <span class="ms-3">@product.ListPrice $</span>
-
+                        else
+                        {
+                            @product.ProductDescription
+                        }
                     </p>
-                    <a href="/Product/GetById/@product.ProductId" class="btn btn-primary">Details</a>
-                    <a href="/Product/GetById/@product.ProductId" class="btn btn-primary">Cart <i class="fa-solid fa-plus"></i></a>
+                    <p class="card-text">
+                        @for (int i = 0; i < 5; i++)
+                        {
+                            if (i < product.Rate)
+                            {
+                                <i class="fa-solid fa-star text-warning"></i>
+                            }
+                            else
+                            {
+                                <i class="fa-solid fa-star text-secondary"></i>
+                            }
+                        }
+                        <span class="ms-3 fw-bold text-success">@product.ListPrice $</span>
+                    </p>
+                    <ul class="list-unstyled my-3">
+                        @if (Model.Stocks.FirstOrDefault(e => e.ProductId == product.ProductId)?.Quantity == 0)
+                        {
+                            <li class="text-danger">
+                                <i class="fa-solid fa-xmark me-2"></i>Not In Stock
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="text-success">
+                                <i class="fa-solid fa-check me-2"></i>In Stock
+                            </li>
+                        }
+                        <li><i class="fa-solid fa-truck me-2"></i>Free delivery available</li>
+                        <li><i class="fa-solid fa-credit-card me-2"></i>Payment by PayPal and Stripe</li>
+                    </ul>
+                    <button onclick="AddToCart(@product.ProductId, @(check ? "true" : "false"))" class="btn btn-cart">
+                        Add to Cart <i class="fa-solid fa-cart-plus"></i>
+                    </button>
                 </div>
             </div>
 
@@ -51,3 +105,28 @@ else
 
 
 
+<!-- Modal For Add to Cart -->
+<div class="modal fade" id="addtocart" tabindex="-1" aria-labelledby="addToCartLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="catform" method="post" action="/Admin/Order/AddToCart">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addToCartLabel">Select Quantity</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="pId" name="id" />
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Quantity</label>
+                        <input type="number" value="1" class="form-control" name="q" min="1" id="quantity" />
+                    </div>
+                    <span class="text-danger spn"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

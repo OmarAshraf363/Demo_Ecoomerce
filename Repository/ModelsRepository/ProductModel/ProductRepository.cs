@@ -67,6 +67,8 @@ namespace Demo.Repository.ModelsRepository.ProductModel
                     Categories = categories,
                     Is_brand= brand,
                     Stores=context.Stores.ToList(),
+                    Stocks=context.Stocks.ToList(),
+
                     
                 };
                 return model;
@@ -84,6 +86,7 @@ namespace Demo.Repository.ModelsRepository.ProductModel
                     CategoryName = category.CategoryName,
                     Brands = brans,
                     Stores = context.Stores.ToList(),
+                    Stocks = context.Stocks.ToList(),
 
                 };
                 return model;

@@ -1,15 +1,8 @@
 ﻿@model Demo.ViewModels.ProductDetails
 @{
-
     int? id = Context.Session.GetInt32("UserID");
     Layout = "_AdminLayout";
-
 }
-@* <div style=" border-radius:2mm; background-color:#eee;" class="container pe-5 ps-6  mt-3  d-flex  justify-content-between  align-items-center">
-    <a href="/home" style="border:none;" class="btn btn-outline-secondary  ps-4 pe-4"> <i style="font-size:30px;" class="fa-solid fa-arrow-left"></i> </a>
-
-</div> *@
-
 
 <div class="d-flex justify-content-between align-items-center m-3">
     <h2 class="">Product Details</h2>
@@ -17,78 +10,62 @@
         <input type="text" name="productName" class="form-control me-2" placeholder="Filter by Product Name" value="@ViewBag.CurrentFilterProductName" />
         <button type="submit" class="btn btn-secondary">Filter</button>
     </form>
-
 </div>
 
-
-<div class="container d-flex align-items-start flex-wrap gap-4 ">
-    <div class=" py-3 card mb-3 " style="width: 20rem;border-radius:20px; ">
-        <div class="container mb-3">
-            <a href=""> <img class="card-img-top" src="~/Images/@Model.Product.Image" style="height:15rem;" /></a>
-
+<div class="container d-flex align-items-start flex-wrap gap-4">
+    <div class="py-3 card mb-3" style="width: 20rem; border-radius: 20px; position: relative;">
+        <div class="image-container">
+            <img src="~/Images/@Model.Product.Image" class="card-img-top" style="height: 15rem;" id="productImage" />
         </div>
         <hr />
-        <div class="container d-flex align-items-center justify-content-center gap-2  mb-3">
-            <a href="/Order/CraeteOrder/@Model.Product.ProductId" style="background-color:#eee;" class="btn">Buy Now</a>
-            <a onclick="AddToCart(@Model.Product.ProductId,@id)" style="background-color:ff6c2f;" class="btn btn-primary">Add To Cart <i class="fa-solid fa-cart-shopping"></i></i></a>
+        <div class="container d-flex align-items-center justify-content-center gap-2 mb-3">
+            <a href="/Order/CreateOrder/@Model.Product.ProductId" style="background-color:#eee;" class="btn">Buy Now</a>
+            <a onclick="AddToCart(@Model.Product.ProductId,@id)" style="background-color:#ff6c2f;" class="btn btn-primary">Add To Cart <i class="fa-solid fa-cart-shopping"></i></a>
             <a><i style="font-size:20px;" class="fa-solid fa-heart"></i></a>
         </div>
     </div>
-    <div style="background-color:white;border-radius:15px;" class=" card-body">
-        <h4 class="card-title">@Model.Product.ProductName</h4>
-        <h5 class="text-dark fw-medium">Description :</h5>      
-        <p style="font-size:small;" class="card-text">@Model.Product.ProductDescription</p>
-        <p class="card-text">
-            @for (int i = 0; i < 5; i++)
-            {
-                if (i < Model.Product.Rate)
+    <div style="background-color:white; border-radius:15px;" class="w-50 d-flex align-items-start justify-content-between card-body">
+        <div>
+            <h4 class="card-title">@Model.Product.ProductName</h4>
+            <h5 class="text-dark fw-medium">Description :</h5>
+            <p style="font-size:small;" class="card-text w-50">@Model.Product.ProductDescription</p>
+            <p class="card-text">
+                @for (int i = 0; i < 5; i++)
                 {
-
-
-                    <i style="color:#f9b931;" class="fa-solid fa-star"></i>
+                    if (i < Model.Product.Rate)
+                    {
+                        <i style="color:#f9b931;" class="fa-solid fa-star"></i>
+                    }
+                    else
+                    {
+                        <i style="color:#eee;" class="fa-solid fa-star"></i>
+                    }
+                }
+            </p>
+            <p style="font-weight:bolder; font-size:20px;">@Model.Product.ListPrice $</p>
+            <p class="card-text">Brand : @Model.Product.Brand.BrandName</p>
+            <p class="card-text">Category : @Model.Product.Category.CategoryName</p>
+            <p class="card-text">Quantity : @Model.Quantity</p>
+            <hr />
+            <ul style="color:gray" class="d-flex flex-column gap-2 list-unstyled fs-15 my-3">
+                @if (Model.Quantity == 0)
+                {
+                    <li><i class="me-2 fa-solid fa-xmark"></i> Not In Stock</li>
                 }
                 else
                 {
-                    <i style="color:#eee;" class="fa-solid fa-star"></i>
+                    <li><i class="me-2 fa-solid fa-check"></i> In Stock</li>
                 }
+                <li><i class="me-2 fa-solid fa-check"></i> Free delivery available</li>
+                <li><i class="me-2 fa-solid fa-check"></i> Sales 10% Off Use Code: <span class="text-dark fw-medium">CODE123</span></li>
+            </ul>
+        </div>
+        <div class="zoom-section" id="zoomSection"></div>
 
-            }
-
-        </p>
-        <p style="font-weight:bolder; font-size:20px;">@Model.Product.ListPrice $</p>
-        <p class="card-text">Brand :  @Model.Product.Brand.BrandName </p>
-        <p class="card-text">Category :  @Model.Product.Category.CategoryName </p>
-        <p class="card-text">Quantity :  @Model.Quantity </p>
-        <hr />
-        <ul style="color:gray" class="d-flex flex-column gap-2 list-unstyled fs-15 my-3">
-            @if (Model.Quantity == 0)
-            {
-                <li>
-                    <i class="me-2 fa-solid fa-xmark"></i>
-                    Not In Stock
-                </li>
-
-
-            }
-            else
-            {
-                <li>
-
-                    <i class=" me-2 fa-solid fa-check"></i>In Stock
-                </li>
-            }
-            <li>
-                <i class=" me-2 fa-solid fa-check"></i> Free delivery available
-            </li>
-            <li>
-                <i class=" me-2 fa-solid fa-check"></i> Sales 10% Off Use Code: <span class="text-dark fw-medium">CODE123</span>
-            </li>
-        </ul>
 
 
     </div>
 </div>
-
 
 <!-- Modal To Add to cart -->
 <div class="modal fade" id="addtocart" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -104,7 +81,6 @@
                         <input type="hidden" id="pId" name="id" />
                         <label class="form-label">Quantity of Product</label>
                         <input type="number" class="form-control" name="q" />
-
                     </div>
                     <span class="spn text-danger"></span>
                 </div>
@@ -116,3 +92,52 @@
         </div>
     </div>
 </div>
+
+<style>
+  
+
+    .zoom-section {
+      /*   position: absolute;
+        top: 0;
+        right: 0; */
+        width: 500px; /* Adjust width as needed */
+        height: 250px; /* Adjust height as needed */
+        border: 2px solid #ccc;
+        background-color: white;
+        overflow: hidden;
+        display: none; /* Hide by default */
+        background-repeat: no-repeat;
+        background-size: 200%; /* Adjust zoom level */
+        pointer-events: none; /* Ensure it does not capture mouse events */
+        border-radius:10px;
+    }
+
+  
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const image = document.getElementById('productImage');
+        const zoomSection = document.getElementById('zoomSection');
+
+        image.addEventListener('mousemove', function (e) {
+            const rect = image.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // Calculate the background position
+            const xPercent = (x / rect.width) * 100;
+            const yPercent = (y / rect.height) * 100;
+            zoomSection.style.cssText=`display:block;`
+            zoomSection.style.backgroundImage = `url('${image.src}')`;
+            zoomSection.style.backgroundPosition = `${xPercent}% ${yPercent}%`;
+        });
+
+        image.addEventListener('mouseleave', function () {
+            zoomSection.style.backgroundImage = 'none';
+            zoomSection.style.cssText = `display:none;`
+
+            // Hide zoom section when leaving the image
+        });
+    });
+</script>

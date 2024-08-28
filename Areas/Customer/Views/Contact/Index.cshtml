@@ -1,0 +1,183 @@
+﻿  <!-- Header Section -->
+<section  class="contact-header text-dark">
+    <h1>We’d Love to Hear From You</h1>
+    <p>Reach out to us for inquiries, support, or just to say hello!</p>
+    <a href="#contact-form" class="btn-primary">Get in Touch</a>
+</section>
+
+<!-- Contact Information Section -->
+<section class="contact-info">
+    <div class="contact-card">
+        <h2>Visit Us</h2>
+        <p>123 Main Street, Anytown, USA</p>
+        <iframe src="https://maps.google.com/maps?q=New%20York&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+    </div>
+    <div class="contact-card">
+        <h2>Call or Email Us</h2>
+        <p><a href="tel:+1234567890">+201008670957</a></p>
+        <p><a href="mailto:info@example.com">Oa38150@gmail.com</a></p>
+    </div>
+    <div class="contact-card">
+        <h2>Follow Us</h2>
+        <div class="social-icons">
+             <a href="#"> <i class="fa-brands fa-facebook"></i></a>
+            <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+           
+        </div>
+    </div>
+</section>
+
+<!-- Contact Form Section -->
+<section id="contact-form" class="contact-form">
+    <h2>Send Us a Message</h2>
+    <form action="/submit" method="post">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="subject">Subject</label>
+            <select id="subject" name="subject" required>
+                <option value="support">Support</option>
+                <option value="sales">Sales Inquiry</option>
+                <option value="feedback">Feedback</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+        </div>
+        <button type="submit" class="btn-primary">Send Message</button>
+    </form>
+</section>
+
+                <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+
+    .contact-header {
+        background: url('header-background.jpg') no-repeat center center/cover;
+        padding: 100px 0;
+        text-align: center;
+        color: #fff;
+    }
+
+        .contact-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .contact-header p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+    .btn-primary {
+        background: linear-gradient(45deg, #007bff, #00c6ff);
+        color: #fff;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 25px;
+        transition: background 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #00c6ff, #007bff);
+        }
+
+    .contact-info {
+        display: flex;
+        justify-content: space-around;
+        padding: 50px 10px;
+        background-color: #fff;
+    }
+
+    .contact-card {
+        background: #f7f7f7;
+        padding: 20px;
+        border-radius: 10px;
+        width: 30%;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+        .contact-card h2 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .contact-card p, .contact-card a {
+            font-size: 1.1rem;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .contact-card iframe {
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+        }
+
+    .social-icons a {
+        color: #007bff;
+        font-size: 1.5rem;
+        margin: 0 10px;
+        text-decoration: none;
+    }
+
+    .contact-form {
+        background-color: #fff;
+        padding: 50px 10px;
+        text-align: center;
+    }
+
+        .contact-form h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+        }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+    .contact-form button {
+        background: linear-gradient(45deg, #007bff, #00c6ff);
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+        .contact-form button:hover {
+            background: linear-gradient(45deg, #00c6ff, #007bff);
+        }
+
+</style>

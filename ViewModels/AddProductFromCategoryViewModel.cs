@@ -4,6 +4,7 @@ namespace Demo.ViewModels
 {
     public class AddProductFromCategoryViewModel
     {
+        public List<Stock> Stocks { get; set; }= new List<Stock>(); 
         public List<Category> Categories { get; set; }=new List<Category>();
         public int? CategoryId { get; set; }
        

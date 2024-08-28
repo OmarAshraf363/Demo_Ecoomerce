@@ -1,11 +1,27 @@
 ﻿@{
     if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout !=  null)
     {
-        Layout = "~/Views/Shared/_AdminLayout.cshtml";
+        if (User.IsInRole(Demo.Check.Methods.StaticData_CustomerRole))
+        {
+            
+        Layout = "~/Views/Shared/_MyLayout.cshtml";
+        }
+        else
+        {
+            Layout = "~/Views/Shared/_AdminLayout.cshtml";
+        }
     }
     else
     {
-        Layout = "~/Views/Shared/_AdminLayout.cshtml";
+        if (User.IsInRole(Demo.Check.Methods.StaticData_CustomerRole))
+        {
+
+            Layout = "~/Views/Shared/_MyLayout.cshtml";
+        }
+        else
+        {
+            Layout = "~/Views/Shared/_AdminLayout.cshtml";
+        }
     }
 }
 

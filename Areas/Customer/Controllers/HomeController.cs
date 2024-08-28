@@ -57,84 +57,11 @@ namespace Demo.Controllers
                 model.Quantity = Q.Quantity;
             }
             else { model.Quantity = 0; }
+            model.Products = unitOfWork.ProductRepository.Get(e => e.CategoryId == item.CategoryId);
+            
             return View(model);
         }
-        //[HttpPost]
-        //public IActionResult Login(LoginViewModel  model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var customer = unitOfWork.CustomarRepository.GetOne(e => e.Phone == model.Phone && e.Email == model.Email);
-
-
-        //        if (customer == null)
-        //        {
-        //            ModelState.AddModelError("", "Wrong Email or Phone");
-        //            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-        //            {
-        //                return Json(new {isvalid=false , errors = "Wrong Email or Phone", type = "all" });
-        //            }
-
-        //            return View("Index", model); 
-        //        }
-        //        else
-        //        {
-        //            HttpContext.Session.SetInt32("UserID", customer.CustomerId);
-        //            HttpContext.Session.SetString("UserName", $"{customer.FirstName} {customer.LastName}");
-        //            HttpContext.Session.SetString("UserType", "Customer");
-        //            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-        //            {
-        //                return Json(new { isvalid = true });
-        //            }
-        //            return RedirectToAction("Index");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-        //        {
-
-        //            return Json(new { isvalid = false, errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage),type="one" });
-        //        }
-        //        return View("Index", model); 
-        //    }
-        //}
-        //[HttpPost]
-        //public IActionResult Register(HomeViewModels model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        if (Request.Headers["X-Requested-With"]=="XMLHttpRequest")
-        //        {
-        //            return Json(new { isvalid = false, errors = ModelState.Values
-        //                .SelectMany(v => v.Errors).Select(e => e.ErrorMessage), type = "one" });
-        //        }
-        //        return View("Index",model);
-        //    }
-        //    else
-        //    {
-        //        var checkUser = unitOfWork.CustomarRepository.GetOne(e => e.Email == model.Customar.Email || e.Phone == model.Customar.Phone);
-
-        //        if (checkUser == null)
-        //        {
-        //           unitOfWork.CustomarRepository.AddFromViewModel(model);
-        //            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-        //            {
-        //                return Json(new { isvalid = true });
-        //            }
-        //            return RedirectToAction("Index");
-        //        }
-        //        else
-        //        {
-        //            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-        //            {
-        //                return Json(new { isvalid = false, errors = "Wrong Email or Phone", type = "all" });
-        //            }
-        //            return View("Index",model);
-        //        }
-        //    }
-
-        //}
+       
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
