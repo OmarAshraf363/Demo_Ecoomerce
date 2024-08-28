@@ -25,6 +25,14 @@ public class Program
 
         builder.Services.Configure<IdentityOptions>(options =>
         {
+            options.Lockout.AllowedForNewUsers = true;
+            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(14);
+            options.Lockout.MaxFailedAccessAttempts = 5;
+
+
+
+
+
             options.Password.RequireDigit = false;
             options.Password.RequireLowercase = true;
             options.Password.RequireUppercase = true;
