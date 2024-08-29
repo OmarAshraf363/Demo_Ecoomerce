@@ -6,7 +6,7 @@ namespace Demo.ViewModels
 {
     public class ProductsViewModels
     {
-        public int? ProductId {  get; set; }
+        public int ProductId {  get; set; }
         public Product? Product { get; set; }
         public List<Product> Products { get; set; } = new List<Product>();
         public List<Category> Categories { get; set;} = new List<Category>();
@@ -19,8 +19,8 @@ namespace Demo.ViewModels
      
         public decimal ListPrice { get; set; }
       
-       public int? Quantity {  get; set; }
-        public int? StoreId {  get; set; }
+       public int Quantity {  get; set; }
+        public int StoreId {  get; set; }
         public List<Store> Stores { get; set; }=new List<Store>() ;
         public int BrandId { get; set; }
 

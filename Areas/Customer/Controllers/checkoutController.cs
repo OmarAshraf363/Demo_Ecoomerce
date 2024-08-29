@@ -34,8 +34,23 @@ namespace Demo.Areas.Customer.Controllers
             var userOrder = unitOfWork.OrderRepository.Get(e => e.AppUserId == userId && e.OrderStatus == 0)?.FirstOrDefault();
             if (userOrder != null)
             {
+
+
                 var orderItem = unitOfWork.OrderItemRepository.GetOne(e => e.OrderId == userOrder.OrderId);
                 orderItem.TotalPrice=orderItem.ListPrice*orderItem.Quantity;
+
+
+                var productStock = unitOfWork.StockRepository.GetOne(e => e.ProductId == orderItem.ProductId);
+                if(productStock != null)
+                {
+                productStock.Quantity -= orderItem.Quantity;
+                   
+
+                }
+               
+
+
+
                 userOrder.OrderStatus = 1;
                 userOrder.RequiredDate = DateOnly.FromDateTime(DateTime.Now);
                 userOrder.PaymentStatus = Check.Methods.StaticDataInProcessPayment;

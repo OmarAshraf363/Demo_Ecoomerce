@@ -34,26 +34,8 @@ namespace Demo.Areas.Admin.Controllers
             //get all order items that equal ioorder.orderid
             return View(orders);
         }
-        [HttpPost]
-        public IActionResult AddToCart(int id, int q)
-        {
-
-            if (q == 0)
-            {
-                q = 1;
-            }
-            var userId = userManager.GetUserId(User);
-            var order = unitOfWork.OrderRepository.CreateFirstOrderIfNotExisted(userId);
-            var orderitems = unitOfWork.OrderItemRepository.Get().
-                Where(e => e.ProductId == id && e.OrderId == order.OrderId)
-                .SingleOrDefault();
-
-            unitOfWork.OrderItemRepository.createOrderItemsIfNotExisted(id, order.OrderId, q);
-            unitOfWork.OrderItemRepository.Save();
-            TempData["success"] = "Successfully Added To Cart";
-
-            return RedirectToAction("Index", "Home", new { Area = "Customer" });
-        }
+       
+        
         public IActionResult Delete(int id)
         {
            var order=unitOfWork.OrderRepository.GetOne(e=>e.OrderId==id);

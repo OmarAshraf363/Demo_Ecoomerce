@@ -1,0 +1,37 @@
+﻿@model Demo.ViewModels.AddToStockVM
+
+<form id="AddInStock" method="post" action="/Admin/Product/AddToStock">
+    <div class="modal-header">
+        <h5 class="modal-title" id="AddProductLabel">Create New Product</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <input asp-for="ProductId" id="pId" type="hidden" />
+
+
+        <div class="form-group mb-3">
+            <label class="form-label" asp-for="Quantity">Quantity</label>
+            <input class="form-control" asp-for="Quantity" />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+
+
+        </div>
+
+
+        <div class="form-group mb-3">
+            <label class="form-label" asp-for="StoreId">Stores Name</label>
+            <select asp-for="StoreId" class="form-select">
+                @foreach (var store in Model.Stores)
+                {
+                    <option value="@store.StoreId">@store.StoreName</option>
+                }
+            </select>
+            <span asp-validation-for="StoreId" class="text-danger"></span>
+
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" onclick="allConfirm('AddInStock')" class="btn btn-primary">Add To Stock</button>
+    </div>
+</form>

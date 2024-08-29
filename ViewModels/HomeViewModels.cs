@@ -1,21 +1,26 @@
 ﻿using Demo.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 
 namespace Demo.ViewModels
 {
     public class HomeViewModels
     {
-        public List<Category> Categories { get; set; }=new List<Category>();
-       
+        [ValidateNever]
+        public List<Category> Categories { get; set; } = new List<Category>();
+        [ValidateNever]
+
         public CustomarViewModels Customar { get; set; } = new CustomarViewModels();
-        public List<Stock> Stocks { get; set; }=new List<Stock>();
+        [ValidateNever]
 
+        public List<Stock> Stocks { get; set; } = new List<Stock>();
 
-        [Required]
-        [MinLength(1)]
+        [Required(ErrorMessage = "Required")]
         
-        public int? Quantity {  get; set; }
-    
+        public string Quantity { get; set; } ="1";
+  
+        
+    public int productId { get; set; }
 
        
     }

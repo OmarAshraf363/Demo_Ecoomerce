@@ -1,7 +1,7 @@
 ﻿@model Demo.ViewModels.ProductsViewModels
 
 @{
-   
+
     Layout = "_AdminLayout";
 }
 
@@ -15,7 +15,7 @@
         <button onclick="openModal(null, 'Product', 'AddProduct', 'Create')" class="btn btn-primary">Add New Product</button>
     </div>
 
-    <div  class="bg-light p-4 rounded-3 table-responsive">
+    <div class="bg-light p-4 rounded-3 table-responsive">
         <table class="table table-hover">
             <thead style="background-color:#262d34; color:#ccc;" class="rounded-3">
                 <tr>
@@ -52,6 +52,10 @@
                             <a asp-action="Details" asp-route-id="@product.ProductId" class="btn btn-info btn-sm" title="View Details">
                                 <i class="fa-solid fa-circle-info"></i>
                             </a>
+                            <a onclick="openAddToStock(@product.ProductId)  " class="btn btn-primary btn-sm" title="Add-To-Stock">
+                                 <i class="fas fa-plus"
+                            </a>
+
                         </td>
                     </tr>
                 }
@@ -82,3 +86,12 @@
 
 
 <!-- End Modal To Edit Product -->
+<!-- Modal To Add In Stock  -->
+<div class="modal fade" id="AddToStock" tabindex="-1" aria-labelledby="AddProductLabel" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+
+            <!-- Content loaded via AJAX -->
+        </div>
+    </div>
+</div>

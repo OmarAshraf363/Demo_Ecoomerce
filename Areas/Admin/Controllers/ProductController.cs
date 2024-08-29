@@ -23,35 +23,37 @@ namespace Demo.Controllers
         public IActionResult Index(string productName)
         {
             ProductsViewModels model = new ProductsViewModels();
-           model= unitOfWork.ProductRepository.putAllInfoInProductViewModel(model);
+            model = unitOfWork.ProductRepository.putAllInfoInProductViewModel(model);
             if (!string.IsNullOrEmpty(productName))
             {
                 var loweerProductName = productName.ToLower();
-                model.Products=model.Products.Where(e=>e.ProductName.ToLower().IndexOf(loweerProductName, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                model.Products = model.Products.Where(e => e.ProductName.ToLower().IndexOf(loweerProductName, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             }
-            ViewBag.CurrentFilterProductName=productName;
+            ViewBag.CurrentFilterProductName = productName;
             return View(model);//check ProductsView Models
         }
 
 
-        public IActionResult MobCat(int id) => View(unitOfWork.ProductRepository.getAllProductsWithspacifsCategoryOrBrand(id,brand:false)); //check Categoet Add to
+        public IActionResult MobCat(int id) => View(unitOfWork.ProductRepository.getAllProductsWithspacifsCategoryOrBrand(id, brand: false)); //check Categoet Add to
         public IActionResult ProductsBrand(int id)
         {
-            var model= unitOfWork.ProductRepository.getAllProductsWithspacifsCategoryOrBrand(id, brand: true);
+            var model = unitOfWork.ProductRepository.getAllProductsWithspacifsCategoryOrBrand(id, brand: true);
             return View("MobCat", model);
         }
 
-       
+
         public IActionResult Details(int id, ProductDetails model)
         {
-            var item = unitOfWork.ProductRepository.GetOne(e => e.ProductId == id, e => e.Brand,expression=>expression.Category);
+            model.realQuantity = int.Parse(model.Quantity);
+            var item = unitOfWork.ProductRepository.GetOne(e => e.ProductId == id, e => e.Brand, expression => expression.Category);
             model.Product = item;
             var Q = unitOfWork.StockRepository.GetOne(e => e.ProductId == id);
             if (Q != null)
             {
-                model.Quantity = Q.Quantity;
+                model.realQuantity = Q.Quantity;
             }
-            else { model.Quantity = 0; }
+            else { model.realQuantity = 0; }
+
             return View(model);
         }
 
@@ -62,7 +64,7 @@ namespace Demo.Controllers
             {
                 Categories = unitOfWork.CategoryRepository.Get().ToList(),
                 Brands = unitOfWork.BrandRepository.Get().ToList(),
-                Stores=unitOfWork.StoreRepository.Get().ToList(),
+                Stores = unitOfWork.StoreRepository.Get().ToList(),
             };
             return PartialView("_AddPartialView", model);
         }
@@ -77,7 +79,7 @@ namespace Demo.Controllers
 
 
 
-                return RedirectToAction("AddProductToStock", new { id = productId , quantity=model.Quantity , storeId = model.StoreId});
+                return RedirectToAction("AddProductToStock", new { id = productId, quantity = model.Quantity, storeId = model.StoreId });
             }
             else
             {
@@ -90,7 +92,7 @@ namespace Demo.Controllers
         public IActionResult Delete(int id)
         {
             var item = unitOfWork.ProductRepository.GetOne(e => e.ProductId == id);
-            
+
             unitOfWork.ProductRepository.Delete(item);
             return RedirectToAction("Index");
         }
@@ -122,12 +124,12 @@ namespace Demo.Controllers
                 return View(model);
             }
         }
-        public IActionResult AddProductToStock(int id,int quantity,int storeId)
+        public IActionResult AddProductToStock(int id, int quantity, int storeId)
         {
 
             var stock = new Stock()
             {
-                StoreId =storeId ,
+                StoreId = storeId,
                 ProductId = id,
                 Quantity = quantity
 
@@ -136,6 +138,58 @@ namespace Demo.Controllers
             return RedirectToAction("Index");
         }
 
+
+
+
+
+        [HttpGet]
+        public IActionResult AddToStock()
+        {
+            AddToStockVM model = new()
+            {
+                Stores = unitOfWork.StoreRepository.Get().ToList()
+            };
+
+            return PartialView("_AddToStock", model);
+        }
+
+        [HttpPost]
+        public IActionResult AddToStock([Bind("StoreId", "Quantity", "ProductId")] AddToStockVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                var productInStock=unitOfWork.StockRepository.GetOne(e=>e.ProductId == model.ProductId);
+                if (productInStock != null)
+                {
+                    var result = Check.Methods.CheckValidation(ModelState, Request, true);
+                    if (result != null) { return result; }
+                    productInStock.Quantity += model.Quantity;
+                    unitOfWork.StockRepository.Save();
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+
+                var stock = new Stock()
+                {
+                    StoreId = model.StoreId,
+                    ProductId = model.ProductId,
+                    Quantity = model.Quantity
+
+                };
+                var result = Check.Methods.CheckValidation(ModelState, Request, true);
+                if (result != null) { return result; }
+                unitOfWork.StockRepository.Create(stock);
+                return RedirectToAction("Index");
+                }
+            }
+            else
+            {
+                var result = Check.Methods.CheckValidation(ModelState, Request, false);
+                if (result != null) { return result; }
+            }
+            return RedirectToAction("Index");
+        }
 
 
 

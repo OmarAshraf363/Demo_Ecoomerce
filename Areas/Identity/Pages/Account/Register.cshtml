@@ -2,7 +2,14 @@
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
+    if (User.IsInRole(Demo.Check.Methods.StaticData_AdminRole))
+    {
+        Layout = "_AdminLayout";
+    }
+    else
+    {   
     Layout = "_MyLayout";
+    }
 }
 
 

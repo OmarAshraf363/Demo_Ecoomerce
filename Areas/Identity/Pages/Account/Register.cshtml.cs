@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
+using Demo.Check;
 using Demo.Models;
 using Demo.Repository.IRepository;
 using Microsoft.AspNetCore.Authentication;
@@ -128,7 +129,16 @@ namespace Demo.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+                    if (User.IsInRole(Methods.StaticData_AdminRole))
+                    {
+                        await _userManager.AddToRoleAsync(user, Check.Methods.StaticData_AdminRole);
+
+                    }
+                    else
+                    {
+
                     await _userManager.AddToRoleAsync(user, Check.Methods.StaticData_CustomerRole);
+                    }
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));

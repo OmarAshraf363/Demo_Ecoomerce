@@ -45,10 +45,10 @@
             <p style="font-weight:bolder; font-size:20px;">@Model.Product.ListPrice $</p>
             <p class="card-text">Brand : @Model.Product.Brand.BrandName</p>
             <p class="card-text">Category : @Model.Product.Category.CategoryName</p>
-            <p class="card-text">Quantity : @Model.Quantity</p>
+            <p class="card-text">Quantity : @Model.realQuantity</p>
             <hr />
             <ul style="color:gray" class="d-flex flex-column gap-2 list-unstyled fs-15 my-3">
-                @if (Model.Quantity == 0)
+                @if (Model.realQuantity == 0)
                 {
                     <li><i class="me-2 fa-solid fa-xmark"></i> Not In Stock</li>
                 }

@@ -45,17 +45,101 @@ namespace Demo.Areas.Customer.Controllers
           
         }
 
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //public IActionResult AddToCart(HomeViewModels model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var productInStock = unitOfWork.StockRepository.GetOne(e => e.ProductId == model.productId);
+        //        if (productInStock != null)
+        //        {
+        //            if (productInStock.Quantity > model.Quantity)
+        //            {
+        //                ModelState.AddModelError("quantity", "This Quantity Not Existed in The Stock");
+        //                var result1 = Methods.CheckValidation(ModelState, Request, false);
+        //                if (result1 != null) { return result1; }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            ModelState.AddModelError("quantity", "Not Found This Product");
+        //            var result1 = Methods.CheckValidation(ModelState, Request, false);
+        //            if (result1 != null) { return result1; }
+        //        }
+        //        if (model.Quantity == 0)
+        //        {
+        //            model.Quantity = 1;
+        //        }
+        //        var userId = userManager.GetUserId(User);
+        //        var order = unitOfWork.OrderRepository.CreateFirstOrderIfNotExisted(userId);
+        //        var orderitems = unitOfWork.OrderItemRepository.Get().
+        //            Where(e => e.ProductId == model.productId && e.OrderId == order.OrderId)
+        //            .SingleOrDefault();
+        //        var result = Methods.CheckValidation(ModelState, Request, true);
+        //        if (result != null) { return result; }
+        //        unitOfWork.OrderItemRepository.createOrderItemsIfNotExisted(model.productId, order.OrderId, model.Quantity);
+        //        unitOfWork.OrderItemRepository.Save();
+        //        TempData["success"] = "Successfully Added To Cart";
+
+        //        return RedirectToAction("Index", "Home", new { Area = "Customer" });
+        //    }
+        //    else
+        //    {
+        //        var result = Methods.CheckValidation(ModelState, Request, false);
+        //        if (result != null) { return result; }
+
+        //    }
+        //    return RedirectToAction("Index", "Home", new { Area = "Customer" });
+        //}
+
+
+
+
+
+
+
+
         [HttpPost]
         public IActionResult UpdateQuantity(int id, int productId, int change)
         {
             var orderItem = unitOfWork.OrderItemRepository.Get(e => e.OrderId == id && e.ProductId == productId)?.SingleOrDefault();
-
+            var prouductInStock=unitOfWork.StockRepository.GetOne(e=>e.ProductId == productId);
             if (orderItem != null)
             {
                 orderItem.Quantity += change;
                 if (orderItem.Quantity < 1)
                 {
                     orderItem.Quantity = 1;
+                }else if (orderItem.Quantity>prouductInStock.Quantity)
+                {
+                    orderItem.Quantity=prouductInStock.Quantity;
                 }
 
                 orderItem.TotalPrice = orderItem.Quantity * orderItem.ListPrice;

@@ -33,6 +33,7 @@ function allConfirm(id) {
                     if (field) {
                         let span = field.nextElementSibling;
                         if (span && span.classList.contains('text-danger')) {
+                            console.log(data.nameErrors[fieldName])
                             span.innerHTML = data.nameErrors[fieldName].join("<br>");
                         }
                     }
@@ -102,15 +103,47 @@ function AddToCart(productId, check) {
         //modalLogin.show();
         window.location.href = `/identity/account/login`;
     } else {
+        if (productId == null || productId == undefined) {
 
-    var modal = new bootstrap.Modal(document.getElementById("addtocart"));
-    modal.show();
+            var modal = new bootstrap.Modal(document.getElementById("addtocart"));
+            modal.show();
+        } else {
+            var modal = new bootstrap.Modal(document.getElementById("addtocart"));
+            modal.show();
     document.getElementById("pId").value = productId;
+        }
     }
     
 
 
     
+}
+
+
+function openAddToStock(productId) {
+
+
+
+
+    $.ajax({
+        url: `/Admin/Product/AddToStock`,
+        type: 'GET',
+        success: function (data) {
+            $(`#AddToStock .modal-content`).html(data);
+            $(`#AddToStock`).modal('show');
+            document.getElementById("pId").value = productId;
+        },
+        error: function (xhr, status, error) {
+            console.log(error);
+        }
+    });
+
+   
+        //var modal = new bootstrap.Modal(document.getElementById("AddToStock"));
+        //modal.show();
+        //document.getElementById("pId").value = productId;
+    
+
 }
 
 $(document).ready(function () {
