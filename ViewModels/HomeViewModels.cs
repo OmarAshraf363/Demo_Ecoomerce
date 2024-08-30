@@ -14,6 +14,8 @@ namespace Demo.ViewModels
         [ValidateNever]
 
         public List<Stock> Stocks { get; set; } = new List<Stock>();
+        [ValidateNever]
+        public IEnumerable<Product> Products { get; set;} = Enumerable.Empty<Product>();
 
         [Required(ErrorMessage = "Required")]
         
@@ -21,7 +23,19 @@ namespace Demo.ViewModels
   
         
     public int productId { get; set; }
+        //for filteration
+        public int? SelectedCategory { get; set; }
+        
+                    public decimal? SelectedPrice { get; set; }
+        
+              public int? SelectedRate { get; set; }
+        public bool? SelectedStock { get; set; }
 
-       
+
+
+
+
+
+
     }
 }

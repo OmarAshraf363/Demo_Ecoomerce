@@ -30,19 +30,61 @@ namespace Demo.Controllers
             _userManager = userManager;
         }
 
-        public  IActionResult Index(HomeViewModels model)
+        public IActionResult Index(int? categoryFilter, bool? stock, decimal? price, int? rate)
         {
-          
-            if (User.IsInRole(Check.Methods.StaticData_AdminRole))
+            var model = new HomeViewModels();
+
+            // Check if the user is an Admin
+            if (User.IsInRole(Methods.StaticData_AdminRole))
             {
                 return RedirectToAction("Index", "Product", new { Area = "Admin" });
             }
 
+            // Get all categories
+            model.Categories = unitOfWork.CategoryRepository.Get(includeProperties: e => e.Products).ToList();
 
-            var categories = unitOfWork.CategoryRepository.Get(includeProperties: e => e.Products).ToList();
-            
-            model.Categories = categories;
+            // Get all stocks
             model.Stocks = unitOfWork.StockRepository.Get().ToList();
+
+            // Get all products
+            var products = unitOfWork.ProductRepository.Get().ToList();
+
+            // Filter by category
+            if (categoryFilter.HasValue)
+            {
+                products = products.Where(e => e.CategoryId == categoryFilter.Value).ToList();
+            }
+
+            // Filter by price
+            if (price.HasValue)
+            {
+                products = products.Where(e => e.ListPrice <= price.Value).ToList();
+            }
+
+            // Filter by rating
+            if (rate.HasValue)
+            {
+                products = products.Where(e => e.Rate >= rate.Value).ToList();
+            }
+
+            // Filter by stock availability
+            if (stock.HasValue)
+            {
+                var productIdsInStock = unitOfWork.StockRepository
+                                                   .Get(e => stock.Value ? e.Quantity > 0 : e.Quantity == 0)
+                                                   .Select(e => e.ProductId)
+                                                   .ToList();
+                products = products.Where(p => productIdsInStock.Contains(p.ProductId)).ToList();
+            }
+
+            // Assign filtered products to the model
+            model.Products = products;
+
+            // Set the selected filters in the model
+            model.SelectedCategory = categoryFilter;
+            model.SelectedPrice = price;
+            model.SelectedRate = rate;
+            model.SelectedStock = stock;
 
             return View(model);
         }

@@ -1,17 +1,9 @@
 ﻿@model Demo.ViewModels.HomeViewModels
-@{
-    var id = User.Identity.IsAuthenticated;
-    bool check;
-    if (id)
-    {
-        check = true;
-    }
-    else
-    {
-        check = false;
-    }
 
+@{
+    bool isAuthenticated = User.Identity.IsAuthenticated;
 }
+
 @if (TempData["success"] != null)
 {
     <div id="successmsg" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -20,17 +12,20 @@
     </div>
 }
 
-<div style="border-radius:2mm; background-color:#303030;" class="container-fluid  d-flex justify-content-center align-items-center mt-3 ">
-    <p style="color:#eee" class=" m-2">TakeCare About Color And Availabilty !! </p>
+<div style="border-radius:2mm; background-color:#303030;" class="container-fluid d-flex justify-content-center align-items-center mt-3">
+    <p style="color:#eee" class="m-2">TakeCare About Color And Availability!!</p>
 </div>
-<nav style="border-radius:2mm; background-color:#eee;" class="container navbar d-flex justify-content-center align-items-center navbar-expand-sm navbar-toggleable-sm navbar-light ">
-    <div class=" d-flex justify-content-center">
+
+<nav style="border-radius:2mm; background-color:#eee;" class="container navbar d-flex justify-content-center align-items-center navbar-expand-sm navbar-toggleable-sm navbar-light">
+    <div class="d-flex justify-content-center">
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-center">
             <ul class="navbar-nav flex-grow-1">
-                @foreach (var items in Model.Categories)
+                @foreach (var category in Model.Categories)
                 {
                     <li class="nav-item">
-                        <a class="ms-2 me-2 btn btn-outline-secondary " asp-area="" asp-controller="Home" asp-action="productscategory" asp-route-id="@items.CategoryId">@items.CategoryName</a>
+                        <a class="ms-2 me-2 btn btn-outline-secondary" asp-controller="Home" asp-action="Index" asp-route-categoryFilter="@category.CategoryId">
+                            @category.CategoryName
+                        </a>
                     </li>
                 }
             </ul>
@@ -38,73 +33,149 @@
     </div>
 </nav>
 
-<div class="container d-flex flex-wrap justify-content-center">
-    @foreach (var items in Model.Categories)
-    {
-        @foreach (var product in items.Products)
-        {
-            <div class="card product-card m-3 p-3 rounded-3 position-relative shadow-sm" style="width: 18rem; height: 40rem;">
-                <a href="/Customer/Home/Details/@product.ProductId">
-                    <img class="card-img-top rounded-3" src="~/Images/@product.Image" style="height: 15rem;" />
-                </a>
-                <span class="position-absolute top-0 end-0 p-2">
-                    <i class="fa-regular fa-heart fa-lg text-danger"></i>
-                </span>
-                <div class="card-body">
-                    <h5 class="card-title text-primary">@product.ProductName</h5>
-                    <p class="card-text text-muted">
-                        @if (product.ProductDescription.Length > 80)
-                        {
+<!-- Form for all filters -->
+<form method="get" action="@Url.Action("Index", "Home")">
+    <div class="container-fluid d-flex">
+        <!-- Filtration Section -->
+        <div style="width:22%;" class=" p-3 mt-3 border-end">
+            <h5 class="fw-bold">Filters</h5>
 
-                            @for (int i = 0; i < 100; i++)
+            <!-- Category Filter -->
+            <div class="mb-4">
+                <h6>Category</h6>
+                <ul class="list-unstyled">
+                    @foreach (var category in Model.Categories)
+                    {
+                        <li>
+                            <input type="radio" name="categoryFilter" id="category-@category.CategoryId" value="@category.CategoryId"
+                                   class="filter-checkbox" @(Model.SelectedCategory == category.CategoryId ? "checked" : "") />
+                            <label for="category-@category.CategoryId">@category.CategoryName</label>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            <!-- Price Range Filter -->
+            <div class="mb-4">
+                <h6>Price Range</h6>
+                <input type="range" id="price-range" name="price" class="form-range" min="0" max="1000" step="50"
+                       value="@Model.SelectedPrice.GetValueOrDefault(1000)" oninput="updatePriceLabel(this.value)" />
+                <div class="d-flex justify-content-between">
+                    <span>$0</span>
+                    <span id="price-range-label">$@Model.SelectedPrice.GetValueOrDefault(1000)</span>
+                </div>
+            </div>
+
+            <!-- Rating Filter -->
+            <div class="mb-4">
+                <h6>Rating</h6>
+                <ul class="list-unstyled">
+                    @for (int i = 5; i >= 1; i--)
+                    {
+                        <li>
+                            <input type="radio" name="rate" id="rating-@i" value="@i"
+                                   class="filter-checkbox" @(Model.SelectedRate == i ? "checked" : "") />
+                            <label for="rating-@i">
+                                @for (int j = 0; j < i; j++)
+                                {
+                                    <i class="fa-solid fa-star text-warning"></i>
+                                }
+                                & Up
+                            </label>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            <!-- Availability Filter -->
+            <div class="mb-4">
+                <h6>Availability</h6>
+                <ul class="list-unstyled">
+                    <li>
+                        <input type="radio" name="stock" id="in-stock" value="true"
+                               class="filter-checkbox" @(Model.SelectedStock == true ? "checked" : "") />
+                        <label for="in-stock">In Stock</label>
+                    </li>
+                    <li>
+                        <input type="radio" name="stock" id="out-of-stock" value="false"
+                               class="filter-checkbox" @(Model.SelectedStock == false ? "checked" : "") />
+                        <label for="out-of-stock">Out of Stock</label>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Buttons for Applying and Clearing Filters -->
+            <button type="submit" class="btn btn-outline-primary">Apply Filters</button>
+            <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary ms-2">Clear Filters</a>
+        </div>
+</form>
+
+        <!-- Product Cards Section -->
+        <div class="container d-flex flex-wrap justify-content-center">
+            @foreach (var product in Model.Products)
+            {
+                <div class="card product-card m-3 p-3 rounded-3 position-relative shadow-sm" style="width: 16.1rem; height: 40rem;">
+                    <a href="/Customer/Home/Details/@product.ProductId">
+                        <img class="card-img-top rounded-3" src="~/Images/@product.Image" style="height: 15rem;" />
+                    </a>
+                    <span class="position-absolute top-0 end-0 p-2">
+                        <i class="fa-regular fa-heart fa-lg text-danger"></i>
+                    </span>
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">@product.ProductName</h5>
+                        <p class="card-text text-muted">
+                            @if (product.ProductDescription.Length > 80)
                             {
-
-                                @product.ProductDescription[i]
-
-                            }
-                            <a asp-action="Details" asp-route-id="@product.ProductId">More...</a>
-                        }else{
-                            @product.ProductDescription
-                        }
-                    </p>
-                    <p class="card-text">
-                        @for (int i = 0; i < 5; i++)
-                        {
-                            if (i < product.Rate)
-                            {
-                                <i class="fa-solid fa-star text-warning"></i>
+                                @for (int i = 0; i < 100; i++)
+                                {
+                                    @product.ProductDescription[i]
+                                }
+                                <a asp-action="Details" asp-route-id="@product.ProductId">More...</a>
                             }
                             else
                             {
-                                <i class="fa-solid fa-star text-secondary"></i>
+                                @product.ProductDescription
                             }
-                        }
-                        <span class="ms-3 fw-bold text-success">@product.ListPrice $</span>
-                    </p>
-                    <ul class="list-unstyled my-3">
-                        @if (Model.Stocks.FirstOrDefault(e => e.ProductId == product.ProductId)?.Quantity == 0)
-                        {
-                            <li class="text-danger">
-                                <i class="fa-solid fa-xmark me-2"></i>Not In Stock
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="text-success">
-                                <i class="fa-solid fa-check me-2"></i>In Stock
-                            </li>
-                        }
-                        <li><i class="fa-solid fa-truck me-2"></i>Free delivery available</li>
-                        <li><i class="fa-solid fa-credit-card me-2"></i>Payment by PayPal and Stripe</li>
-                    </ul>
-                    <button onclick="AddToCart(@product.ProductId, @(check ? "true" : "false"))" class="btn btn-cart">
-                        Add to Cart <i class="fa-solid fa-cart-plus"></i>
-                    </button>
+                        </p>
+
+                        <p class="card-text">
+                            @for (int i = 0; i < 5; i++)
+                            {
+                                if (i < product.Rate)
+                                {
+                                    <i class="fa-solid fa-star text-warning"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa-solid fa-star text-secondary"></i>
+                                }
+                            }
+                            <span class="ms-3 fw-bold text-success">@product.ListPrice $</span>
+                        </p>
+                        <ul class="list-unstyled my-3">
+                            @if (Model.Stocks.FirstOrDefault(e => e.ProductId == product.ProductId)?.Quantity == 0)
+                            {
+                                <li class="text-danger">
+                                    <i class="fa-solid fa-xmark me-2"></i>Not In Stock
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="text-success">
+                                    <i class="fa-solid fa-check me-2"></i>In Stock
+                                </li>
+                            }
+                            <li><i class="fa-solid fa-truck me-2"></i>Free delivery available</li>
+                            <li><i class="fa-solid fa-credit-card me-2"></i>Payment by PayPal and Stripe</li>
+                        </ul>
+                        <a onclick="AddToCart(@product.ProductId, @(isAuthenticated ? "true" : "false"))" class="btn btn-cart">
+                            Add to Cart <i class="fa-solid fa-cart-plus"></i>
+                        </a>
+                    </div>
                 </div>
-            </div>
-        }
-    }
-</div>
+            }
+        </div>
+    </div>
 
 <!-- Modal For Add to Cart -->
 
@@ -118,9 +189,9 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                       
-                    <input asp-for="productId" type="hidden" id="pId" />
-                        <input asp-for="Quantity"  class="form-control" required />
+
+                        <input asp-for="productId" type="hidden" id="pId" />
+                        <input asp-for="Quantity" class="form-control" required />
                         <span asp-validation-for="Quantity" class="text-danger"></span>
                     </div>
                 </div>
@@ -133,62 +204,11 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@* <div class="modal fade" id="addtocart" tabindex="-1" aria-labelledby="addToCartLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <form id="addToCart" method="post" action="/Customer/Cart/AddToCart">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addToCartLabel">Select Quantity</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="pId" asp-for="productId" />
-                    <div class="mb-3">
-                       
-
-
-                        <label class="form-label" asp-for="Quantity">Quantity</label>
-                        <input asp-for="Quantity" class="form-control" value="1" />
-                        <span asp-validation-for="Quantity" class="text-danger"></span>
-                        <div asp-validation-summary="ModelOnly"></div>
-                    </div>
-                    
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" onclick="allConfirm('addToCart')" class="btn btn-primary">Add to Cart</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
- *@
-<!-- Custom Styles -->
-<style>
-
-</style>
-
+<script>
+    function updatePriceLabel(value) {
+        document.getElementById("price-range-label").textContent = "$" + value;
+    }
+</script>
 @section Scripts {
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

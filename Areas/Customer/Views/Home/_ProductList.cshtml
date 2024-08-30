@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Demo.Models.Product>
+@{
+    var isAuthenticated = User.Identity.IsAuthenticated;
+}
+<div class="container d-flex flex-wrap justify-content-center">
+    @foreach (var product in Model)
+    {
+        <div class="card product-card m-3 p-3 rounded-3 position-relative shadow-sm" style="width: 18rem; height: 40rem;">
+            <a href="/Customer/Home/Details/@product.ProductId">
+                <img class="card-img-top rounded-3" src="~/Images/@product.Image" style="height: 15rem;" />
+            </a>
+            <span class="position-absolute top-0 end-0 p-2">
+                <i class="fa-regular fa-heart fa-lg text-danger"></i>
+            </span>
+            <div class="card-body">
+                <h5 class="card-title text-primary">@product.ProductName</h5>
+                <p class="card-text text-muted">
+                    @if (product.ProductDescription.Length > 80)
+                    {
+                        @product.ProductDescription.Substring(0, 80)
+                        <a asp-action="Details" asp-route-id="@product.ProductId">More...</a>
+                    }
+                    else
+                    {
+                        @product.ProductDescription
+                    }
+                </p>
+                <p class="card-text">
+                    @for (int i = 0; i < 5; i++)
+                    {
+                        if (i < product.Rate)
+                        {
+                            <i class="fa-solid fa-star text-warning"></i>
+                        }
+                        else
+                        {
+                            <i class="fa-solid fa-star text-secondary"></i>
+                        }
+                    }
+                    <span class="ms-3 fw-bold text-success">@product.ListPrice $</span>
+                </p>
+                <ul class="list-unstyled my-3">
+                   
+                    <li><i class="fa-solid fa-truck me-2"></i>Free delivery available</li>
+                    <li><i class="fa-solid fa-credit-card me-2"></i>Payment by PayPal and Stripe</li>
+                </ul>
+                <button onclick="AddToCart(@product.ProductId, @(isAuthenticated ? "true" : "false"))" class="btn btn-cart">
+                    Add to Cart <i class="fa-solid fa-cart-plus"></i>
+                </button>
+            </div>
+        </div>
+    }
+</div>
