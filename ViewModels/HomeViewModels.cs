@@ -8,9 +8,9 @@ namespace Demo.ViewModels
     {
         [ValidateNever]
         public List<Category> Categories { get; set; } = new List<Category>();
-        [ValidateNever]
+     
 
-        public CustomarViewModels Customar { get; set; } = new CustomarViewModels();
+
         [ValidateNever]
 
         public List<Stock> Stocks { get; set; } = new List<Stock>();

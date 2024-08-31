@@ -20,5 +20,7 @@ namespace Demo.ViewModels
         public IEnumerable<Product>? Products { get; set; }
         public List<WishListItems> WishListItems { get; set; } = new List<WishListItems>();
 
+
+
     }
 }

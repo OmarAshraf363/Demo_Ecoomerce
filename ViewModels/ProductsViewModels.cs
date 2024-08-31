@@ -16,7 +16,8 @@ namespace Demo.ViewModels
         public int Rate { get; set; }
         public string Image { get; set; } = null!;
         public short ModelYear { get; set; }
-     
+        public decimal? Discount { get; set; }
+
         public decimal ListPrice { get; set; }
       
        public int Quantity {  get; set; }

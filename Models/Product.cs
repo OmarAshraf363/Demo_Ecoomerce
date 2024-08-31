@@ -14,6 +14,8 @@ namespace Demo.Models
         [ForeignKey(nameof(BrandId))]
         public int BrandId { get; set; }
 
+        public decimal? Discount {  get; set; }
+
         public int CategoryId { get; set; }
 
         public short ModelYear { get; set; }

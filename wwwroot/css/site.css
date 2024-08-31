@@ -79,3 +79,7 @@ body {
     max-width: 100%;
 }
 }
+.delivery-details li{
+    font-size:smaller;
+    color:gray;
+}

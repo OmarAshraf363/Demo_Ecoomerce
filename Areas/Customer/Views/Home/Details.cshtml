@@ -32,14 +32,14 @@
             <button onclick="AddToCart(null, @(check ? "true" : "false"))" class="btn btn-cart">
                 Add to Cart <i class="fa-solid fa-cart-plus"></i>
             </button>
-            <a href="javascript:void(0);" class="like-button" data-product-id="@Model.Product.ProductId" onclick="toggleWishList(@Model.Product.ProductId)">
+            <a href="javascript:void(0);" class="like-button" data-product-id="@Model.Product.ProductId" onclick="toggleWishList(@Model.Product.ProductId,@(check ? "true" : "false"))">
                 @if (Model.WishListItems.Any(e => e.ProductId == Model.Product.ProductId))
                 {
                     <i class="fa-solid fa-heart fa-lg text-danger"></i> <!-- إذا كان العنصر موجود، عرض قلب ملون -->
                 }
                 else
                 {
-                    <i class="fa-solid fa-heart fa-lg text-muted"></i> <!-- إذا لم يكن موجود، عرض قلب غير ملون -->
+                    <i class="fa-regular fa-heart fa-lg text-muted"></i> <!-- إذا لم يكن موجود، عرض قلب غير ملون -->
                 }
             </a>
         </div>
@@ -48,12 +48,16 @@
     <div style="background-color: white; border-radius: 15px;" class="w-50 card-body d-flex flex-column">
         <div class="card-details">
 
-            <div class="main-details d-flex align-items-start gap-4">
-                <div class="info">
+            <div class="main-details d-flex align-items-start gap-4 position-relative">
+                <div class="info ">
+                    @if(Model.Product.Discount.HasValue){
+
+                    <p style="left:-30px; top:0px; width:10%; border-radius:15px;" class="bg-success text-warning text-center  position-absolute">Offerd</p><br />
+                    }
                     <h4 class="card-title">@Model.Product.ProductName</h4>
                     <h5 class="text-dark fw-medium">Description:</h5>
                     <p style="font-size: medium; width:50%;" class="card-text">@Model.Product.ProductDescription</p>
-                    <p class="card-text">
+                    <p class="my-1 card-text">
                         @for (int i = 0; i < 5; i++)
                         {
                             if (i < Model.Product.Rate)
@@ -66,17 +70,31 @@
                             }
                         }
                     </p>
-                    <p style="font-weight: bolder; font-size: 20px;">@Model.Product.ListPrice $</p>
-                    <p class="card-text">Brand: @Model.Product.Brand.BrandName </p>
-                    <p class="card-text">Category: @Model.Product.Category.CategoryName </p>
-                    <p class="card-text">Quantity: @Model.realQuantity </p>
+                    <div class=" d-flex align-items-center w-25 justify-content-between">
+                        @if (Model.Product.Discount.HasValue)
+                        {
+
+                            <span style="color:gray; text-decoration-line:line-through;" class="fw-light">@Model.Product.ListPrice $</span>
+                            <span style="font-weight: bolder; font-size: 17px;" class=" fw-bold text-success">@(Model.Product.ListPrice - Model.Product.Discount) $</span>
+                            <span style="font-size:smaller; color:gray;">(@(((int?)(Model.Product.Discount / Model.Product.ListPrice * 100))) %)</span>
+                        }
+                        else
+                        {
+                            <span style="" class="fw-bolder text-success">@Model.Product.ListPrice $</span>
+
+                        }
+
+                    </div>
+                    <p class="card-text m-1">Brand: @Model.Product.Brand.BrandName </p>
+                    <p class="card-text m-1">Category: @Model.Product.Category.CategoryName </p>
+                    <p class="card-text m-1">Quantity: @Model.realQuantity </p>
                 </div>
                 <div class="zoom-section" id="zoomSection"></div>
 
             </div>
 
             <hr />
-            <ul style="color: gray;" class="d-flex flex-column gap-2 list-unstyled fs-15 my-3">
+            <ul style="color: gray;" class="d-flex flex-column gap-2 list-unstyled fs-15 my-1">
                 @if (Model.realQuantity == 0)
                 {
                     <li><i class="me-2 fa-solid fa-xmark"></i> Not In Stock</li>

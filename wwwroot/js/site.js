@@ -206,7 +206,11 @@ function openModalStock(id1, id2, controllerName, modalname, actionName) {
 
 
 
-function toggleWishList(productId) {
+function toggleWishList(productId, isAuth) {
+    if (!isAuth) {
+        window.location.href = `/Identity/Account/Login`
+    } else {
+
     $.ajax({
         url: `/Customer/WishList/ToggleWishList/${productId}`,
         type: 'POST',
@@ -214,15 +218,16 @@ function toggleWishList(productId) {
             var likeButton = $(`.like-button[data-product-id="${productId}"] i`);
             if (response.isInWishList) {
                 // إذا تم إضافة العنصر إلى قائمة الأمنيات، تغيير لون الأيقونة
-                likeButton.removeClass('text-muted').addClass('text-danger');
+                likeButton.removeClass('fa-regular').addClass('fa-solid');
             } else {
                 // إذا تم إزالة العنصر من قائمة الأمنيات، تغيير لون الأيقونة
-                likeButton.removeClass('text-danger').addClass('text-muted');
+                likeButton.removeClass('fa-solid').addClass('fa-regular');
             }
         },
         error: function () {
             alert("An error occurred. Please try again.");
         }
     });
+    }
 }
 

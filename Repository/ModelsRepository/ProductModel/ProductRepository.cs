@@ -26,6 +26,7 @@ namespace Demo.Repository.ModelsRepository.ProductModel
                 CategoryId = model.CategoryId,
                 ModelYear = model.ModelYear,
                 Rate = model.Rate,
+                Discount = model.Discount,
 
 
 
@@ -47,6 +48,7 @@ namespace Demo.Repository.ModelsRepository.ProductModel
             product.Rate = model.Rate;
             product.Image = model.Image;
             product.ListPrice = model.ListPrice;
+            product.Discount = model.Discount;
            Edit(product);
             return model;
 
