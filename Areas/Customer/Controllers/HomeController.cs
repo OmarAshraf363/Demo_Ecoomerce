@@ -45,7 +45,15 @@ namespace Demo.Controllers
 
             // Get all stocks
             model.Stocks = unitOfWork.StockRepository.Get().ToList();
+            // Get All WishItEm
 
+           
+            var wishList = unitOfWork.WishListRepository.GetOne(e => e.AppUserId == _userManager.GetUserId(User));
+            if (wishList!=null)
+            {
+                model.WishListItems = unitOfWork.WishListItemsRepository.Get(e => e.WishListId == wishList.Id).ToList();
+
+            }
             // Get all products
             var products = unitOfWork.ProductRepository.Get().ToList();
 
@@ -103,7 +111,15 @@ namespace Demo.Controllers
             }
             else { model.realQuantity = 0; }
             model.Products = unitOfWork.ProductRepository.Get(e => e.CategoryId == item.CategoryId);
-            
+
+
+            var wishList = unitOfWork.WishListRepository.GetOne(e => e.AppUserId == _userManager.GetUserId(User));
+            if (wishList != null)
+            {
+                model.WishListItems = unitOfWork.WishListItemsRepository.Get(e => e.WishListId == wishList.Id).ToList();
+
+            }
+
             return View(model);
         }
 

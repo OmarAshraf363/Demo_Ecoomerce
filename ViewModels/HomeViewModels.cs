@@ -16,6 +16,8 @@ namespace Demo.ViewModels
         public List<Stock> Stocks { get; set; } = new List<Stock>();
         [ValidateNever]
         public IEnumerable<Product> Products { get; set;} = Enumerable.Empty<Product>();
+        [ValidateNever]
+        public List<WishListItems> WishListItems { get; set;} = new List<WishListItems>();
 
         [Required(ErrorMessage = "Required")]
         

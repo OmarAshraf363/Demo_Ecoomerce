@@ -29,6 +29,9 @@ namespace Demo.Data
 
         public virtual DbSet<Store> Stores { get; set; }
 
+        public DbSet<WishList> WishLists { get; set; }
+        public DbSet<WishListItems> WishListItems { get; set; }
+
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
         //    base.OnConfiguring(optionsBuilder);

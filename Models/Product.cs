@@ -27,6 +27,8 @@ namespace Demo.Models
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
         public virtual ICollection<Stock> Stocks { get; set; } = new List<Stock>();
+        public virtual ICollection<WishListItems> WishListItems { get; set; } = new List<WishListItems>();
+
 
     }
 }

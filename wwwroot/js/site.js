@@ -45,7 +45,11 @@ function allConfirm(id) {
 
 
 
-//}
+function mustLogin(isAuoth) {
+    if (!isAuoth) {
+        window.location.href = `/Identity/Account/Login`
+    }
+}
 
 
 
@@ -199,4 +203,26 @@ function openModalStock(id1, id2, controllerName, modalname, actionName) {
     });
 }
 
+
+
+
+function toggleWishList(productId) {
+    $.ajax({
+        url: `/Customer/WishList/ToggleWishList/${productId}`,
+        type: 'POST',
+        success: function (response) {
+            var likeButton = $(`.like-button[data-product-id="${productId}"] i`);
+            if (response.isInWishList) {
+                // إذا تم إضافة العنصر إلى قائمة الأمنيات، تغيير لون الأيقونة
+                likeButton.removeClass('text-muted').addClass('text-danger');
+            } else {
+                // إذا تم إزالة العنصر من قائمة الأمنيات، تغيير لون الأيقونة
+                likeButton.removeClass('text-danger').addClass('text-muted');
+            }
+        },
+        error: function () {
+            alert("An error occurred. Please try again.");
+        }
+    });
+}
 

@@ -6,6 +6,8 @@ using Demo.Repository.ModelsRepository.OrderModel;
 using Demo.Repository.ModelsRepository.ProductModel;
 using Demo.Repository.ModelsRepository.StockModel;
 using Demo.Repository.ModelsRepository.StoreModel;
+using Demo.Repository.ModelsRepository.WishListItemsModel;
+using Demo.Repository.ModelsRepository.WishListModel;
 
 namespace Demo.Repository.IRepository
 {
@@ -15,15 +17,17 @@ namespace Demo.Repository.IRepository
         public unitOfWork(AppDbContext context)
         {
             this.context = context;
-            CategoryRepository=new CategoryRepository(context);
+            CategoryRepository = new CategoryRepository(context);
             ProductRepository = new ProductRepository(context);
             BrandRepository = new BrandRepository(context);
-           
+
             StockRepository = new StockRepository(context);
             StoreRepository = new StoreRepository(context);
-           
+
             OrderItemRepository = new OrderItemRepository(context);
             OrderRepository = new OrderRepository(context);
+           WishListItemsRepository = new WishListItemsRepository(context);
+            WishListRepository = new WishListRepository(context);
         }
 
         public ICategoryRepository CategoryRepository {  get; set; }
@@ -41,6 +45,8 @@ namespace Demo.Repository.IRepository
         public IStoreRepository StoreRepository {  get; set; }
 
         public IStockRepository StockRepository {  get; set; }
+        public IWishListItemsRepository WishListItemsRepository { get; set; }
+        public IWishListRepository WishListRepository { get; set; }
 
       
         public void Commit()

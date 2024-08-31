@@ -8,6 +8,7 @@ namespace Demo.Models
         public string? Address {  get; set; }
 
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+        public WishList? WishList { get; set; }
 
         //public int? StoreId {  get; set; }
         //[ForeignKey(nameof(StoreId))]

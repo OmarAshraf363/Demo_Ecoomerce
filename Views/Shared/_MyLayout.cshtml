@@ -16,7 +16,7 @@
     <div style="background-color:black;" class="container-fluid  d-flex justify-content-center align-items-center">
         <p style="color:#eee;" class="m-2">Be Carfull , All Designed To Be Comfort To You !! </p>
     </div>
-    <header class="container-fluid d-flex justify-content-between align-items-center bg-white border-bottom box-shadow">
+    <header class="container-fluid d-flex justify-content-between align-items-center text-center bg-white border-bottom box-shadow">
         <nav class="navbar d-flex justify-content-between align-items-center navbar-expand-sm navbar-toggleable-sm navbar-light  ">
             <div class="container-fluid">
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
@@ -69,29 +69,21 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
 
                     <ul class="navbar-nav flex-grow-1 align-items-center">
-                        @if (Context.Session.GetInt32("UserID") == null)
+                        @if (User.Identity.IsAuthenticated)
                         {
-                         @*    <li class="nav-item">
-                                <a class=" btn btn-outline-dark me-3 ms-3 pe-3 ps-3" data-bs-toggle="modal" data-bs-target="#Register">Register  </a>
-                            </li>
-                            <li class="nav-item">
-                                <button class=" btn btn-outline-dark me-3 ms-3 pe-3 ps-3" data-bs-toggle="modal" data-bs-target="#Login">Sign In</button>
-                            </li> *@
                             <partial class="text-black" name="_LoginPartial"></partial>
                             <li class="nav-item">
-                                <a style="font-size:20px;" class=" me-3 ms-3 pe-3 ps-3 " asp-area="Customer" asp-controller="Cart" asp-action="Index"><i style="color:black" class="fa-solid fa-cart-shopping"></i> </a>
+                                <a style="font-size:20px;" class="m-2 " asp-area="Customer" asp-controller="Cart" asp-action="Index"><i style="color:black" class="fa-solid fa-cart-shopping"></i> </a>
+                            </li>
+                            <li class="nav-item">
+                                <a style="font-size:20px;" class="  " asp-area="Customer" asp-controller="WishList" asp-action="Index"> <i style="color:black;" class="fa-solid fa-hand-holding-heart"></i> </a>
                             </li>
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class=" btn btn-outline-danger me-3 ms-3 pe-3 ps-3" asp-area="" asp-controller="Account" asp-action="Logout">Logout </a>
-                            </li>
-                            <li class="nav-item">
-                                <a style="font-size:20px;" class=" me-3 ms-3 pe-3 ps-3 " asp-area="Customer" asp-controller="cart" asp-action="Index"><i style="color:black" class="fa-solid fa-cart-shopping"></i> </a>
-                            </li>
-
+                            <partial class="text-black" name="_LoginPartial"></partial>
                         }
+
                     </ul>
                 </div>
             </div>

@@ -27,5 +27,7 @@ namespace Demo.ViewModels
         public int CategoryId { get; set; }
         public List<Brand> Brands { get; set; }= new List<Brand>();
 
+
+
     }
 }

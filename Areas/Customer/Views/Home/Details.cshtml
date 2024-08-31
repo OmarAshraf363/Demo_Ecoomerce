@@ -1,6 +1,6 @@
 ﻿@model Demo.ViewModels.ProductDetails
 
-    @{
+@{
     var id = User.Identity.IsAuthenticated;
     bool check;
     if (id)
@@ -12,7 +12,7 @@
         check = false;
 
     }
-    }
+}
 
 
 <div class="d-flex justify-content-between align-items-center m-3">
@@ -31,7 +31,17 @@
             <a href="/Order/CreateOrder/@Model.Product.ProductId" style="background-color: #eee;" class="btn">Buy Now</a>
             <button onclick="AddToCart(null, @(check ? "true" : "false"))" class="btn btn-cart">
                 Add to Cart <i class="fa-solid fa-cart-plus"></i>
-            </button>            <a><i style="font-size: 20px;" class="fa-solid fa-heart"></i></a>
+            </button>
+            <a href="javascript:void(0);" class="like-button" data-product-id="@Model.Product.ProductId" onclick="toggleWishList(@Model.Product.ProductId)">
+                @if (Model.WishListItems.Any(e => e.ProductId == Model.Product.ProductId))
+                {
+                    <i class="fa-solid fa-heart fa-lg text-danger"></i> <!-- إذا كان العنصر موجود، عرض قلب ملون -->
+                }
+                else
+                {
+                    <i class="fa-solid fa-heart fa-lg text-muted"></i> <!-- إذا لم يكن موجود، عرض قلب غير ملون -->
+                }
+            </a>
         </div>
     </div>
 
@@ -42,7 +52,7 @@
                 <div class="info">
                     <h4 class="card-title">@Model.Product.ProductName</h4>
                     <h5 class="text-dark fw-medium">Description:</h5>
-                    <p style="font-size: small; width:50%;" class="card-text">@Model.Product.ProductDescription</p>
+                    <p style="font-size: medium; width:50%;" class="card-text">@Model.Product.ProductDescription</p>
                     <p class="card-text">
                         @for (int i = 0; i < 5; i++)
                         {
@@ -64,7 +74,7 @@
                 <div class="zoom-section" id="zoomSection"></div>
 
             </div>
-           
+
             <hr />
             <ul style="color: gray;" class="d-flex flex-column gap-2 list-unstyled fs-15 my-3">
                 @if (Model.realQuantity == 0)
@@ -100,11 +110,7 @@
         </div>
 
         <!-- Detailed Information Section -->
-     
-
         <!-- Reviews Section -->
-      
-
         <!-- Shipping & Returns Section -->
         <div class="shipping-returns mt-5">
             <h5 class="text-dark fw-medium">Shipping & Returns</h5>
@@ -166,12 +172,12 @@
                 <div class="modal-body">
                     <input  type="hidden" value="@Model.Product.ProductId" asp-for="productId" />
                     <div class="mb-3">
-                      
+
                         <label class="form-label" >Quantity</label>
                         <input asp-for="Quantity" class="form-control" />
                         <span asp-validation-for="Quantity" class="text-danger"></span>
                     </div>
-                       
+
 
                 </div>
                 <div class="modal-footer">
@@ -206,8 +212,8 @@
 
     .zoom-section {
         /*   position: absolute;
-                top: 0;
-                right: 0; */
+                    top: 0;
+                    right: 0; */
         width: 500px; /* Adjust width as needed */
         height: 250px; /* Adjust height as needed */
         border: 2px solid #ccc;

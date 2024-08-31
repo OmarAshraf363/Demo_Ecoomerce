@@ -7,6 +7,8 @@ using Demo.Repository.ModelsRepository.ProductModel;
 
 using Demo.Repository.ModelsRepository.StockModel;
 using Demo.Repository.ModelsRepository.StoreModel;
+using Demo.Repository.ModelsRepository.WishListItemsModel;
+using Demo.Repository.ModelsRepository.WishListModel;
 
 namespace Demo.Repository.IRepository
 {
@@ -20,6 +22,8 @@ namespace Demo.Repository.IRepository
        
         public IStoreRepository StoreRepository { get; }
         public IStockRepository StockRepository { get; }
+        public IWishListRepository WishListRepository { get; }
+        public IWishListItemsRepository WishListItemsRepository { get; }
       
         public void Commit();
     }
