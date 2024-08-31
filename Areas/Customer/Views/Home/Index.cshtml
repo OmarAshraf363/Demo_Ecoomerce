@@ -2,7 +2,7 @@
 
 @{
     bool isAuthenticated = User.Identity.IsAuthenticated;
-   
+
 }
 
 @if (TempData["success"] != null)
@@ -119,7 +119,7 @@
             <a href="/Customer/Home/Details/@product.ProductId">
                 <img class="card-img-top rounded-3" src="~/Images/@product.Image" style="height: 15rem;" />
             </a>
-    
+
             <span class="position-absolute top-0 end-0 p-2">
 
                 <a href="javascript:void(0);" class="like-button" data-product-id="@product.ProductId" onclick="toggleWishList(@product.ProductId, @(isAuthenticated ? "true" : "false"))">
@@ -136,7 +136,7 @@
 
 
 
-           
+
 
             </span>
 
@@ -169,15 +169,18 @@
                             <i class="fa-solid fa-star text-secondary"></i>
                         }
                     }
-                   @*  <span class="ms-3 fw-bold text-success">@product.ListPrice $</span> *@
+                    @*  <span class="ms-3 fw-bold text-success">@product.ListPrice $</span> *@
                 </p>
                 <div class=" d-flex align-items-center justify-content-between">
-                    @if(product.Discount.HasValue){
+                    @if (product.Discount.HasValue)
+                    {
 
                         <span style="color:gray; text-decoration-line:line-through;" class="fw-light">@product.ListPrice $</span>
-                    <span style="font-weight: bolder; font-size: 17px;" class= " fw-bold text-success">@(product.ListPrice - product.Discount) $</span>
+                        <span style="font-weight: bolder; font-size: 17px;" class=" fw-bold text-success">@(product.ListPrice - product.Discount) $</span>
                         <span style="font-size:smaller; color:gray;">(@(((int?)(product.Discount / product.ListPrice * 100))) %)</span>
-                    }else{
+                    }
+                    else
+                    {
                         <span style="" class="fw-bold text-success">@product.ListPrice $</span>
 
                     }
@@ -187,7 +190,7 @@
                     @if (Model.Stocks.FirstOrDefault(e => e.ProductId == product.ProductId)?.Quantity == 0)
                     {
                         <li class="text-danger">
-                            <i  class="fa-solid fa-xmark me-2"></i>Not In Stock
+                            <i class="fa-solid fa-xmark me-2"></i>Not In Stock
                         </li>
                     }
                     else

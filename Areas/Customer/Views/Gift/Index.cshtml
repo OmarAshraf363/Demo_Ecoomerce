@@ -1,41 +1,47 @@
-﻿<!-- Header Section -->
-<section class="gifts-header">
-    <h1>Find the Perfect Gift</h1>
-    <p>Browse our curated selection of unique and thoughtful gifts.</p>
-    <a href="#gift-collection" class="btn-primary">Shop Now</a>
+﻿@model IEnumerable<Product>
+
+<!-- Header Section -->
+<section class=" text-black gifts-header">
+   <img style="position:relative;" src="~/Images/offer.jpg" alt="Alternate Text" />
+  
 </section>
 
 <!-- Gift Collection Section -->
 <section id="gift-collection" class="gift-collection">
     <h2>Our Top Picks</h2>
     <div class="gift-grid">
-        <div class="gift-card">
-            <img src="gift1.jpg" alt="Gift 1">
-            <h3>Gift Item 1</h3>
-            <p>$49.99</p>
-            <a href="#" class="btn-primary">Add to Cart</a>
-        </div>
-        <div class="gift-card">
-            <img src="gift2.jpg" alt="Gift 2">
-            <h3>Gift Item 2</h3>
-            <p>$29.99</p>
-            <a href="#" class="btn-primary">Add to Cart</a>
-        </div>
-        <div class="gift-card">
-            <img src="gift3.jpg" alt="Gift 3">
-            <h3>Gift Item 3</h3>
-            <p>$39.99</p>
-            <a href="#" class="btn-primary">Add to Cart</a>
-        </div>
+        @foreach (var product in Model)
+        {
+            <div class="gift-card">
+                <img src="~/Images/@product.Image" alt="Gift 1">
+                <h3>@product.ProductName</h3>
+                <div class=" d-flex align-items-center justify-content-between mb-3">
+
+                        <span style="color:gray; text-decoration-line:line-through;" class="fw-light">@product.ListPrice $</span>
+                        <span style="font-weight: bolder; font-size: 17px;" class=" fw-bold text-success">@(product.ListPrice - product.Discount) $</span>
+                        <span style="font-size:smaller; color:gray;">(@(((int?)(product.Discount / product.ListPrice * 100))) %)</span>
+
+                </div>
+
+            
+            <a asp-action="Details" asp-route-id="@product.ProductId" asp-controller="Home"  class="btn btn-outline-primary ">More Details </a>
+            </div>
+        }
+     
         <!-- Add more gift items as needed -->
     </div>
 </section>
 <style>
     .gifts-header {
-        background: url('gifts-background.jpg') no-repeat center center/cover;
-        padding: 100px 0;
+        
+     height:400px;
+        
         text-align: center;
         color: #fff;
+    }
+    .gifts-header img{
+        width:100%;
+        height:100%;
     }
 
         .gifts-header h1 {
@@ -76,7 +82,7 @@
     }
 
         .gift-card img {
-            width: 100%;
+            width: 50%;
             border-radius: 10px;
         }
 
@@ -101,3 +107,4 @@
         }
 
 </style>
+
