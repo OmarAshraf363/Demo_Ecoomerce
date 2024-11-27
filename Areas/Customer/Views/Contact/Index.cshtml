@@ -1,145 +1,179 @@
-﻿  <!-- Header Section -->
-<section  class="contact-header text-dark">
-    <h1>We’d Love to Hear From You</h1>
-    <p>Reach out to us for inquiries, support, or just to say hello!</p>
-    <a href="#contact-form" class="btn-primary">Get in Touch</a>
-</section>
+﻿
+    <!-- Header Section -->
+    <section class="contact-header">
+        <div class="header-content">
+            <h1>We’d Love to Hear From You</h1>
+            <p>Reach out to us for inquiries, support, or just to say hello!</p>
+            <a href="#contact-form" class="btn-primary">Get in Touch</a>
+        </div>
+    </section>
 
-<!-- Contact Information Section -->
-<section class="contact-info">
-    <div class="contact-card">
-        <h2>Visit Us</h2>
-        <p>123 Main Street, Anytown, USA</p>
-        <iframe src="https://maps.google.com/maps?q=New%20York&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
-    </div>
-    <div class="contact-card">
-        <h2>Call or Email Us</h2>
-        <p><a href="tel:+1234567890">+201008670957</a></p>
-        <p><a href="mailto:info@example.com">Oa38150@gmail.com</a></p>
-    </div>
-    <div class="contact-card">
-        <h2>Follow Us</h2>
-        <div class="social-icons">
-             <a href="#"> <i class="fa-brands fa-facebook"></i></a>
-            <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
-            <a href="#"><i class="fa-brands fa-linkedin"></i></a>
-            <a href="#"><i class="fa-brands fa-instagram"></i></a>
-           
+    <!-- Contact Information Section -->
+    <section class="contact-info">
+        <div class="contact-card">
+            <h2><i class="fas fa-map-marker-alt"></i> Visit Us</h2>
+            <p>123 Main Street, Anytown, USA</p>
+            <iframe src="https://maps.google.com/maps?q=New%20York&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
         </div>
-    </div>
-</section>
+        <div class="contact-card">
+            <h2><i class="fas fa-phone-alt"></i> Call or Email Us</h2>
+            <p><a href="tel:+1234567890">+201008670957</a></p>
+            <p><a href="mailto:Oa38150@gmail.com">Oa38150@gmail.com</a></p>
+        </div>
+        <div class="contact-card">
+            <h2><i class="fas fa-share-alt"></i> Follow Us</h2>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </section>
 
-<!-- Contact Form Section -->
-<section id="contact-form" class="contact-form">
-    <h2>Send Us a Message</h2>
-    <form action="/submit" method="post">
-        <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" required>
-        </div>
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
-        </div>
-        <div class="form-group">
-            <label for="subject">Subject</label>
-            <select id="subject" name="subject" required>
-                <option value="support">Support</option>
-                <option value="sales">Sales Inquiry</option>
-                <option value="feedback">Feedback</option>
-                <option value="other">Other</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="message">Message</label>
-            <textarea id="message" name="message" rows="5" required></textarea>
-        </div>
-        <button type="submit" class="btn-primary">Send Message</button>
-    </form>
-</section>
+    <!-- Contact Form Section -->
+    <section id="contact-form" class="contact-form">
+        <h2>Send Us a Message</h2>
+        <form action="/submit" method="post">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Your Name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Your Email" required>
+            </div>
+            <div class="form-group">
+                <label for="subject">Subject</label>
+                <select id="subject" name="subject" required>
+                    <option value="support">Support</option>
+                    <option value="sales">Sales Inquiry</option>
+                    <option value="feedback">Feedback</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" rows="5" placeholder="Your Message" required></textarea>
+            </div>
+            <button type="submit" class="btn-primary">Send Message</button>
+        </form>
+    </section>
 
-                <style>
+                    <style>
+    /* General Styling */
     body {
-        font-family: Arial, sans-serif;
-        background-color: #f9f9f9;
-        color: #333;
+        font-family: 'Arial', sans-serif;
         margin: 0;
         padding: 0;
+        background-color: #f4f4f4;
+        color: #333;
     }
 
+    a {
+        text-decoration: none;
+    }
+
+    h1, h2 {
+        font-weight: 600;
+    }
+
+    /* Header Section */
     .contact-header {
-        background: url('header-background.jpg') no-repeat center center/cover;
-        padding: 100px 0;
+        background: url('/images/contact-header-bg.jpg') no-repeat center center/cover;
+        padding: 100px 20px;
         text-align: center;
         color: #fff;
+        position: relative;
     }
 
-        .contact-header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+        .contact-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 0;
         }
 
-        .contact-header p {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-        }
+    .header-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .contact-header h1 {
+        font-size: 2.8rem;
+        margin-bottom: 10px;
+    }
+
+    .contact-header p {
+        font-size: 1.4rem;
+        margin-bottom: 30px;
+    }
 
     .btn-primary {
         background: linear-gradient(45deg, #007bff, #00c6ff);
         color: #fff;
-        padding: 10px 20px;
-        text-decoration: none;
-        border-radius: 25px;
+        padding: 12px 30px;
+        border-radius: 30px;
         transition: background 0.3s ease;
+        font-size: 1rem;
+        box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
     }
 
         .btn-primary:hover {
             background: linear-gradient(45deg, #00c6ff, #007bff);
         }
 
+    /* Contact Info Section */
     .contact-info {
         display: flex;
         justify-content: space-around;
-        padding: 50px 10px;
+        padding: 60px 20px;
         background-color: #fff;
+        flex-wrap: wrap;
     }
 
     .contact-card {
         background: #f7f7f7;
-        padding: 20px;
+        padding: 25px;
         border-radius: 10px;
-        width: 30%;
+        width: 100%;
+        max-width: 320px;
         text-align: center;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        margin: 10px 0;
     }
 
         .contact-card h2 {
             margin-bottom: 15px;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
         }
 
         .contact-card p, .contact-card a {
             font-size: 1.1rem;
             color: #007bff;
-            text-decoration: none;
         }
 
         .contact-card iframe {
             width: 100%;
             height: 200px;
             border-radius: 10px;
+            margin-top: 15px;
         }
 
     .social-icons a {
         color: #007bff;
-        font-size: 1.5rem;
+        font-size: 1.6rem;
         margin: 0 10px;
-        text-decoration: none;
     }
 
+    /* Contact Form Section */
     .contact-form {
         background-color: #fff;
-        padding: 50px 10px;
+        padding: 60px 20px;
         text-align: center;
     }
 
@@ -150,6 +184,7 @@
 
     .form-group {
         margin-bottom: 20px;
+        text-align: left;
     }
 
         .form-group label {
@@ -160,24 +195,32 @@
 
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             font-size: 1rem;
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
             border-radius: 5px;
+            background-color: #f7f7f7;
         }
+
+            .form-group input::placeholder, .form-group textarea::placeholder {
+                color: #888;
+            }
 
     .contact-form button {
         background: linear-gradient(45deg, #007bff, #00c6ff);
         color: #fff;
-        padding: 10px 20px;
+        padding: 12px 30px;
         border: none;
-        border-radius: 25px;
+        border-radius: 30px;
         cursor: pointer;
         transition: background 0.3s ease;
+        font-size: 1rem;
+        box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
     }
 
         .contact-form button:hover {
             background: linear-gradient(45deg, #00c6ff, #007bff);
+            transform: translateY(-2px);
         }
 
 </style>

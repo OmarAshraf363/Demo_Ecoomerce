@@ -1,5 +1,5 @@
-﻿ <!-- Header Section -->
-<section class="about-header text-dark">
+﻿<!-- Header Section -->
+<section class="about-header text-light">
     <h1>Our Story</h1>
     <p>Discover the journey that shaped our company and values.</p>
 </section>
@@ -11,7 +11,7 @@
         <p>We are a team of passionate individuals who believe in making the world a better place through our products and services. Our journey began in 2010, and since then, we've been committed to delivering excellence and innovation.</p>
     </div>
     <div class="about-image">
-        <img src="about-us.jpg" alt="About Us">
+        <img src="/Images/about-us.jpg" alt="About Us">
     </div>
 </section>
 
@@ -34,66 +34,97 @@
         <!-- Add more values as needed -->
     </div>
 </section>
+
 <style>
     .about-header {
-        background: url('about-background.jpg') no-repeat center center/cover;
-        padding: 100px 0;
+        background: url('/images/about-background.jpg') no-repeat center center/cover;
+        padding: 120px 20px;
         text-align: center;
         color: #fff;
+        position: relative;
+     
     }
 
-        .about-header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
+    .about-header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 0;
+    }
 
-        .about-header p {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-        }
+    .about-header h1, .about-header p {
+        position: relative;
+        z-index: 1;
+    }
+
+    .about-header h1 {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+    }
+
+    .about-header p {
+        font-size: 1.4rem;
+        margin-bottom: 20px;
+    }
 
     .about-content {
         display: flex;
+        flex-wrap: wrap;
         justify-content: space-between;
-        padding: 50px 10px;
+        padding: 60px 20px;
         background-color: #f9f9f9;
     }
 
     .about-text {
-        width: 50%;
-        padding-right: 20px;
+        flex: 1 1 100%;
+        max-width: 600px;
+        margin-bottom: 30px;
     }
 
-        .about-text h2 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-        }
+    .about-text h2 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: #333;
+    }
 
-        .about-text p {
-            font-size: 1.1rem;
-            line-height: 1.6;
-        }
+    .about-text p {
+        font-size: 1.2rem;
+        line-height: 1.8;
+        color: #555;
+    }
 
     .about-image {
-        width: 45%;
+        flex: 1 1 100%;
+        max-width: 600px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
-        .about-image img {
-            width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
+    .about-image img {
+        width: 100%;
+        max-width: 500px;
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
 
     .values-section {
         background-color: #fff;
-        padding: 50px 10px;
+        padding: 60px 20px;
         text-align: center;
     }
 
-        .values-section h2 {
-            font-size: 2rem;
-            margin-bottom: 30px;
-        }
+    .values-section h2 {
+        font-size: 2.5rem;
+        margin-bottom: 40px;
+        color: #333;
+    }
 
     .values-grid {
         display: flex;
@@ -103,26 +134,58 @@
 
     .value-card {
         background: #f7f7f7;
-        padding: 20px;
-        margin: 10px;
-        border-radius: 10px;
-        width: 30%;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        transition: transform 0.3s ease;
+        padding: 25px;
+        margin: 15px;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 350px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-        .value-card h3 {
-            margin-bottom: 15px;
-            font-size: 1.5rem;
+    .value-card h3 {
+        margin-bottom: 15px;
+        font-size: 1.6rem;
+        color: #444;
+    }
+
+    .value-card p {
+        font-size: 1.1rem;
+        color: #666;
+    }
+
+    .value-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    media (max-width: 768px) {
+        .about-content {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
 
-        .value-card p {
-            font-size: 1.1rem;
-            color: #333;
+        .about-text {
+            padding-right: 0;
+            max-width: 100%;
         }
 
-        .value-card:hover {
-            transform: scale(1.05);
+        .about-image {
+            margin-top: 20px;
         }
 
+        .about-image img {
+            max-width: 80%;
+        }
+
+        .values-grid {
+            flex-direction: column;
+        }
+
+        .value-card {
+            width: 90%;
+            margin: 10px auto;
+        }
+    }
 </style>
